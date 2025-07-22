@@ -7,6 +7,9 @@ import com.apartment.models.dtos.staffs.CreateRequest;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.IUserService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/staffs")
+@Tag(name = "Staff Management")
 public class StaffController extends ApiBaseController {
     private final IUserService staffService;
 
@@ -24,7 +28,7 @@ public class StaffController extends ApiBaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResult<UUID>> createStaff(@RequestBody CreateRequest apiRequest) {
+    public ResponseEntity<ApiResult<UUID>> createStaff(@Valid @RequestBody CreateRequest apiRequest) {
         return executeApiResult(() -> staffService.createStaff(apiRequest));
     }
 }
