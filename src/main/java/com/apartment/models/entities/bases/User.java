@@ -3,12 +3,14 @@ package com.apartment.models.entities.bases;
 import com.apartment.models.entities.enums.UserRole;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "users")
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
     
@@ -21,9 +23,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
-    
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
     
     // Quan hệ 1-1 với Resident (nullable - không phải user nào cũng là resident)
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
