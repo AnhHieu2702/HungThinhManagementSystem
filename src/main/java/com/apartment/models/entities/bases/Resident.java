@@ -43,8 +43,4 @@ public class Resident extends BaseEntity {
     @Builder.Default
     @Column(name = "is_temporary", nullable = false)
     private Boolean isTemporary = false;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 }

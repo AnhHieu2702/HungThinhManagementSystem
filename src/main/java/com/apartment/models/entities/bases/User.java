@@ -27,8 +27,4 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
-    
-    // Quan hệ 1-1 với Resident (nullable - không phải user nào cũng là resident)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Resident resident;
 }
