@@ -1,8 +1,12 @@
 package com.apartment.models.entities.bases;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -11,6 +15,9 @@ import com.apartment.models.entities.enums.ApartmentStatus;
 @Entity
 @Table(name = "apartments")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Apartment extends BaseEntity {
 
@@ -32,6 +39,7 @@ public class Apartment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private ApartmentStatus status = ApartmentStatus.OCCUPIED;
 
     @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
