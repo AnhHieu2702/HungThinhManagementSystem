@@ -6,17 +6,19 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ResidentCreateRequest {
-    // Resident
-    @NotBlank(message = "Vui long nhập họ và tên")
+public class ResidentUpdateRequest {
+     // Resident
+    @NotBlank(message = "Vui lòng nhập họ và tên")
     private String fullname;
 
     private LocalDate dateOfBirth;
 
     private String email;
 
+    @NotBlank(message = "Vui lòng nhập số điện thoại")
     private String phone;
 
     @NotBlank(message = "Vui lòng nhập quan hệ với chủ hộ")
-    private String relation;    
+    private String relation;
 }
+
