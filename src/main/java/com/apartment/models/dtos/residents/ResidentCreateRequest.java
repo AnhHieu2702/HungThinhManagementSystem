@@ -1,4 +1,4 @@
-package com.apartment.models.dtos.resident;
+package com.apartment.models.dtos.residents;
 
 import java.time.LocalDate;
 
