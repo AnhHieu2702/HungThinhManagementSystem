@@ -3,7 +3,7 @@ package com.apartment.services.implement;
 import java.util.UUID;
 
 import com.apartment.exceptions.UserMessageException;
-import com.apartment.models.dtos.staffs.CreateRequest;
+import com.apartment.models.dtos.users.UserCreateRequest;
 import com.apartment.models.entities.bases.User;
 import com.apartment.models.entities.enums.UserRole;
 import com.apartment.models.global.ApiResult;
@@ -24,7 +24,7 @@ public class UserService implements IUserService {
             this.passwordEncoder = passwordEncoder;
     }
     @Override
-    public ApiResult<UUID> createStaff(CreateRequest apiRequest) {
+    public ApiResult<UUID> createUser(UserCreateRequest apiRequest) {
         if (userRepository.existsByUsername(apiRequest.getUsername())) {
             throw new UserMessageException("Tên đăng nhập đã tồn tại");
         }

@@ -3,7 +3,7 @@ package com.apartment.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apartment.models.dtos.staffs.CreateRequest;
+import com.apartment.models.dtos.users.UserCreateRequest;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.IUserService;
 
@@ -28,7 +28,7 @@ public class StaffController extends ApiBaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResult<UUID>> createStaff(@Valid @RequestBody CreateRequest apiRequest) {
-        return executeApiResult(() -> staffService.createStaff(apiRequest));
+    public ResponseEntity<ApiResult<UUID>> createStaff(@Valid @RequestBody UserCreateRequest apiRequest) {
+        return executeApiResult(() -> staffService.createUser(apiRequest));
     }
 }
