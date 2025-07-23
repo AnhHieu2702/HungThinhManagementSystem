@@ -1,9 +1,12 @@
 package com.apartment.services.implement;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.apartment.exceptions.UserMessageException;
 import com.apartment.models.dtos.users.UserCreateRequest;
+import com.apartment.models.dtos.users.UserGetsResponse;
+import com.apartment.models.dtos.users.UserUpdateRequest;
 import com.apartment.models.entities.bases.User;
 import com.apartment.models.entities.enums.UserRole;
 import com.apartment.models.global.ApiResult;
@@ -23,6 +26,17 @@ public class UserService implements IUserService {
             this.userRepository = userRepository;
             this.passwordEncoder = passwordEncoder;
     }
+
+    @Override
+    public ApiResult<List<UserGetsResponse>> getsUser() {
+        List<User> users = userRepository.findAll();
+        List<UserGetsResponse> responseList = users.stream()
+                .map(user -> new UserGetsResponse(user.getUsername(), user.getRole().name()))
+                .toList();
+
+        return ApiResult.success(responseList, "Lấy danh sách người dùng thành công");
+    }
+
     @Override
     public ApiResult<UUID> createUser(UserCreateRequest apiRequest) {
         if (userRepository.existsByUsername(apiRequest.getUsername())) {
@@ -39,6 +53,18 @@ public class UserService implements IUserService {
 
         userRepository.save(newUser);
 
-        return ApiResult.success(null, "Thêm mới người dùng thành công");
+        return ApiResult.success(newUser.getId(), "Thêm mới người dùng thành công");
+    }
+
+    @Override
+    public ApiResult<String> updateUser(UUID userId, UserUpdateRequest apiRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
+
+        user.setUsername(apiRequest.getUsername());
+        user.setRole(UserRole.valueOf(apiRequest.getRole()));
+        userRepository.save(user);
+
+        return ApiResult.success(null, "Cập nhật người dùng thành công");
     }
 }
