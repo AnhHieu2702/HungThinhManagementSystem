@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,7 @@ public class NotificationController extends ApiBaseController{
      * @param apiRequest Thông tin tạo thông báo
      * @return ApiResult chứa ID của thông báo mới tạo
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{userId}")
     public ResponseEntity<ApiResult<UUID>> createNotification(@PathVariable UUID userId, @Valid @RequestBody NotificationCreateRequest apiRequest) {
         return executeApiResult(() -> notificationService.createNotification(userId, apiRequest));

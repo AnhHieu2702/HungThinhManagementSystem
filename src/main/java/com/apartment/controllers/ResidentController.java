@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,7 @@ public class ResidentController extends ApiBaseController {
         return executeApiResult(() -> residentService.getResidentsByApartmentId(apartmentId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{apartmentId}/residents")
     public ResponseEntity<ApiResult<UUID>> createResident(@PathVariable UUID apartmentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
         return executeApiResult(() -> residentService.createResident(apartmentId, apiRequest));
