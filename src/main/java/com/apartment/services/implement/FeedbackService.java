@@ -102,16 +102,6 @@ public class FeedbackService implements IFeedbackService {
         }
 
         @Override
-        public ApiResult<List<FeedbackGetsResponse>> getFeedbacksByResident(UUID residentId) {
-                List<Feedback> feedbacks = feedbackRepository.findByResidentId(residentId);
-                List<FeedbackGetsResponse> responseList = feedbacks.stream()
-                                .map(this::mapToFeedbackResponse)
-                                .toList();
-
-                return ApiResult.success(responseList, "Lấy danh sách phản ánh của cư dân thành công");
-        }
-
-        @Override
         public ApiResult<List<FeedbackGetsResponse>> getFeedbacksByStatus(String status) {
                 FeedbackStatus feedbackStatus = FeedbackStatus.valueOf(status);
                 List<Feedback> feedbacks = feedbackRepository.findByStatus(feedbackStatus);
@@ -120,16 +110,6 @@ public class FeedbackService implements IFeedbackService {
                                 .toList();
 
                 return ApiResult.success(responseList, "Lấy danh sách phản ánh theo trạng thái thành công");
-        }
-
-        @Override
-        public ApiResult<List<FeedbackGetsResponse>> getFeedbacksByAssignedTo(UUID assignedToId) {
-                List<Feedback> feedbacks = feedbackRepository.findByAssignedToId(assignedToId);
-                List<FeedbackGetsResponse> responseList = feedbacks.stream()
-                                .map(this::mapToFeedbackResponse)
-                                .toList();
-
-                return ApiResult.success(responseList, "Lấy danh sách phản ánh được phân công thành công");
         }
 
         private FeedbackGetsResponse mapToFeedbackResponse(Feedback feedback) {
