@@ -27,5 +27,7 @@ public class VoteCreateRequest {
     private String voteType; // YES_NO, MULTIPLE_CHOICE, SINGLE_CHOICE
 
     private List<String> options; // Danh sách lựa chọn (cho MULTIPLE_CHOICE, SINGLE_CHOICE)
+
+    private String status;
     
 }
