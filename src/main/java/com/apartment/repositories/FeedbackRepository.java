@@ -17,6 +17,4 @@ public interface FeedbackRepository extends JpaRepository<Feedback, UUID> {
     List<Feedback> findByAssignedToId(UUID assignedToId);
     
     List<Feedback> findByApartmentApartmentNumber(String apartmentNumber);
-    
-    List<Feedback> findAllByOrderByCreatedAtDesc();
 }
