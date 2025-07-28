@@ -18,15 +18,16 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/feedbacks")
+@RequestMapping("/api")
 @Tag(name = "Feedback Management")
 public class FeedbackController extends ApiBaseController {
     private final IFeedbackService feedbackService;
@@ -35,36 +36,38 @@ public class FeedbackController extends ApiBaseController {
         this.feedbackService = feedbackService;
     }
 
-    @GetMapping
+    @GetMapping("admin/feedbacks")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT') or hasRole('TECHNICIAN')")
     public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getsFeedback() {
         return executeApiResult(() -> feedbackService.getsFeedback());
     }
 
-    @PostMapping
+    @PostMapping("resident/feedbacks")
     @PreAuthorize("hasRole('RESIDENT')")
-    public ResponseEntity<ApiResult<UUID>> createFeedback(@Valid @RequestBody FeedbackCreateRequest apiRequest,
-            @RequestParam UUID residentId) {
-        return executeApiResult(() -> feedbackService.createFeedback(apiRequest, residentId));
+    public ResponseEntity<ApiResult<UUID>> createFeedback(@Valid @RequestBody FeedbackCreateRequest apiRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        
+        return executeApiResult(() -> feedbackService.createFeedback(apiRequest, currentUsername));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("admin-technician/feedbacks/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
-    public ResponseEntity<ApiResult<String>> updateFeedback(@PathVariable UUID id,
-            @Valid @RequestBody FeedbackUpdateRequest apiRequest) {
+    public ResponseEntity<ApiResult<String>> updateFeedback(@PathVariable UUID id, 
+                                                           @Valid @RequestBody FeedbackUpdateRequest apiRequest) {
         return executeApiResult(() -> feedbackService.updateFeedback(id, apiRequest));
     }
 
-    @PutMapping("/{id}/assign")
+    @PutMapping("admin/feedbacks/{id}/assign")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<String>> assignFeedback(@PathVariable UUID id,
-            @Valid @RequestBody FeedbackAssignRequest apiRequest) {
+    public ResponseEntity<ApiResult<String>> assignFeedback(@PathVariable UUID id, 
+                                                           @Valid @RequestBody FeedbackAssignRequest apiRequest) {
         return executeApiResult(() -> feedbackService.assignFeedback(id, apiRequest));
     }
 
-    @GetMapping("/status/{status}")
+    @GetMapping("admin-technician-accountant/feedbacks/status/{feedbackStatus}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT') or hasRole('TECHNICIAN')")
-    public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getFeedbacksByStatus(@PathVariable String status) {
-        return executeApiResult(() -> feedbackService.getFeedbacksByStatus(status));
+    public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getFeedbacksByStatus(@PathVariable String feedbackStatus) {
+        return executeApiResult(() -> feedbackService.getFeedbacksByStatus(feedbackStatus));
     }
 }
