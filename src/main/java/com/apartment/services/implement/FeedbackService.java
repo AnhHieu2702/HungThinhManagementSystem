@@ -36,8 +36,7 @@ public class FeedbackService implements IFeedbackService {
 
         @Override
         public ApiResult<List<FeedbackGetsResponse>> getsFeedback() {
-                List<Feedback> feedbacks = feedbackRepository.findAll(); // Thay đổi từ findAllByOrderByCreatedAtDesc()
-                                                                         // thành findAll()
+                List<Feedback> feedbacks = feedbackRepository.findAll();
                 List<FeedbackGetsResponse> responseList = feedbacks.stream()
                                 .map(this::mapToFeedbackResponse)
                                 .toList();
@@ -46,9 +45,9 @@ public class FeedbackService implements IFeedbackService {
         }
 
         @Override
-        public ApiResult<UUID> createFeedback(FeedbackCreateRequest apiRequest, UUID residentId) {
-                User resident = userRepository.findById(residentId)
-                                .orElseThrow(() -> new UserMessageException("Cư dân không tồn tại"));
+        public ApiResult<UUID> createFeedback(FeedbackCreateRequest apiRequest, String currentUsername) {
+                User resident = userRepository.findByUsername(currentUsername)
+                                .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
 
                 Apartment apartment = apartmentRepository.findByApartmentNumber(apiRequest.getApartmentNumber())
                                 .orElseThrow(() -> new UserMessageException("Căn hộ không tồn tại"));
@@ -74,15 +73,14 @@ public class FeedbackService implements IFeedbackService {
                 feedback.setResponse(apiRequest.getResponse());
                 feedback.setStatus(FeedbackStatus.valueOf(apiRequest.getStatus()));
 
-                if (apiRequest.getAssignedTo() != null) {
-                        User assignedUser = userRepository.findById(apiRequest.getAssignedTo())
+                if (apiRequest.getAssignedToUsername() != null) {
+                        User assignedUser = userRepository.findByUsername(apiRequest.getAssignedToUsername())
                                         .orElseThrow(() -> new UserMessageException(
                                                         "Người được phân công không tồn tại"));
                         feedback.setAssignedTo(assignedUser);
                 }
 
                 feedbackRepository.save(feedback);
-
                 return ApiResult.success(null, "Cập nhật phản ánh thành công");
         }
 
@@ -91,8 +89,10 @@ public class FeedbackService implements IFeedbackService {
                 Feedback feedback = feedbackRepository.findById(feedbackId)
                                 .orElseThrow(() -> new UserMessageException("Phản ánh không tồn tại"));
 
-                User assignedUser = userRepository.findById(apiRequest.getAssignedTo())
-                                .orElseThrow(() -> new UserMessageException("Người được phân công không tồn tại"));
+                User assignedUser = userRepository.findByUsername(apiRequest.getAssignedToUsername())
+                                .orElseThrow(() -> new UserMessageException(
+                                                "Người được phân công không tồn tại với username: "
+                                                                + apiRequest.getAssignedToUsername()));
 
                 feedback.setAssignedTo(assignedUser);
                 feedback.setStatus(FeedbackStatus.IN_PROGRESS);
@@ -121,7 +121,7 @@ public class FeedbackService implements IFeedbackService {
                                 feedback.getApartment().getApartmentNumber(),
                                 feedback.getCategory(),
                                 feedback.getStatus().getDisplayName(),
-                                feedback.getResponse(),
-                                feedback.getAssignedTo() != null ? feedback.getAssignedTo().getUsername() : null);
+                                feedback.getResponse() != null ? feedback.getResponse() : "",
+                                feedback.getAssignedTo() != null ? feedback.getAssignedTo().getUsername() : "");
         }
 }
