@@ -13,15 +13,17 @@ public interface IDeviceService {
     
     ApiResult<UUID> createDevice(DeviceCreateRequest apiRequest);
     
+    // ✅ Methods sử dụng UUID (cần thiết để implement)
     ApiResult<String> updateDevice(UUID deviceId, DeviceUpdateRequest apiRequest);
-    
     ApiResult<String> deleteDevice(UUID deviceId);
-    
     ApiResult<DeviceGetsResponse> getDeviceById(UUID deviceId);
     
+    // ✅ Methods sử dụng deviceCode (methods mới)
+    ApiResult<String> updateDeviceByCode(String deviceCode, DeviceUpdateRequest apiRequest);
+    ApiResult<String> deleteDeviceByCode(String deviceCode);
+    ApiResult<DeviceGetsResponse> getDeviceByCode(String deviceCode);
+    
     ApiResult<List<DeviceGetsResponse>> getDevicesByStatus(String status);
-    
     ApiResult<List<DeviceGetsResponse>> getDevicesDueForMaintenance();
-    
     ApiResult<List<DeviceGetsResponse>> getDevicesUpcomingMaintenance(int daysBefore);
 }
