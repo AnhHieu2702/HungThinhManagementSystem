@@ -12,7 +12,7 @@ import com.apartment.models.global.ApiResult;
 public interface IFeedbackService {
     ApiResult<List<FeedbackGetsResponse>> getsFeedback();
     
-    ApiResult<UUID> createFeedback(FeedbackCreateRequest apiRequest, UUID residentId);
+    ApiResult<UUID> createFeedback(FeedbackCreateRequest apiRequest, String currentUsername);
     
     ApiResult<String> updateFeedback(UUID feedbackId, FeedbackUpdateRequest apiRequest);
     
