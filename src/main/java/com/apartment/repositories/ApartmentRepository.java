@@ -8,5 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.apartment.models.entities.bases.Apartment;
 
 public interface ApartmentRepository extends JpaRepository<Apartment, UUID> {
+    boolean existsByApartmentNumber(String apartmentNumber);
     Optional<Apartment> findByApartmentNumber(String apartmentNumber);
+    
 }
+

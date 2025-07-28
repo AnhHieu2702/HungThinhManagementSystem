@@ -1,0 +1,46 @@
+.btn-custom {
+    background-color: #152259;
+    color: white;
+    border: none;
+}
+
+.btn-custom:hover {
+    background-color: #1b2d73;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* User dropdown styles */
+.dropdown-menu {
+    min-width: 200px;
+}
+
+/* Navigation styles */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Content area styles */
+.container {
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+} 

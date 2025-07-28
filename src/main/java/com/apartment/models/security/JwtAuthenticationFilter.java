@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -21,12 +22,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
 
+    // ✅ Danh sách các path không cần kiểm tra JWT
+    private static final List<String> EXCLUDED_PATHS = List.of(
+        "/login",
+        "/home",
+        "/main",
+        "/apartment",
+        "/api/auth",
+        "/swagger-ui",
+        "/v3/api-docs",
+        "/css",
+        "/js",
+        "/images",
+        "/favicon.ico"
+    );
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+
+        String path = request.getServletPath();
+
+        // ✅ Bỏ qua kiểm tra nếu path khớp với các đường public
+        if (shouldSkipFilter(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
@@ -41,7 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            
             if (tokenProvider.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
@@ -52,6 +76,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request, response);
     }
-} 
+
+    // ✅ Hàm kiểm tra xem có cần bỏ qua path hiện tại không
+    private boolean shouldSkipFilter(String path) {
+        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+    }
+}
