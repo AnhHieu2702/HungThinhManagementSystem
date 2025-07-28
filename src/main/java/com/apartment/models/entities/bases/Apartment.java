@@ -21,7 +21,7 @@ import com.apartment.models.entities.enums.ApartmentStatus;
 @EqualsAndHashCode(callSuper = true)
 public class Apartment extends BaseEntity {
 
-    @Column(name = "apartment_number", nullable = false, length = 20)
+    @Column(name = "apartment_number", nullable = false, length = 20, unique = true)
     private String apartmentNumber;
 
     @Column(name = "floor", nullable = false)
