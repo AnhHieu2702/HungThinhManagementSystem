@@ -62,22 +62,9 @@ public class FeedbackController extends ApiBaseController {
         return executeApiResult(() -> feedbackService.assignFeedback(id, apiRequest));
     }
 
-    @GetMapping("/resident/{residentId}")
-    @PreAuthorize("hasRole('RESIDENT') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getFeedbacksByResident(@PathVariable UUID residentId) {
-        return executeApiResult(() -> feedbackService.getFeedbacksByResident(residentId));
-    }
-
     @GetMapping("/status/{status}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT') or hasRole('TECHNICIAN')")
     public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getFeedbacksByStatus(@PathVariable String status) {
         return executeApiResult(() -> feedbackService.getFeedbacksByStatus(status));
-    }
-
-    @GetMapping("/assigned/{assignedToId}")
-    @PreAuthorize("hasRole('TECHNICIAN') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<List<FeedbackGetsResponse>>> getFeedbacksByAssignedTo(
-            @PathVariable UUID assignedToId) {
-        return executeApiResult(() -> feedbackService.getFeedbacksByAssignedTo(assignedToId));
     }
 }
