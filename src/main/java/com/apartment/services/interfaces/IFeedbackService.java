@@ -18,9 +18,5 @@ public interface IFeedbackService {
     
     ApiResult<String> assignFeedback(UUID feedbackId, FeedbackAssignRequest apiRequest);
     
-    ApiResult<List<FeedbackGetsResponse>> getFeedbacksByResident(UUID residentId);
-    
     ApiResult<List<FeedbackGetsResponse>> getFeedbacksByStatus(String status);
-    
-    ApiResult<List<FeedbackGetsResponse>> getFeedbacksByAssignedTo(UUID assignedToId);
 }
