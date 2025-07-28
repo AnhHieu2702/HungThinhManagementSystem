@@ -22,8 +22,9 @@ public class Feedback extends BaseEntity {
     @JoinColumn(name = "resident_id", nullable = false)
     private User resident;
     
+    // Thay đổi quan hệ với Apartment thông qua apartment_number
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "apartment_id", nullable = false)
+    @JoinColumn(name = "apartment_number", referencedColumnName = "apartment_number", nullable = false)
     private Apartment apartment;
     
     @Column(name = "category", length = 50)
