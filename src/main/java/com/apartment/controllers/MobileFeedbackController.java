@@ -1,6 +1,7 @@
 package com.apartment.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apartment.models.dtos.mobilefeedbacks.MobileFeedbackCreateRequest;
@@ -29,67 +30,43 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Tag(name = "Mobile Feedback Management")
 @PreAuthorize("hasRole('RESIDENT')")
 public class MobileFeedbackController extends ApiBaseController {
-            private final IMobileFeedbackService mobileFeedbackService;
+    private final IMobileFeedbackService mobileFeedbackService;
 
-            public MobileFeedbackController(IMobileFeedbackService mobileFeedbackService) {
-                this.mobileFeedbackService = mobileFeedbackService;
-            }
+    public MobileFeedbackController(IMobileFeedbackService mobileFeedbackService) {
+        this.mobileFeedbackService = mobileFeedbackService;
+    }
 
-            @PostMapping("/feedbacks")
-            public ResponseEntity<ApiResult<UUID>> createFeedback(@Valid @RequestBody MobileFeedbackCreateRequest apiRequest) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
+    @PostMapping("/feedbacks")
+    public ResponseEntity<ApiResult<UUID>> createFeedback(@Valid @RequestBody MobileFeedbackCreateRequest apiRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
 
-                return executeApiResult(() -> mobileFeedbackService.createFeedback(apiRequest, currentUsername));
-            }
+        return executeApiResult(() -> mobileFeedbackService.createFeedback(apiRequest, currentUsername));
+    }
 
-            @GetMapping("/feedbacks")
-            public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyFeedbacks() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
+    @GetMapping("/feedbacks")
+    public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyFeedbacks() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
 
-                return executeApiResult(() -> mobileFeedbackService.getMyFeedbacks(currentUsername));
-            }
+        return executeApiResult(() -> mobileFeedbackService.getMyFeedbacks(currentUsername));
+    }
 
-            @GetMapping("/feedbacks/{feedbackId}")
-            public ResponseEntity<ApiResult<MobileFeedbackResponse>> getFeedbackById(@PathVariable UUID feedbackId) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
+    @GetMapping("/feedbacks/{feedbackId}")
+    public ResponseEntity<ApiResult<MobileFeedbackResponse>> getFeedbackById(@PathVariable UUID feedbackId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
 
-                return executeApiResult(() -> mobileFeedbackService.getFeedbackById(feedbackId, currentUsername));
-            }
+        return executeApiResult(() -> mobileFeedbackService.getFeedbackById(feedbackId, currentUsername));
+    }
 
-            @GetMapping("/feedbacks/status/{status}")
-            public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyFeedbacksByStatus(
-                    @PathVariable String status) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
+    @GetMapping("/feedbacks/filter")
+    public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyFeedbacksWithFilter(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String category) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
 
-                return executeApiResult(() -> mobileFeedbackService.getMyFeedbacksByStatus(status, currentUsername));
-            }
-
-            @GetMapping("/feedbacks/category/{category}")
-            public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyFeedbacksByCategory(
-                    @PathVariable String category) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
-
-                return executeApiResult(() -> mobileFeedbackService.getMyFeedbacksByCategory(category, currentUsername));
-            }
-
-            @GetMapping("/feedbacks/urgent")
-            public ResponseEntity<ApiResult<List<MobileFeedbackSummaryResponse>>> getMyUrgentFeedbacks() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
-
-                return executeApiResult(() -> mobileFeedbackService.getMyUrgentFeedbacks(currentUsername));
-            }
-
-            @GetMapping("/feedbacks/count/pending-response")
-            public ResponseEntity<ApiResult<Long>> countPendingResponseFeedbacks() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String currentUsername = authentication.getName();
-
-                return executeApiResult(() -> mobileFeedbackService.countPendingResponseFeedbacks(currentUsername));
-            }
+        return executeApiResult(() -> mobileFeedbackService.getMyFeedbacksWithFilter(currentUsername, status, category));
+    }
 }
