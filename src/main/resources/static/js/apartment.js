@@ -170,7 +170,7 @@ function createApartmentCard(apartment) {
     col.className = 'col-lg-4 col-md-6 col-sm-12 mb-4';
     
     col.innerHTML = `
-        <div class="apartment-card">
+    <div class="apartment-card bg-soft-success">
             <div class="apartment-header">
                 <div>
                     <div class="apartment-number">${apartment.apartmentNumber}</div>
