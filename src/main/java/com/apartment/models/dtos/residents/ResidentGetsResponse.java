@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 @Builder
 public class ResidentGetsResponse {
+    private UUID apartmentId;
+    
     private UUID id;
 
     private String fullname;

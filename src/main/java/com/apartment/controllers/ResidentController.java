@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/apartments")
+@RequestMapping("/api")
 @Tag(name = "Resident Management")
 public class ResidentController extends ApiBaseController {
     private final IResidentService residentService;
@@ -31,18 +31,23 @@ public class ResidentController extends ApiBaseController {
         this.residentService = residentService;
     }
 
-    @GetMapping("/{apartmentId}/residents")
+    @GetMapping("residents")
+    public ResponseEntity<ApiResult<List<ResidentGetsResponse>>> getResidentsByOwner() {
+        return executeApiResult(() -> residentService.getResidentsByOwner());
+    }
+
+    @GetMapping("admin-resident/apartments/{apartmentId}/residents")
     public ResponseEntity<ApiResult<List<ResidentGetsResponse>>> getResidentsByApartmentId(@PathVariable UUID apartmentId) {
         return executeApiResult(() -> residentService.getResidentsByApartmentId(apartmentId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{apartmentId}/residents")
+    @PostMapping("admin/apartments/{apartmentId}/residents")
     public ResponseEntity<ApiResult<UUID>> createResident(@PathVariable UUID apartmentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
         return executeApiResult(() -> residentService.createResident(apartmentId, apiRequest));
     }
 
-    @PutMapping("/residents/{residentId}")
+    @PutMapping("admin-resident/apartments/residents/{residentId}")
     public ResponseEntity<ApiResult<String>> updateResident(@PathVariable UUID residentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
         return executeApiResult(() -> residentService.updateResident(residentId, apiRequest));
     }

@@ -8,6 +8,9 @@ import com.apartment.models.dtos.residents.ResidentGetsResponse;
 import com.apartment.models.global.ApiResult;
 
 public interface IResidentService {
+    
+    ApiResult<List<ResidentGetsResponse>> getResidentsByOwner();
+
     ApiResult<List<ResidentGetsResponse>> getResidentsByApartmentId(UUID apartmentId);
 
     ApiResult<UUID> createResident(UUID apartmentId, ResidentCreateRequest apiRequest);
