@@ -29,7 +29,8 @@
         }
 
         .sidebar .nav-link:hover {
-            background-color: #0d6efd; /* Bootstrap primary color */
+            background-color: #0d6efd;
+            /* Bootstrap primary color */
             color: white;
         }
 
@@ -45,9 +46,10 @@
             <div class="col-md-2 sidebar d-flex flex-column align-items-center p-0">
                 <!-- Logo ở giữa -->
                 <div class="text-center mt-3">
-                    <img th:src="@{/images/logo_bg.png}" alt="Logo" class="img-fluid" style="max-width: 130px; height: auto;">
-                                        
-                    <div style= "margin-top: 10px">
+                    <img th:src="@{/images/logo_bg.png}" alt="Logo" class="img-fluid"
+                        style="max-width: 130px; height: auto;">
+
+                    <div style="margin-top: 10px">
                         <div style="font-weight: bold;">Hệ thống quản trị</div>
                         <div>Chung cư Hưng Thịnh</div>
                     </div>
@@ -57,23 +59,27 @@
 
                 <!-- Menu -->
                 <ul class="nav flex-column w-100 px-3">
-                    <li class="nav-item"><a class="nav-link"  href="/home"><i class="bi bi-house-door"></i> Trang chủ</a></li>
-                
+                    <li class="nav-item"><a class="nav-link" href="/home"><i class="bi bi-house-door"></i> Trang chủ</a>
+                    </li>
+
                     <!-- Dropdown -->
                     <li class="nav-item">
-                        <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#manageMenu" role="button" aria-expanded="false" aria-controls="manageMenu">
+                        <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+                            href="#manageMenu" role="button" aria-expanded="false" aria-controls="manageMenu">
                             <span><i class="bi bi-folder"></i> Quản lý</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="manageMenu">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i> Hộ gia đình</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/citizen"><i class="bi bi-person"></i> Dân cư</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i>
+                                        Hộ gia đình</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/citizen"><i class="bi bi-person"></i>
+                                        Dân cư</a></li>
                             </ul>
                         </div>
                     </li>
                 </ul>
-                
+
             </div>
 
             <!-- Main Content -->
@@ -133,6 +139,10 @@
             }
         });
     </script>
+
+    <th:block layout:fragment="scripts">
+        <!-- Page specific scripts will be inserted here -->
+    </th:block>
 </body>
 
 </html>
