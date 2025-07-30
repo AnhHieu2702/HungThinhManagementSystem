@@ -37,12 +37,14 @@ public class ResidentService implements IResidentService {
         List<ResidentGetsResponse> responseList = residents.stream()
                 .map(resident -> ResidentGetsResponse.builder()
                         .apartmentId(resident.getApartment().getId())
+                        .apartmentNumber(resident.getApartment().getApartmentNumber())
                         .id(resident.getId())
                         .fullname(resident.getFullName())
                         .dateOfBirth(resident.getDateOfBirth())
                         .email(resident.getEmail())
                         .phone(resident.getPhone())
                         .relation(resident.getRelationship().getDisplayName())
+                        .createTime(resident.getCreateTime())
                         .build())
                 .toList();
 
