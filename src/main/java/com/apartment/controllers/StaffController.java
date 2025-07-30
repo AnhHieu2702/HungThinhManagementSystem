@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/api/staffs")
+@RequestMapping("/api/admin/staffs")
 @Tag(name = "Staff Management")
 @PreAuthorize("hasRole('ADMIN')")
 public class StaffController extends ApiBaseController {

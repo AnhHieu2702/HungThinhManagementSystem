@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/apartments")
+@RequestMapping("/api/admin/apartments")
 @Tag(name = "Apartment Management")
 @PreAuthorize("hasRole('ADMIN')")
 public class ApartmentController extends ApiBaseController {
