@@ -13,10 +13,10 @@ body {
 }
 
 .apartments-section {
-    background: white;
+    background: #dee2e6;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ced4da
 }
 
 .apartment-card {
@@ -406,11 +406,12 @@ body {
 }
 
 .search-section {
-    background: #f8f9fa;
+    background: #dee2e6;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #ced4da;
 }
+
 
 .loading-overlay {
     position: fixed;
