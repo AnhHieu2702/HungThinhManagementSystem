@@ -9,8 +9,6 @@ import com.apartment.models.dtos.invoices.InvoiceGetsResponse;
 import com.apartment.models.dtos.invoices.InvoiceUpdateRequest;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.IInvoiceService;
-
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
