@@ -10,6 +10,8 @@ import com.apartment.models.dtos.invoices.InvoiceUpdateRequest;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.IInvoiceService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -35,12 +37,6 @@ public class InvoiceController extends ApiBaseController {
         this.invoiceService = invoiceService;
     }
 
-    @GetMapping("admin-accountant/invoices")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
-    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getsInvoice() {
-        return executeApiResult(() -> invoiceService.getsInvoice());
-    }
-
     @PostMapping("admin-accountant/invoices")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
     public ResponseEntity<ApiResult<UUID>> createInvoice(@Valid @RequestBody InvoiceCreateRequest apiRequest) {
@@ -49,33 +45,31 @@ public class InvoiceController extends ApiBaseController {
 
     @PostMapping("admin-accountant/invoices/bulk")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
-    public ResponseEntity<ApiResult<String>> createBulkInvoices(@Valid @RequestBody InvoiceBulkCreateRequest apiRequest) {
+    public ResponseEntity<ApiResult<String>> createBulkInvoices(
+            @Valid @RequestBody InvoiceBulkCreateRequest apiRequest) {
         return executeApiResult(() -> invoiceService.createBulkInvoices(apiRequest));
     }
 
     @PutMapping("admin-accountant/invoices/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
-    public ResponseEntity<ApiResult<String>> updateInvoice(@PathVariable UUID id, 
-                                                          @Valid @RequestBody InvoiceUpdateRequest apiRequest) {
+    public ResponseEntity<ApiResult<String>> updateInvoice(@PathVariable UUID id,
+            @Valid @RequestBody InvoiceUpdateRequest apiRequest) {
         return executeApiResult(() -> invoiceService.updateInvoice(id, apiRequest));
     }
 
-    @GetMapping("admin-accountant/invoices/status/{invoiceStatus}")
+    @GetMapping("admin-accountant/invoices/filter")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
-    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getInvoicesByStatus(@PathVariable String invoiceStatus) {
-        return executeApiResult(() -> invoiceService.getInvoicesByStatus(invoiceStatus));
-    }
-
-    @GetMapping("admin-accountant/invoices/period")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT')")
-    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getInvoicesByMonthAndYear(
-            @RequestParam Integer month, @RequestParam Integer year) {
-        return executeApiResult(() -> invoiceService.getInvoicesByMonthAndYear(month, year));
+    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getInvoicesWithFilter(
+            @Parameter(description = "Trạng thái hóa đơn: PENDING, PAID, OVERDUE, CANCELLED") @RequestParam(required = false) String status,
+            @Parameter(description = "Tháng (1-12)") @RequestParam(required = false) Integer month,
+            @Parameter(description = "Năm") @RequestParam(required = false) Integer year) {
+        return executeApiResult(() -> invoiceService.getInvoicesWithFilter(status, month, year));
     }
 
     @GetMapping("admin-accountant-resident/invoices/apartment/{apartmentNumber}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('ACCOUNTANT') or hasRole('RESIDENT')")
-    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getInvoicesByApartment(@PathVariable String apartmentNumber) {
+    public ResponseEntity<ApiResult<List<InvoiceGetsResponse>>> getInvoicesByApartment(
+            @PathVariable String apartmentNumber) {
         return executeApiResult(() -> invoiceService.getInvoicesByApartment(apartmentNumber));
     }
 }
