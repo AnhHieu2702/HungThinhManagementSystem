@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,8 +37,12 @@ public class MaintenanceController extends ApiBaseController {
 
     @GetMapping("admin-technician/maintenances")
     @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
-    public ResponseEntity<ApiResult<List<MaintenanceGetsResponse>>> getsMaintenance() {
-        return executeApiResult(() -> maintenanceService.getsMaintenance());
+    public ResponseEntity<ApiResult<List<MaintenanceGetsResponse>>> getsMaintenance(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) UUID deviceId,
+            @RequestParam(required = false) String technicianUsername,
+            @RequestParam(required = false) String maintenanceType) {
+        return executeApiResult(() -> maintenanceService.getsMaintenance(status, deviceId, technicianUsername, maintenanceType));
     }
 
     @PostMapping("admin/maintenances")
@@ -60,12 +65,6 @@ public class MaintenanceController extends ApiBaseController {
         return executeApiResult(() -> maintenanceService.assignMaintenance(id, apiRequest));
     }
 
-    @GetMapping("admin-technician/maintenances/status/{maintenanceStatus}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
-    public ResponseEntity<ApiResult<List<MaintenanceGetsResponse>>> getMaintenancesByStatus(@PathVariable String maintenanceStatus) {
-        return executeApiResult(() -> maintenanceService.getMaintenancesByStatus(maintenanceStatus));
-    }
-
     @GetMapping("admin-technician/maintenances/device/{deviceId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
     public ResponseEntity<ApiResult<List<MaintenanceGetsResponse>>> getMaintenancesByDevice(@PathVariable UUID deviceId) {
@@ -76,12 +75,5 @@ public class MaintenanceController extends ApiBaseController {
     @PreAuthorize("hasRole('TECHNICIAN')")
     public ResponseEntity<ApiResult<String>> completeMaintenance(@PathVariable UUID id) {
         return executeApiResult(() -> maintenanceService.completeMaintenance(id));
-    }
-
-    @PostMapping("admin/maintenances/from-feedback/{feedbackId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<UUID>> createMaintenanceFromFeedback(@PathVariable UUID feedbackId,
-                                                                        @Valid @RequestBody MaintenanceCreateRequest apiRequest) {
-        return executeApiResult(() -> maintenanceService.createMaintenanceFromFeedback(feedbackId, apiRequest));
     }
 }

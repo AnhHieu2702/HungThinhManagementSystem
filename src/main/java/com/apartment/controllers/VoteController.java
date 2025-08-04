@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -48,13 +47,6 @@ public class VoteController extends ApiBaseController {
         return executeApiResult(() -> voteService.createVote(apiRequest, currentUsername));
     }
 
-    @PutMapping("admin/votes/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<String>> updateVote(@PathVariable UUID id,
-            @Valid @RequestBody VoteUpdateRequest apiRequest) {
-        return executeApiResult(() -> voteService.updateVote(id, apiRequest));
-    }
-
     @GetMapping("resident/votes/active")
     @PreAuthorize("hasRole('RESIDENT')")
     public ResponseEntity<ApiResult<List<VoteGetsResponse>>> getActiveVotes() {
@@ -78,11 +70,5 @@ public class VoteController extends ApiBaseController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResult<VoteResultResponse>> getVoteResult(@PathVariable UUID id) {
         return executeApiResult(() -> voteService.getVoteResult(id));
-    }
-
-    @GetMapping("admin/votes/status/{voteStatus}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResult<List<VoteGetsResponse>>> getVotesByStatus(@PathVariable String voteStatus) {
-        return executeApiResult(() -> voteService.getVotesByStatus(voteStatus));
     }
 }
