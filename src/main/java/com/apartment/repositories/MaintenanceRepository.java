@@ -30,4 +30,7 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, UUID> 
     
     // Tìm bảo trì theo kỹ thuật viên và trạng thái
     List<Maintenance> findByTechnicianIdAndStatus(UUID technicianId, MaintenanceStatus status);
+    
+    // Tìm bảo trì hoàn thành trong khoảng thời gian
+    List<Maintenance> findByStatusAndCompletedDateBetween(MaintenanceStatus status, LocalDate startDate, LocalDate endDate);
 }

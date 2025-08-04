@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.apartment.exceptions.UserMessageException;
 import com.apartment.models.dtos.maintenances.MaintenanceAssignRequest;
+import com.apartment.models.dtos.maintenances.MaintenanceCompleteRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceCreateRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceGetsResponse;
 import com.apartment.models.dtos.maintenances.MaintenanceUpdateRequest;
@@ -104,7 +105,7 @@ public class MaintenanceService implements IMaintenanceService {
         newMaintenance.setNotes(apiRequest.getNotes());
         newMaintenance.setStatus(MaintenanceStatus.SCHEDULED);
 
-        if (apiRequest.getTechnicianUsername() != null) {
+        if (apiRequest.getTechnicianUsername() != null && !apiRequest.getTechnicianUsername().isEmpty()) {
             User technician = userRepository.findByUsername(apiRequest.getTechnicianUsername())
                     .orElseThrow(() -> new UserMessageException("Kỹ thuật viên không tồn tại"));
             newMaintenance.setTechnician(technician);
@@ -120,7 +121,7 @@ public class MaintenanceService implements IMaintenanceService {
         Maintenance maintenance = maintenanceRepository.findById(maintenanceId)
                 .orElseThrow(() -> new UserMessageException("Lịch bảo trì không tồn tại"));
 
-        if (apiRequest.getDescription() != null) {
+        if (apiRequest.getDescription() != null && !apiRequest.getDescription().isEmpty()) {
             maintenance.setDescription(apiRequest.getDescription());
         }
         if (apiRequest.getScheduledDate() != null) {
@@ -132,13 +133,23 @@ public class MaintenanceService implements IMaintenanceService {
         if (apiRequest.getCost() != null) {
             maintenance.setCost(apiRequest.getCost());
         }
-        if (apiRequest.getNotes() != null) {
+        if (apiRequest.getNotes() != null && !apiRequest.getNotes().isEmpty()) {
             maintenance.setNotes(apiRequest.getNotes());
         }
-        if (apiRequest.getStatus() != null) {
-            maintenance.setStatus(MaintenanceStatus.valueOf(apiRequest.getStatus()));
+        if (apiRequest.getStatus() != null && !apiRequest.getStatus().isEmpty()) {
+            try {
+                MaintenanceStatus newStatus = MaintenanceStatus.valueOf(apiRequest.getStatus().toUpperCase());
+                maintenance.setStatus(newStatus);
+                
+                // Nếu chuyển sang COMPLETED và chưa có completedDate thì set ngày hiện tại
+                if (newStatus == MaintenanceStatus.COMPLETED && maintenance.getCompletedDate() == null) {
+                    maintenance.setCompletedDate(LocalDate.now());
+                }
+            } catch (IllegalArgumentException e) {
+                throw new UserMessageException("Trạng thái bảo trì không hợp lệ");
+            }
         }
-        if (apiRequest.getTechnicianUsername() != null) {
+        if (apiRequest.getTechnicianUsername() != null && !apiRequest.getTechnicianUsername().isEmpty()) {
             User technician = userRepository.findByUsername(apiRequest.getTechnicianUsername())
                     .orElseThrow(() -> new UserMessageException("Kỹ thuật viên không tồn tại"));
             maintenance.setTechnician(technician);
@@ -176,13 +187,31 @@ public class MaintenanceService implements IMaintenanceService {
 
     @Override
     @Transactional
-    public ApiResult<String> completeMaintenance(UUID maintenanceId) {
+    public ApiResult<String> completeMaintenance(UUID maintenanceId, MaintenanceCompleteRequest apiRequest) {
         Maintenance maintenance = maintenanceRepository.findById(maintenanceId)
                 .orElseThrow(() -> new UserMessageException("Lịch bảo trì không tồn tại"));
+
+        // Kiểm tra trạng thái hiện tại
+        if (maintenance.getStatus() == MaintenanceStatus.COMPLETED) {
+            throw new UserMessageException("Bảo trì này đã được hoàn thành trước đó");
+        }
+
+        if (maintenance.getStatus() != MaintenanceStatus.IN_PROGRESS) {
+            throw new UserMessageException("Chỉ có thể hoàn thành bảo trì đang trong quá trình thực hiện");
+        }
 
         // Cập nhật trạng thái bảo trì
         maintenance.setStatus(MaintenanceStatus.COMPLETED);
         maintenance.setCompletedDate(LocalDate.now());
+        
+        // Cập nhật cost và notes từ request
+        if (apiRequest.getCost() != null) {
+            maintenance.setCost(apiRequest.getCost());
+        }
+        if (apiRequest.getNotes() != null && !apiRequest.getNotes().isEmpty()) {
+            maintenance.setNotes(apiRequest.getNotes());
+        }
+        
         maintenanceRepository.save(maintenance);
 
         // Cập nhật ngày bảo trì cuối cùng của thiết bị

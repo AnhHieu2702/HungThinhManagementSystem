@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.apartment.models.dtos.maintenances.MaintenanceAssignRequest;
+import com.apartment.models.dtos.maintenances.MaintenanceCompleteRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceCreateRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceGetsResponse;
 import com.apartment.models.dtos.maintenances.MaintenanceUpdateRequest;
@@ -20,5 +21,5 @@ public interface IMaintenanceService {
     
     ApiResult<List<MaintenanceGetsResponse>> getMaintenancesByDevice(UUID deviceId);
     
-    ApiResult<String> completeMaintenance(UUID maintenanceId);
+    ApiResult<String> completeMaintenance(UUID maintenanceId, MaintenanceCompleteRequest apiRequest);
 }

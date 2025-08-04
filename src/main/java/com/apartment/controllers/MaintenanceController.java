@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apartment.models.dtos.maintenances.MaintenanceAssignRequest;
+import com.apartment.models.dtos.maintenances.MaintenanceCompleteRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceCreateRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceGetsResponse;
 import com.apartment.models.dtos.maintenances.MaintenanceUpdateRequest;
@@ -73,7 +74,9 @@ public class MaintenanceController extends ApiBaseController {
 
     @PutMapping("technician/maintenances/{id}/complete")
     @PreAuthorize("hasRole('TECHNICIAN')")
-    public ResponseEntity<ApiResult<String>> completeMaintenance(@PathVariable UUID id) {
-        return executeApiResult(() -> maintenanceService.completeMaintenance(id));
+    public ResponseEntity<ApiResult<String>> completeMaintenance(
+            @PathVariable UUID id,
+            @RequestBody MaintenanceCompleteRequest apiRequest) {
+        return executeApiResult(() -> maintenanceService.completeMaintenance(id, apiRequest));
     }
 }
