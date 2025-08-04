@@ -10,7 +10,7 @@ import com.apartment.models.dtos.maintenances.MaintenanceUpdateRequest;
 import com.apartment.models.global.ApiResult;
 
 public interface IMaintenanceService {
-    ApiResult<List<MaintenanceGetsResponse>> getsMaintenance();
+    ApiResult<List<MaintenanceGetsResponse>> getsMaintenance(String status, UUID deviceId, String technicianUsername, String maintenanceType);
     
     ApiResult<UUID> createMaintenance(MaintenanceCreateRequest apiRequest);
     
@@ -18,11 +18,7 @@ public interface IMaintenanceService {
     
     ApiResult<String> assignMaintenance(UUID maintenanceId, MaintenanceAssignRequest apiRequest);
     
-    ApiResult<List<MaintenanceGetsResponse>> getMaintenancesByStatus(String status);
-    
     ApiResult<List<MaintenanceGetsResponse>> getMaintenancesByDevice(UUID deviceId);
     
     ApiResult<String> completeMaintenance(UUID maintenanceId);
-    
-    ApiResult<UUID> createMaintenanceFromFeedback(UUID feedbackId, MaintenanceCreateRequest apiRequest);
 }

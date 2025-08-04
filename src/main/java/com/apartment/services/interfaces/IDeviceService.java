@@ -21,9 +21,6 @@ public interface IDeviceService {
     // ✅ Methods sử dụng deviceCode (methods mới)
     ApiResult<String> updateDeviceByCode(String deviceCode, DeviceUpdateRequest apiRequest);
     ApiResult<String> deleteDeviceByCode(String deviceCode);
-    ApiResult<DeviceGetsResponse> getDeviceByCode(String deviceCode);
     
     ApiResult<List<DeviceGetsResponse>> getDevicesByStatus(String status);
-    ApiResult<List<DeviceGetsResponse>> getDevicesDueForMaintenance();
-    ApiResult<List<DeviceGetsResponse>> getDevicesUpcomingMaintenance(int daysBefore);
 }
