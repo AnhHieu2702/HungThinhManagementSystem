@@ -1,0 +1,348 @@
+.search-section {
+    background: #dee2e6;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ced4da
+}
+
+/* resident.css */
+
+/* Custom Alert Styling */
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    min-width: 300px;
+    max-width: 500px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.custom-alert.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.custom-alert.hide {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+
+.search-section h3 {
+    color: #495057;
+    font-weight: 600;
+}
+
+.search-section .form-label {
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.search-section .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+}
+
+.search-section .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+
+/* Residents Section */
+.residents-section {
+    background: #dee2e6;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ced4da
+}
+
+.residents-section h3 {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Table Styling */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+    background: #152259;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 15px 12px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: 15px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9ff;
+    transition: background-color 0.3s ease;
+}
+
+/* Avatar styling for residents */
+.resident-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #152259;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.resident-info {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Thêm dòng này để căn giữa ngang */
+}
+
+.resident-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.resident-name {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 2px;
+}
+
+.resident-email {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+/* Apartment code badge */
+.apartment-badge {
+    background: transparent; /* Xóa nền */
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    border: 2px solid; /* Thêm viền trắng */
+}
+
+
+/* Action buttons */
+.action-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Pagination Styling */
+.pagination {
+    margin: 0;
+}
+
+.pagination .page-link {
+    border: 1px solid #dee2e6;
+    color: #152259;
+    padding: 8px 12px;
+    margin: 0 2px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background: linear-gradient(#152259);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-1px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(#152259);
+    border-color: transparent;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Records info */
+#recordsInfo {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 20px 30px;
+}
+
+/* Form styling in modal */
+.modal .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.modal .form-control,
+.modal .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    color: #856404;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-section .row {
+        margin: 0;
+    }
+    
+    .search-section .col-md-3 {
+        margin-bottom: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 13px;
+    }
+    
+    .residents-section {
+        padding: 15px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .resident-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resident-avatar {
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+    
+    .apartment-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .relation-badge {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+}

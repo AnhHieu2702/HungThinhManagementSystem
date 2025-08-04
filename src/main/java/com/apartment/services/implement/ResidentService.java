@@ -29,6 +29,28 @@ public class ResidentService implements IResidentService {
         this.residentRepository = residentRepository;
     }
 
+
+    @Override
+    public ApiResult<List<ResidentGetsResponse>> getResidentsByOwner() {
+        List<Resident> residents = residentRepository.findByRelationship(RelationshipType.OWNER);
+
+        List<ResidentGetsResponse> responseList = residents.stream()
+                .map(resident -> ResidentGetsResponse.builder()
+                        .apartmentId(resident.getApartment().getId())
+                        .apartmentNumber(resident.getApartment().getApartmentNumber())
+                        .id(resident.getId())
+                        .fullname(resident.getFullName())
+                        .dateOfBirth(resident.getDateOfBirth())
+                        .email(resident.getEmail())
+                        .phone(resident.getPhone())
+                        .relation(resident.getRelationship().getDisplayName())
+                        .createTime(resident.getCreateTime())
+                        .build())
+                .toList();
+
+        return ApiResult.success(responseList, "Lấy danh sách cư dân thành công");
+    }
+
     @Override
     public ApiResult<List<ResidentGetsResponse>> getResidentsByApartmentId(UUID apartmentId) {
         List<Resident> residents = residentRepository.findByApartmentId(apartmentId);
