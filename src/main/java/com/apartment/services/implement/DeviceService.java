@@ -3,7 +3,6 @@ package com.apartment.services.implement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.apartment.exceptions.UserMessageException;
 import com.apartment.models.dtos.devices.DeviceCreateRequest;
@@ -110,15 +109,6 @@ public class DeviceService implements IDeviceService {
     }
 
     @Override
-    public ApiResult<DeviceGetsResponse> getDeviceByCode(String deviceCode) {
-        Device device = deviceRepository.findByDeviceCode(deviceCode)
-                .orElseThrow(() -> new UserMessageException("Thiết bị với mã '" + deviceCode + "' không tồn tại"));
-
-        DeviceGetsResponse response = mapToDeviceResponse(device);
-        return ApiResult.success(response, "Lấy thông tin thiết bị '" + deviceCode + "' thành công");
-    }
-
-    @Override
     public ApiResult<List<DeviceGetsResponse>> getDevicesByStatus(String status) {
         DeviceStatus deviceStatus = DeviceStatus.valueOf(status);
         List<Device> devices = deviceRepository.findByStatus(deviceStatus);
@@ -127,53 +117,6 @@ public class DeviceService implements IDeviceService {
                 .toList();
 
         return ApiResult.success(responseList, "Lấy danh sách thiết bị theo trạng thái thành công");
-    }
-
-    @Override
-    public ApiResult<List<DeviceGetsResponse>> getDevicesDueForMaintenance() {
-        LocalDate currentDate = LocalDate.now();
-        List<Device> allDevices = deviceRepository.findAll();
-
-        List<Device> devicesDue = allDevices.stream()
-                .filter(device -> {
-                    if (device.getLastMaintenanceDate() == null || device.getMaintenanceCycleDays() == null) {
-                        return false;
-                    }
-                    LocalDate nextMaintenanceDate = device.getLastMaintenanceDate()
-                            .plusDays(device.getMaintenanceCycleDays());
-                    return !nextMaintenanceDate.isAfter(currentDate);
-                })
-                .collect(Collectors.toList());
-
-        List<DeviceGetsResponse> responseList = devicesDue.stream()
-                .map(this::mapToDeviceResponse)
-                .toList();
-
-        return ApiResult.success(responseList, "Lấy danh sách thiết bị cần bảo trì thành công");
-    }
-
-    @Override
-    public ApiResult<List<DeviceGetsResponse>> getDevicesUpcomingMaintenance(int daysBefore) {
-        LocalDate currentDate = LocalDate.now();
-        List<Device> allDevices = deviceRepository.findAll();
-
-        List<Device> devicesUpcoming = allDevices.stream()
-                .filter(device -> {
-                    if (device.getLastMaintenanceDate() == null || device.getMaintenanceCycleDays() == null) {
-                        return false;
-                    }
-                    LocalDate nextMaintenanceDate = device.getLastMaintenanceDate()
-                            .plusDays(device.getMaintenanceCycleDays());
-                    LocalDate alertDate = currentDate.plusDays(daysBefore);
-                    return nextMaintenanceDate.isAfter(currentDate) && !nextMaintenanceDate.isAfter(alertDate);
-                })
-                .collect(Collectors.toList());
-
-        List<DeviceGetsResponse> responseList = devicesUpcoming.stream()
-                .map(this::mapToDeviceResponse)
-                .toList();
-
-        return ApiResult.success(responseList, "Lấy danh sách thiết bị sắp đến hạn bảo trì thành công");
     }
 
     private void updateDeviceFields(Device device, DeviceUpdateRequest apiRequest) {

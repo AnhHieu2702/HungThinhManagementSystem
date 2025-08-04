@@ -81,28 +81,6 @@ public class VoteService implements IVoteService {
         }
 
         @Override
-        public ApiResult<String> updateVote(UUID voteId, VoteUpdateRequest apiRequest) {
-            Vote vote = voteRepository.findById(voteId)
-                    .orElseThrow(() -> new UserMessageException("Cuộc biểu quyết không tồn tại"));
-
-            if (apiRequest.getTitle() != null) {
-                vote.setTitle(apiRequest.getTitle());
-            }
-            if (apiRequest.getDescription() != null) {
-                vote.setDescription(apiRequest.getDescription());
-            }
-            if (apiRequest.getEndDate() != null) {
-                vote.setEndDate(apiRequest.getEndDate());
-            }
-            if (apiRequest.getStatus() != null) {
-                vote.setStatus(VoteStatus.valueOf(apiRequest.getStatus()));
-            }
-
-            voteRepository.save(vote);
-            return ApiResult.success(null, "Cập nhật cuộc biểu quyết thành công");
-        }
-
-        @Override
         public ApiResult<List<VoteGetsResponse>> getActiveVotes(String currentUsername) {
             User user = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
@@ -236,17 +214,6 @@ public class VoteService implements IVoteService {
                     comments);
 
             return ApiResult.success(response, "Lấy kết quả biểu quyết thành công");
-        }
-
-        @Override
-        public ApiResult<List<VoteGetsResponse>> getVotesByStatus(String status) {
-            VoteStatus voteStatus = VoteStatus.valueOf(status);
-            List<Vote> votes = voteRepository.findByStatus(voteStatus);
-            List<VoteGetsResponse> responseList = votes.stream()
-                    .map(vote -> mapToVoteResponse(vote, null))
-                    .toList();
-
-            return ApiResult.success(responseList, "Lấy danh sách biểu quyết theo trạng thái thành công");
         }
 
         private void createYesNoOptions(Vote vote) {

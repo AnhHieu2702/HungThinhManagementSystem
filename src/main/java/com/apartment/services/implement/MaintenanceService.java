@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.apartment.exceptions.UserMessageException;
 import com.apartment.models.dtos.maintenances.MaintenanceAssignRequest;
@@ -11,15 +12,12 @@ import com.apartment.models.dtos.maintenances.MaintenanceCreateRequest;
 import com.apartment.models.dtos.maintenances.MaintenanceGetsResponse;
 import com.apartment.models.dtos.maintenances.MaintenanceUpdateRequest;
 import com.apartment.models.entities.bases.Device;
-import com.apartment.models.entities.bases.Feedback;
 import com.apartment.models.entities.bases.Maintenance;
 import com.apartment.models.entities.bases.User;
 import com.apartment.models.entities.enums.DeviceStatus;
-import com.apartment.models.entities.enums.FeedbackStatus;
 import com.apartment.models.entities.enums.MaintenanceStatus;
 import com.apartment.models.global.ApiResult;
 import com.apartment.repositories.DeviceRepository;
-import com.apartment.repositories.FeedbackRepository;
 import com.apartment.repositories.MaintenanceRepository;
 import com.apartment.repositories.UserRepository;
 import com.apartment.services.interfaces.IMaintenanceService;
@@ -32,22 +30,60 @@ public class MaintenanceService implements IMaintenanceService {
     private final MaintenanceRepository maintenanceRepository;
     private final DeviceRepository deviceRepository;
     private final UserRepository userRepository;
-    private final FeedbackRepository feedbackRepository;
 
     public MaintenanceService(MaintenanceRepository maintenanceRepository,
                             DeviceRepository deviceRepository,
-                            UserRepository userRepository,
-                            FeedbackRepository feedbackRepository) {
+                            UserRepository userRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.deviceRepository = deviceRepository;
         this.userRepository = userRepository;
-        this.feedbackRepository = feedbackRepository;
     }
 
     @Override
-    public ApiResult<List<MaintenanceGetsResponse>> getsMaintenance() {
+    public ApiResult<List<MaintenanceGetsResponse>> getsMaintenance(String status, UUID deviceId, String technicianUsername, String maintenanceType) {
         List<Maintenance> maintenances = maintenanceRepository.findAll();
-        List<MaintenanceGetsResponse> responseList = maintenances.stream()
+        
+        // Apply filters
+        List<Maintenance> filteredMaintenances = maintenances.stream()
+                .filter(maintenance -> {
+                    // Filter by status
+                    if (status != null && !status.isEmpty()) {
+                        try {
+                            MaintenanceStatus statusEnum = MaintenanceStatus.valueOf(status.toUpperCase());
+                            if (!maintenance.getStatus().equals(statusEnum)) {
+                                return false;
+                            }
+                        } catch (IllegalArgumentException e) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by deviceId
+                    if (deviceId != null && !maintenance.getDevice().getId().equals(deviceId)) {
+                        return false;
+                    }
+                    
+                    // Filter by technician username
+                    if (technicianUsername != null && !technicianUsername.isEmpty()) {
+                        if (maintenance.getTechnician() == null || 
+                            !maintenance.getTechnician().getUsername().equals(technicianUsername)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by maintenance type
+                    if (maintenanceType != null && !maintenanceType.isEmpty()) {
+                        if (maintenance.getMaintenanceType() == null || 
+                            !maintenance.getMaintenanceType().equalsIgnoreCase(maintenanceType)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        List<MaintenanceGetsResponse> responseList = filteredMaintenances.stream()
                 .map(this::mapToMaintenanceResponse)
                 .toList();
 
@@ -129,17 +165,6 @@ public class MaintenanceService implements IMaintenanceService {
     }
 
     @Override
-    public ApiResult<List<MaintenanceGetsResponse>> getMaintenancesByStatus(String status) {
-        MaintenanceStatus maintenanceStatus = MaintenanceStatus.valueOf(status);
-        List<Maintenance> maintenances = maintenanceRepository.findByStatus(maintenanceStatus);
-        List<MaintenanceGetsResponse> responseList = maintenances.stream()
-                .map(this::mapToMaintenanceResponse)
-                .toList();
-
-        return ApiResult.success(responseList, "Lấy danh sách bảo trì theo trạng thái thành công");
-    }
-
-    @Override
     public ApiResult<List<MaintenanceGetsResponse>> getMaintenancesByDevice(UUID deviceId) {
         List<Maintenance> maintenances = maintenanceRepository.findByDeviceId(deviceId);
         List<MaintenanceGetsResponse> responseList = maintenances.stream()
@@ -167,23 +192,6 @@ public class MaintenanceService implements IMaintenanceService {
         deviceRepository.save(device);
 
         return ApiResult.success(null, "Hoàn thành bảo trì thành công");
-    }
-
-    @Override
-    @Transactional
-    public ApiResult<UUID> createMaintenanceFromFeedback(UUID feedbackId, MaintenanceCreateRequest apiRequest) {
-        Feedback feedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new UserMessageException("Phản ánh không tồn tại"));
-
-        // Tạo lịch bảo trì
-        ApiResult<UUID> maintenanceResult = createMaintenance(apiRequest);
-
-        // Cập nhật trạng thái phản ánh
-        feedback.setStatus(FeedbackStatus.IN_PROGRESS);
-        feedback.setResponse("Đã tạo lịch bảo trì để xử lý");
-        feedbackRepository.save(feedback);
-
-        return ApiResult.success(maintenanceResult.getData(), "Tạo lịch bảo trì từ phản ánh thành công");
     }
 
     // Phương thức tính tổng chi phí bảo trì theo thiết bị (thay thế @Query)
