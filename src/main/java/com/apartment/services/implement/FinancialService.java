@@ -74,6 +74,27 @@ public class FinancialService implements IFinancialService {
         List<Invoice> paidInvoices = invoices.stream()
             .filter(i -> i.getStatus() == InvoiceStatus.PAID)
             .collect(Collectors.toList());
+            
+        // Tính các loại phí từ hóa đơn đã thanh toán
+        BigDecimal managementFee = paidInvoices.stream()
+            .map(invoice -> invoice.getManagementFee() != null ? invoice.getManagementFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+        BigDecimal waterFee = paidInvoices.stream()
+            .map(invoice -> invoice.getWaterFee() != null ? invoice.getWaterFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+        BigDecimal electricityFee = paidInvoices.stream()
+            .map(invoice -> invoice.getElectricityFee() != null ? invoice.getElectricityFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+        BigDecimal parkingFee = paidInvoices.stream()
+            .map(invoice -> invoice.getParkingFee() != null ? invoice.getParkingFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+        BigDecimal otherFee = paidInvoices.stream()
+            .map(invoice -> invoice.getOtherFee() != null ? invoice.getOtherFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
         
         LocalDate startDate = LocalDate.of(request.getYear(), request.getMonth(), 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
@@ -117,6 +138,11 @@ public class FinancialService implements IFinancialService {
             .year(request.getYear())
             .block(request.getBlock())
             .totalRevenue(totalRevenue)
+            .managementFee(managementFee)
+            .waterFee(waterFee)
+            .electricityFee(electricityFee)
+            .parkingFee(parkingFee)
+            .otherFee(otherFee)
             .totalExpense(maintenanceExpense)
             .maintenanceExpense(maintenanceExpense)
             .netProfit(totalRevenue.subtract(maintenanceExpense))
