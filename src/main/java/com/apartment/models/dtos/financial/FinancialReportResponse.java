@@ -19,6 +19,11 @@ public class FinancialReportResponse {
     
     // Thu nhập
     private BigDecimal totalRevenue;
+    private BigDecimal managementFee;
+    private BigDecimal waterFee;
+    private BigDecimal electricityFee;
+    private BigDecimal parkingFee;
+    private BigDecimal otherFee;
     
     // Chi phí
     private BigDecimal totalExpense;
