@@ -48,13 +48,13 @@ function showAlert(message, type) {
     alertDiv.className = `alert alert-${type} alert-dismissible custom-alert`;
     
     const iconMap = {
-        'success': 'fas fa-check-circle',
-        'danger': 'fas fa-exclamation-triangle',
-        'warning': 'fas fa-exclamation-triangle',
-        'info': 'fas fa-info-circle'
+        'success': 'bi bi-check-circle-fill',
+        'danger': 'bi bi-exclamation-triangle-fill',
+        'warning': 'bi bi-exclamation-triangle-fill',
+        'info': 'bi bi-info-circle-fill'
     };
     
-    const icon = iconMap[type] || 'fas fa-info-circle';
+    const icon = iconMap[type] || 'bi bi-info-circle-fill';
     
     alertDiv.innerHTML = `
         <div class="d-flex align-items-center">
@@ -250,10 +250,12 @@ function setupEventListeners() {
     console.log('🔧 Setting up event listeners...');
     
     // Filter buttons
-    const refreshBtn = document.getElementById('refreshBtn');
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    const searchBtn = document.getElementById('searchBtn');
     const addBtn = document.getElementById('addDeviceBtn');
     
-    if (refreshBtn) refreshBtn.addEventListener('click', refreshData);
+    if (clearBtn) clearBtn.addEventListener('click', clearFilters);
+    if (searchBtn) searchBtn.addEventListener('click', applyFilters);
     if (addBtn) addBtn.addEventListener('click', () => openModal('add', null));
     
     // Filter inputs
@@ -385,7 +387,7 @@ function displayDevices() {
         tbody.innerHTML = `
             <tr>
                 <td colspan="7" class="empty-state">
-                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <i class="bi bi-search fa-3x mb-3"></i>
                     <h5>Không tìm thấy thiết bị nào</h5>
                     <p>Thử thay đổi điều kiện tìm kiếm</p>
                 </td>
@@ -402,7 +404,7 @@ function displayDevices() {
     console.log(`✅ Displayed ${filteredDevices.length} device items`);
 }
 
-// Create device table row
+// Create device table row - UPDATED with icon buttons
 function createDeviceRow(device, index) {
     const tr = document.createElement('tr');
     tr.style.animationDelay = `${index * 0.05}s`;
@@ -427,22 +429,22 @@ function createDeviceRow(device, index) {
         <td>
             <div class="action-buttons">
                 <button class="action-btn btn-view" type="button" title="Xem chi tiết">
-                    Xem
+                    <i class="bi bi-eye"></i>
                 </button>
                 <button class="action-btn btn-edit" type="button" title="Chỉnh sửa">
-                    Sửa
+                    <i class="bi bi-pencil"></i>
                 </button>
                 <button class="action-btn btn-maintenance" type="button" title="Bảo trì">
-                    Bảo trì
+                    <i class="bi bi-tools"></i>
                 </button>
                 <button class="action-btn btn-delete" type="button" title="Xóa">
-                    Xóa
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
         </td>
     `;
     
-    // Event listeners for buttons (giữ nguyên phần này)
+    // Event listeners for buttons
     const viewBtn = tr.querySelector('.btn-view');
     const editBtn = tr.querySelector('.btn-edit');
     const maintenanceBtn = tr.querySelector('.btn-maintenance');
@@ -753,23 +755,21 @@ function applyFilters() {
     console.log(`✅ Filters applied: ${filteredDevices.length}/${devices.length} items`);
 }
 
-function refreshData() {
-    console.log('🔄 Refreshing data...');
-    showLoading(true);
+function clearFilters() {
+    console.log('🧹 Clearing filters...');
     
-    // Clear filters
-    document.getElementById('deviceTypeFilter').value = '';
-    document.getElementById('statusFilter').value = '';
-    document.getElementById('buildingFilter').value = '';
-    document.getElementById('searchInput').value = '';
+    const filterIds = [
+        'deviceTypeFilter', 'statusFilter', 'buildingFilter', 'searchInput'
+    ];
     
-    // Reload data
-    setTimeout(() => {
-        filteredDevices = [...devices];
-        displayDevices();
-        showLoading(false);
-        showAlert('Dữ liệu đã được làm mới!', 'info');
-    }, 800);
+    filterIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.value = '';
+    });
+    
+    filteredDevices = [...devices];
+    displayDevices();
+    showAlert('Đã xóa tất cả bộ lọc!', 'info');
 }
 
 function showLoading(show) {
