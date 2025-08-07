@@ -265,6 +265,8 @@ function waitForElements() {
 // Initialize application
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 Feedback Management System Loading...');
+    console.log('👤 Current User: tuandung');
+    console.log('🕐 System Time: 2025-08-07 16:31:16');
     
     try {
         await waitForElements();
@@ -325,8 +327,8 @@ function loadSampleData() {
                 apartmentNumber: 'A-1501',
                 assigneeName: null,
                 assigneeId: null,
-                createdAt: '2025-08-05T08:30:00Z',
-                updatedAt: '2025-08-05T08:30:00Z',
+                createdAt: '2025-08-07T08:30:00Z',
+                updatedAt: '2025-08-07T08:30:00Z',
                 notes: '',
                 attachments: []
             },
@@ -341,8 +343,8 @@ function loadSampleData() {
                 apartmentNumber: 'B-1205',
                 assigneeName: 'Kỹ thuật viên - Hoàng Văn E',
                 assigneeId: 'tech1',
-                createdAt: '2025-08-04T14:00:00Z',
-                updatedAt: '2025-08-05T09:15:00Z',
+                createdAt: '2025-08-06T14:00:00Z',
+                updatedAt: '2025-08-07T09:15:00Z',
                 notes: 'Đã liên hệ với đội kỹ thuật điện. Đang kiểm tra hệ thống điện chính.',
                 attachments: []
             },
@@ -357,8 +359,8 @@ function loadSampleData() {
                 apartmentNumber: 'C-305',
                 assigneeName: 'Vệ sinh - Lê Thị H',
                 assigneeId: 'cleaner',
-                createdAt: '2025-08-04T16:15:00Z',
-                updatedAt: '2025-08-05T10:30:00Z',
+                createdAt: '2025-08-06T16:15:00Z',
+                updatedAt: '2025-08-07T10:30:00Z',
                 notes: 'Đã hoàn thành vệ sinh toàn bộ khu vực sảnh và xung quanh thang máy.',
                 attachments: []
             },
@@ -373,8 +375,8 @@ function loadSampleData() {
                 apartmentNumber: 'A-1203',
                 assigneeName: null,
                 assigneeId: null,
-                createdAt: '2025-08-03T09:20:00Z',
-                updatedAt: '2025-08-03T09:20:00Z',
+                createdAt: '2025-08-05T09:20:00Z',
+                updatedAt: '2025-08-05T09:20:00Z',
                 notes: '',
                 attachments: []
             },
@@ -389,8 +391,8 @@ function loadSampleData() {
                 apartmentNumber: 'B-808',
                 assigneeName: 'Bảo vệ - Trần Văn G',
                 assigneeId: 'security',
-                createdAt: '2025-08-02T11:45:00Z',
-                updatedAt: '2025-08-04T14:20:00Z',
+                createdAt: '2025-08-04T11:45:00Z',
+                updatedAt: '2025-08-06T14:20:00Z',
                 notes: 'Đã liên hệ với công ty bảo trì camera. Dự kiến sửa chữa trong tuần này.',
                 attachments: []
             }
@@ -436,7 +438,7 @@ function displayFeedbacks() {
     console.log(`✅ Displayed ${filteredFeedbacks.length} feedback items`);
 }
 
-// Create feedback element
+// Create feedback element with Icon Buttons
 function createFeedbackElement(feedback, index) {
     const div = document.createElement('div');
     div.className = `feedback-item ${getStatusClass(feedback.status)}`;
@@ -475,14 +477,14 @@ function createFeedbackElement(feedback, index) {
             </div>
             <div class="feedback-actions">
                 <button class="action-btn btn-view" type="button" title="Xem chi tiết">
-                    <i class="fas fa-eye me-1"></i>Xem
+                    <i class="fas fa-eye"></i>
                 </button>
                 <button class="action-btn btn-edit" type="button" title="Xử lý phản ánh">
-                    <i class="fas fa-edit me-1"></i>Xử lý
+                    <i class="fas fa-edit"></i>
                 </button>
                 ${!feedback.assigneeName ? 
                     `<button class="action-btn btn-assign" type="button" title="Phân công xử lý">
-                        <i class="fas fa-user-plus me-1"></i>Phân công
+                        <i class="fas fa-user-plus"></i>
                     </button>` : ''
                 }
             </div>
