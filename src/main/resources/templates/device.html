@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{main}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thiết bị</title>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/device.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Filter Section -->
+        <div class="filter-section mb-4">
+            <div class="d-flex justify-content-end align-items-center mb-4">
+                <button class="btn btn-primary" id="addDeviceBtn">
+                    <i class="fas fa-plus me-1"></i> Thêm thiết bị
+                </button>
+            </div>
+
+            <!-- Hàng đầu tiên: 4 filter cùng một hàng -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Loại thiết bị</label>
+                    <select class="form-select" id="deviceTypeFilter">
+                        <option value="">Tất cả</option>
+                        <option value="ELEVATOR">Thang máy</option>
+                        <option value="GENERATOR">Máy phát điện</option>
+                        <option value="PUMP">Máy bơm</option>
+                        <option value="AIR_CONDITIONER">Điều hòa</option>
+                        <option value="CAMERA">Camera</option>
+                        <option value="FIRE_ALARM">PCCC</option>
+                        <option value="OTHER">Khác</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="">Tất cả</option>
+                        <option value="WORKING">Hoạt động tốt</option>
+                        <option value="MAINTENANCE">Đang bảo trì</option>
+                        <option value="BROKEN">Hỏng hóc</option>
+                        <option value="INSPECTION">Chờ kiểm tra</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vị trí tòa</label>
+                    <select class="form-select" id="buildingFilter">
+                        <option value="">Tất cả tòa</option>
+                        <option value="A">Tòa A</option>
+                        <option value="B">Tòa B</option>
+                        <option value="C">Tòa C</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="searchInput" 
+                           placeholder="Tên thiết bị, Mã...">
+                </div>
+            </div>
+
+            <!-- Hàng thứ hai: 2 button -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="filter-buttons d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-secondary" id="clearFiltersBtn">
+                            <i class="fas fa-times me-1"></i> Xóa bộ lọc
+                        </button>
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search me-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device List Section -->
+        <div class="device-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Danh sách thiết bị</h4>
+            </div>
+
+            <!-- Device Table -->
+            <div class="table-responsive">
+                <table class="table device-table">
+                    <thead>
+                        <tr>
+                            <th width="20%">Thiết bị</th>
+                            <th width="15%">Vị trí</th>
+                            <th width="12%">Trạng thái</th>
+                            <th width="12%">Bảo trì cuối</th>
+                            <th width="12%">Bảo trì tiếp</th>
+                            <th width="10%">Ưu tiên</th>
+                            <th width="19%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deviceTableBody">
+                        <!-- Device rows will be loaded here -->
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0">Đang tải dữ liệu...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Scripts -->
+    <div layout:fragment="scripts">
+        <script th:src="@{/js/device.js}"></script>
+    </div>
+</body>
+
+</html>
