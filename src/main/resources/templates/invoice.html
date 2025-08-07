@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{main}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý hóa đơn & phí dịch vụ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/invoice.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Service Fee Management Section -->
+        <div class="service-fee-section mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Bảng phí dịch vụ</h3>
+                <button class="btn btn-primary" id="addServiceFeeBtn">
+                    Thêm phí dịch vụ
+                </button>
+            </div>
+
+            <div class="service-fee-table-container">
+                <table class="table service-fee-table">
+                    <thead>
+                        <tr>
+                            <th>LOẠI PHÍ</th>
+                            <th>ĐƠN GIÁ</th>
+                            <th>ĐƠN VỊ</th>
+                            <th>THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="serviceFeeTableBody">
+                        <!-- Service fees will be loaded here -->
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0">Đang tải dữ liệu...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Invoice Management Section -->
+        <div class="invoice-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Quản lý hóa đơn</h4>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" id="exportInvoicesBtn">
+                        Xuất Excel
+                    </button>
+                    <button class="btn btn-primary" id="createInvoiceBtn">
+                        Tạo hóa đơn
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-section mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Tìm kiếm tổng hợp</label>
+                        <input type="text" class="form-control" id="searchInput"
+                            placeholder="Tìm theo căn hộ, tên cư dân...">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="PAID">Đã thanh toán</option>
+                            <option value="PENDING">Chưa thanh toán</option>
+                            <option value="OVERDUE">Quá hạn</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Tòa nhà</label>
+                        <select class="form-select" id="buildingFilter">
+                            <option value="">Tất cả tòa nhà</option>
+                            <option value="A">Tòa A</option>
+                            <option value="B">Tòa B</option>
+                            <option value="C">Tòa C</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Loại hóa đơn</label>
+                        <select class="form-select" id="typeFilter">
+                            <option value="">Tất cả loại</option>
+                            <option value="MONTHLY">Hóa đơn tháng</option>
+                            <option value="SERVICE">Phí dịch vụ</option>
+                            <option value="PARKING">Phí đỗ xe</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex justify-content-end align-items-center gap-2">
+                            <button class="btn btn-outline-secondary btn-sm filter-action-btn" id="clearFiltersBtn">
+                                Xóa bộ lọc
+                            </button>
+                            <button class="btn btn-primary btn-sm filter-action-btn" id="applyFiltersBtn">
+                                Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Table -->
+            <div class="invoice-table-container">
+                <table class="table invoice-table">
+                    <thead>
+                        <tr>
+                            <th>HÓA ĐƠN</th>
+                            <th>CĂN HỘ</th>
+                            <th>SỐ TIỀN</th>
+                            <th>HẠN THANH TOÁN</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoiceTableBody">
+                        <!-- Invoices will be loaded here -->
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0">Đang tải dữ liệu...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Section -->
+    <div layout:fragment="scripts">
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- SheetJS library for Excel export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" 
+                integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNH06+DuD2eOlrNzVOx0TAUJ1/OjWqfMI9xYvGEHj7g0B4kw7rw==" 
+                crossorigin="anonymous" 
+                referrerpolicy="no-referrer"></script>
+        
+        <!-- Custom Invoice Management Script -->
+        <script th:src="@{/js/invoice.js}"></script>
+        
+        <!-- Additional script to ensure library loading -->
+        <script>
+            // Check if SheetJS library is loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof XLSX === 'undefined') {
+                    console.error('⚠️ SheetJS library failed to load. Excel export will not work.');
+                    console.log('🔧 Attempting to load SheetJS from CDN...');
+                    
+                    // Fallback loading
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';
+                    script.onload = function() {
+                        console.log('✅ SheetJS library loaded successfully via fallback!');
+                    };
+                    script.onerror = function() {
+                        console.error('❌ Failed to load SheetJS library. Excel export will be disabled.');
+                        // Disable export button if library fails to load
+                        const exportBtn = document.getElementById('exportInvoicesBtn');
+                        if (exportBtn) {
+                            exportBtn.disabled = true;
+                            exportBtn.title = 'Excel library không khả dụng';
+                            exportBtn.textContent = 'Xuất Excel (Lỗi)';
+                        }
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    console.log('✅ SheetJS library loaded successfully!');
+                }
+            });
+        </script>
+    </div>
+</body>
+
+</html>
