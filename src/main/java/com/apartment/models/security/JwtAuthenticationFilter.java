@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "/apartment",
         "/resident",
         "/feedback",
+        "/invoice",
         "/api/auth",
         "/swagger-ui",
         "/v3/api-docs",
