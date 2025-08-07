@@ -1,4 +1,4 @@
-/* Maintenance Management System - Fixed Layout */
+/* Maintenance Management System - Fixed Layout with Icon Buttons */
 
 body {
     background-color: #f8f9fa;
@@ -366,7 +366,7 @@ body {
     color: #721c24;
 }
 
-/* Action Buttons - Text Based */
+/* Action Buttons - Icon Based */
 .action-buttons {
     display: flex;
     gap: 6px;
@@ -375,22 +375,23 @@ body {
 }
 
 .action-btn {
-    padding: 6px 12px;
+    width: 32px;
+    height: 32px;
     border: 1px solid;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     color: white;
-    text-decoration: none;
-    min-width: 60px;
-    text-align: center;
+    font-size: 14px;
+    padding: 0;
 }
 
 .action-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     color: white;
 }
 
@@ -512,6 +513,11 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Tooltips for Action Buttons */
+.action-btn[title] {
+    position: relative;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
     .maintenance-header {
@@ -534,9 +540,9 @@ body {
     }
 
     .action-btn {
-        padding: 4px 8px;
-        font-size: 10px;
-        min-width: 50px;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
     }
 }
 
@@ -560,12 +566,14 @@ body {
     }
 
     .action-buttons {
-        flex-direction: column;
-        gap: 2px;
+        justify-content: center;
+        gap: 3px;
     }
 
     .action-btn {
-        width: 100%;
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
     }
 
     .quick-task-item {
@@ -606,6 +614,17 @@ body {
     }
 
     .quick-task-time {
+        font-size: 10px;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .action-btn {
+        width: 24px;
+        height: 24px;
         font-size: 10px;
     }
 }

@@ -1,11 +1,11 @@
-// Maintenance Management System - Complete Implementation
+// Maintenance Management System - Complete Implementation with Bootstrap Icons
 const API_BASE_URL = 'http://localhost:8080/api/admin/maintenances';
 
 // Global variables
 let maintenances = [];
 let filteredMaintenances = [];
 let currentMaintenance = null;
-let currentDate = new Date(2025, 7, 7); // August 7, 2025
+let currentDate = new Date(2025, 7, 7); // August 7, 2025 (month is 0-indexed)
 let selectedDate = null;
 
 // Data mappings
@@ -212,7 +212,6 @@ function createMaintenanceModal() {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    console.log('✅ Modal created successfully');
 }
 
 // Wait for DOM elements
@@ -225,10 +224,8 @@ function waitForElements() {
             const bootstrap = typeof window.bootstrap !== 'undefined';
             
             if (calendarDays && tableBody && quickTasks && bootstrap) {
-                console.log('✅ All required elements found');
                 resolve();
             } else {
-                console.log('⏳ Waiting for elements...');
                 setTimeout(checkElements, 100);
             }
         };
@@ -239,13 +236,18 @@ function waitForElements() {
 // Initialize application
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 Maintenance Management System Loading...');
+    console.log(`👤 Current User: trang204`);
+    console.log(`📅 Current Time: ${new Date().toISOString()}`);
     
     try {
         await waitForElements();
         createMaintenanceModal();
         setupEventListeners();
+        
+        // Load sample data directly (no API call)
         loadSampleData();
         initCalendar();
+        
         console.log('✅ System initialized successfully');
     } catch (error) {
         console.error('❌ Initialization failed:', error);
@@ -255,8 +257,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Setup event listeners
 function setupEventListeners() {
-    console.log('🔧 Setting up event listeners...');
-    
     // Add maintenance button
     const addBtn = document.getElementById('addMaintenanceBtn');
     if (addBtn) addBtn.addEventListener('click', () => openMaintenanceModal('add'));
@@ -281,12 +281,25 @@ function setupEventListeners() {
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) statusFilter.addEventListener('change', applyStatusFilter);
     
-    console.log('✅ Event listeners setup completed');
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            e.preventDefault();
+            openMaintenanceModal('add');
+        }
+        
+        if (e.key === 'Escape') {
+            selectedDate = null;
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+            filteredMaintenances = [...maintenances];
+            displayMaintenanceTable();
+        }
+    });
 }
 
 // Load sample data
 function loadSampleData() {
-    console.log('📡 Loading sample maintenance data...');
+    console.log('📡 Loading maintenance data...');
     showLoading(true);
     
     setTimeout(() => {
@@ -407,7 +420,6 @@ function loadSampleData() {
         updateCalendarWithTasks();
         showLoading(false);
         
-        console.log(`✅ Loaded ${maintenances.length} sample maintenance tasks`);
         showAlert('Tải dữ liệu thành công!', 'success');
     }, 1500);
 }
@@ -465,8 +477,6 @@ function initCalendar() {
         
         calendarDays.appendChild(dayElement);
     }
-    
-    console.log('✅ Calendar initialized');
 }
 
 // Update calendar with task indicators
@@ -492,16 +502,13 @@ function updateCalendarWithTasks() {
             dayElement.classList.remove('has-task');
         }
     });
-    
-    console.log('✅ Calendar updated with task indicators');
 }
 
-// Display maintenance table with TEXT BUTTONS
+// Display maintenance table with ICON BUTTONS
 function displayMaintenanceTable() {
     const tableBody = document.getElementById('maintenanceTableBody');
     if (!tableBody) return;
     
-    console.log(`🎨 Displaying ${filteredMaintenances.length} maintenance tasks...`);
     tableBody.innerHTML = '';
     
     if (filteredMaintenances.length === 0) {
@@ -522,11 +529,9 @@ function displayMaintenanceTable() {
         const row = createMaintenanceRow(maintenance, index);
         tableBody.appendChild(row);
     });
-    
-    console.log(`✅ Displayed ${filteredMaintenances.length} maintenance items`);
 }
 
-// Create maintenance table row with TEXT BUTTONS
+// Create maintenance table row with ICON BUTTONS
 function createMaintenanceRow(maintenance, index) {
     const row = document.createElement('tr');
     row.style.animationDelay = `${index * 0.1}s`;
@@ -547,18 +552,18 @@ function createMaintenanceRow(maintenance, index) {
         <td>
             <div class="action-buttons">
                 <button class="action-btn btn-view" title="Xem chi tiết" data-id="${maintenance.id}">
-                    Xem
+                    <i class="bi bi-eye"></i>
                 </button>
                 <button class="action-btn btn-edit" title="Chỉnh sửa" data-id="${maintenance.id}">
-                    Sửa
+                    <i class="bi bi-pencil"></i>
                 </button>
                 ${maintenance.status !== 'COMPLETED' ? 
                     `<button class="action-btn btn-complete" title="Hoàn thành" data-id="${maintenance.id}">
-                        Hoàn thành
+                        <i class="bi bi-check-lg"></i>
                     </button>` : ''
                 }
                 <button class="action-btn btn-delete" title="Xóa" data-id="${maintenance.id}">
-                    Xóa
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
         </td>
@@ -598,8 +603,6 @@ function displayQuickTasks() {
     const quickTasksList = document.getElementById('quickTasksList');
     if (!quickTasksList) return;
     
-    console.log('🎨 Displaying quick tasks...');
-    
     const today = new Date(2025, 7, 7); // August 7, 2025
     const tomorrow = new Date(2025, 7, 8);
     
@@ -624,8 +627,6 @@ function displayQuickTasks() {
         const taskElement = createQuickTaskElement(task, today, tomorrow, index);
         quickTasksList.appendChild(taskElement);
     });
-    
-    console.log(`✅ Displayed ${upcomingTasks.length} quick tasks`);
 }
 
 // Create quick task element
@@ -666,8 +667,6 @@ function createQuickTaskElement(task, today, tomorrow, index) {
 
 // Open maintenance modal
 function openMaintenanceModal(mode, maintenanceId = null) {
-    console.log(`🎭 Opening maintenance modal: ${mode} for ID: ${maintenanceId}`);
-    
     if (!document.getElementById('maintenanceModal')) {
         createMaintenanceModal();
     }
@@ -726,10 +725,7 @@ function openMaintenanceModal(mode, maintenanceId = null) {
             const modal = new bootstrap.Modal(document.getElementById('maintenanceModal'));
             modal.show();
             
-            console.log('✅ Modal opened successfully');
-            
         } catch (error) {
-            console.error('❌ Modal error:', error);
             showAlert('Lỗi khi mở modal: ' + error.message, 'danger');
         }
     }, 100);
@@ -794,8 +790,6 @@ function populateForm(maintenance) {
 }
 
 function saveMaintenance(mode) {
-    console.log('💾 Saving maintenance...');
-    
     const formData = {
         title: document.getElementById('maintenanceTitle')?.value?.trim(),
         deviceType: document.getElementById('deviceType')?.value,
@@ -826,7 +820,6 @@ function saveMaintenance(mode) {
         return;
     }
     
-    console.log('📋 Form data:', formData);
     showLoading(true);
     
     setTimeout(() => {
@@ -865,10 +858,7 @@ function saveMaintenance(mode) {
             const modalInstance = bootstrap.Modal.getInstance(modalElement);
             if (modalInstance) modalInstance.hide();
             
-            console.log('✅ Save completed successfully');
-            
         } catch (error) {
-            console.error('❌ Save error:', error);
             showAlert('Lỗi khi lưu: ' + error.message, 'danger');
         } finally {
             showLoading(false);
@@ -877,8 +867,6 @@ function saveMaintenance(mode) {
 }
 
 function completeMaintenance(maintenanceId) {
-    console.log('✅ Completing maintenance:', maintenanceId);
-    
     const maintenance = maintenances.find(m => m.id === maintenanceId);
     if (!maintenance) {
         showAlert('Không tìm thấy dữ liệu bảo trì!', 'danger');
@@ -910,8 +898,6 @@ function completeMaintenance(maintenanceId) {
 }
 
 function deleteMaintenance(maintenanceId) {
-    console.log('🗑️ Deleting maintenance:', maintenanceId);
-    
     const maintenance = maintenances.find(m => m.id === maintenanceId);
     if (!maintenance) {
         showAlert('Không tìm thấy dữ liệu bảo trì!', 'danger');
@@ -941,8 +927,6 @@ function deleteMaintenance(maintenanceId) {
 function applyStatusFilter() {
     const statusFilter = document.getElementById('statusFilter')?.value || '';
     
-    console.log('🔍 Applying status filter:', statusFilter);
-    
     if (statusFilter === '') {
         filteredMaintenances = [...maintenances];
     } else {
@@ -952,7 +936,6 @@ function applyStatusFilter() {
     }
     
     displayMaintenanceTable();
-    console.log(`✅ Status filter applied: ${filteredMaintenances.length}/${maintenances.length} items`);
 }
 
 function filterBySelectedDate() {
@@ -966,7 +949,6 @@ function filterBySelectedDate() {
     }
     
     displayMaintenanceTable();
-    console.log(`✅ Date filter applied: ${filteredMaintenances.length}/${maintenances.length} items`);
 }
 
 // Helper functions
@@ -1014,123 +996,7 @@ function showLoading(show) {
     }
 }
 
-// API Integration Functions (ready for backend connection)
-async function fetchMaintenances() {
-    try {
-        const response = await fetch(`${API_BASE_URL}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAuthToken()
-            }
-        });
-        
-        if (!response.ok) throw new Error('Failed to fetch maintenances');
-        
-        const data = await response.json();
-        maintenances = data;
-        filteredMaintenances = [...maintenances];
-        
-        return data;
-    } catch (error) {
-        console.error('❌ Error fetching maintenances:', error);
-        showAlert('Lỗi khi tải dữ liệu bảo trì!', 'danger');
-        return [];
-    }
-}
-
-async function createMaintenanceAPI(maintenanceData) {
-    try {
-        const response = await fetch(`${API_BASE_URL}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAuthToken()
-            },
-            body: JSON.stringify(maintenanceData)
-        });
-        
-        if (!response.ok) throw new Error('Failed to create maintenance');
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('❌ Error creating maintenance:', error);
-        showAlert('Lỗi khi tạo lịch bảo trì!', 'danger');
-        throw error;
-    }
-}
-
-async function updateMaintenanceAPI(id, maintenanceData) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAuthToken()
-            },
-            body: JSON.stringify(maintenanceData)
-        });
-        
-        if (!response.ok) throw new Error('Failed to update maintenance');
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('❌ Error updating maintenance:', error);
-        showAlert('Lỗi khi cập nhật bảo trì!', 'danger');
-        throw error;
-    }
-}
-
-async function completeMaintenanceAPI(id) {
-    try {
-        const response = await fetch(`/api/technician/maintenances/${id}/complete`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAuthToken()
-            }
-        });
-        
-        if (!response.ok) throw new Error('Failed to complete maintenance');
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('❌ Error completing maintenance:', error);
-        showAlert('Lỗi khi hoàn thành bảo trì!', 'danger');
-        throw error;
-    }
-}
-
-async function assignMaintenanceAPI(id, technicianId) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/${id}/assign`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getAuthToken()
-            },
-            body: JSON.stringify({ technicianId })
-        });
-        
-        if (!response.ok) throw new Error('Failed to assign maintenance');
-        
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('❌ Error assigning maintenance:', error);
-        showAlert('Lỗi khi phân công bảo trì!', 'danger');
-        throw error;
-    }
-}
-
-function getAuthToken() {
-    return localStorage.getItem('authToken') || sessionStorage.getItem('authToken') || '';
-}
-
-// Export system for debugging and external access
+// Export system for debugging
 window.MaintenanceSystem = {
     maintenances,
     filteredMaintenances,
@@ -1140,13 +1006,13 @@ window.MaintenanceSystem = {
     openMaintenanceModal,
     showAlert,
     loadSampleData,
-    fetchMaintenances,
-    createMaintenanceAPI,
-    updateMaintenanceAPI,
-    completeMaintenanceAPI,
-    assignMaintenanceAPI
+    displayMaintenanceTable,
+    displayQuickTasks,
+    updateCalendarWithTasks,
+    initCalendar
 };
 
 console.log('📦 Maintenance Management System loaded successfully!');
-console.log('🎯 Ready for integration with backend APIs');
-console.log('🔧 Use window.MaintenanceSystem for debugging');
+console.log('🎯 Features: Bootstrap 5.3.0, Bootstrap Icons, Calendar, CRUD operations');
+console.log('👤 Current User: trang204');
+console.log(`📅 System Time: ${new Date().toISOString()}`);
