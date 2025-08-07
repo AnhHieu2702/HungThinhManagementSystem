@@ -29,6 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "/main",
         "/apartment",
         "/resident",
+        "/device",
+        "/maintenance",
         "/api/auth",
         "/swagger-ui",
         "/v3/api-docs",
