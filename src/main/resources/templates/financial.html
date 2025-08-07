@@ -17,16 +17,6 @@
 
 <body>
     <div layout:fragment="content">
-        <!-- Header Section -->
-        <div class="financial-header mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">BÁO CÁO TÀI CHÍNH - THEO ĐỐI THU CHI</h3>
-                <button class="btn btn-primary" id="addTransactionBtn">
-                    <i class="bi bi-plus-lg me-1"></i> Thêm giao dịch
-                </button>
-            </div>
-        </div>
-
         <!-- Summary Cards Section -->
         <div class="row mb-4" id="summaryCards">
             <div class="col-md-4 col-sm-6 mb-3">
@@ -64,10 +54,13 @@
             </div>
         </div>
 
-        <!-- Filter Section -->
+        <!-- Filter Section WITH title and Add Transaction Button -->
         <div class="filter-section mb-4">
-            <div class="filter-header mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Tạo & xuất báo cáo tài chính</h5>
+                <button class="btn btn-primary" id="addTransactionBtn">
+                    <i class="bi bi-plus-lg me-1"></i> Thêm giao dịch
+                </button>
             </div>
 
             <!-- Hàng đầu tiên: 4 filter cùng một hàng -->
@@ -99,7 +92,7 @@
                 </div>
             </div>
 
-            <!-- Hàng thứ hai: Phạm vi và buttons -->
+            <!-- Hàng thứ hai: Phạm vi, Tìm kiếm và buttons -->
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Phạm vi</label>
@@ -137,7 +130,7 @@
                 </button>
             </div>
 
-            <!-- Financial Table - UPDATED: Adjusted column widths for 4 actions instead of 5 -->
+            <!-- Financial Table -->
             <div class="table-responsive">
                 <table class="table financial-table">
                     <thead>
