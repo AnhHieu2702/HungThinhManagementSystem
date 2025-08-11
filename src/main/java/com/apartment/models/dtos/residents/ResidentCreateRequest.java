@@ -15,6 +15,7 @@ public class ResidentCreateRequest {
 
     private String email;
 
+    @NotBlank(message = "Vui lòng nhập số điện thoại")
     private String phone;
 
     @NotBlank(message = "Vui lòng nhập quan hệ với chủ hộ")
