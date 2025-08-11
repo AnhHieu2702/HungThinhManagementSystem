@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.UUID;
 
 @Component
 public class JwtTokenProvider {
@@ -31,11 +32,17 @@ public class JwtTokenProvider {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof UserPrincipal) {
+            claims.put("uid", ((UserPrincipal) userDetails).getId().toString());
+        }
         return createToken(claims, userDetails.getUsername(), expiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof UserPrincipal) {
+            claims.put("uid", ((UserPrincipal) userDetails).getId().toString());
+        }
         return createToken(claims, userDetails.getUsername(), refreshExpiration);
     }
 
@@ -56,6 +63,11 @@ public class JwtTokenProvider {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public UUID extractUserId(String token) {
+        String idStr = extractClaim(token, claims -> claims.get("uid", String.class));
+        return idStr == null ? null : UUID.fromString(idStr);
     }
 
     public Date extractExpiration(String token) {
