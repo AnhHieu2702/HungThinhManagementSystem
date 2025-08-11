@@ -1,5 +1,6 @@
 package com.apartment.services.implement;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.apartment.models.dtos.residents.ResidentCreateRequest;
 import com.apartment.models.dtos.residents.ResidentGetsResponse;
+import com.apartment.models.dtos.residents.ResidentUpdateRequest;
 import com.apartment.models.entities.bases.Apartment;
 import com.apartment.models.entities.bases.Resident;
 import com.apartment.models.entities.enums.RelationshipType;
@@ -54,7 +56,7 @@ public class ResidentService implements IResidentService {
     @Override
     public ApiResult<List<ResidentGetsResponse>> getResidentsByApartmentId(UUID apartmentId) {
         List<Resident> residents = residentRepository.findByApartmentId(apartmentId);
-
+    
         List<ResidentGetsResponse> responseList = residents.stream()
                 .map(resident -> ResidentGetsResponse.builder()
                         .id(resident.getId())
@@ -63,9 +65,13 @@ public class ResidentService implements IResidentService {
                         .email(resident.getEmail())
                         .phone(resident.getPhone())
                         .relation(resident.getRelationship().getDisplayName())
+                        .lastModifiedTime(resident.getLastModifiedTime())
                         .build())
+                .sorted(Comparator
+                        .comparing((ResidentGetsResponse r) -> !RelationshipType.OWNER.getDisplayName().equals(r.getRelation())) // Chủ hộ đầu tiên (false < true)
+                        .thenComparing(ResidentGetsResponse::getLastModifiedTime, Comparator.nullsLast(Comparator.reverseOrder()))) // Thời gian mới nhất đầu tiên
                 .toList();
-
+    
         return ApiResult.success(responseList, "Lấy danh sách cư dân thành công");
     }
 
@@ -88,7 +94,7 @@ public class ResidentService implements IResidentService {
     }
 
     @Override
-    public ApiResult<String> updateResident(UUID residentId, ResidentCreateRequest apiRequest) {
+    public ApiResult<String> updateResident(UUID residentId, ResidentUpdateRequest apiRequest) {
         Resident resident = residentRepository.findById(residentId)
                 .orElseThrow(() -> new IllegalArgumentException("Cư dân không tồn tại"));
 
@@ -96,10 +102,20 @@ public class ResidentService implements IResidentService {
         resident.setPhone(apiRequest.getPhone());
         resident.setEmail(apiRequest.getEmail());
         resident.setDateOfBirth(apiRequest.getDateOfBirth());
-        resident.setRelationship(RelationshipType.valueOf(apiRequest.getRelation()));
 
         residentRepository.save(resident);
 
         return ApiResult.success(null, "Cập nhật thông tin cư dân thành công");
+    }
+
+
+    @Override
+    public ApiResult<String> deleteResident(UUID residentId) {
+        Resident resident = residentRepository.findById(residentId)
+                .orElseThrow(() -> new IllegalArgumentException("Cư dân không tồn tại"));
+
+        residentRepository.delete(resident);
+
+        return ApiResult.success(null, "Xoá cư dân thành công");
     }
 }

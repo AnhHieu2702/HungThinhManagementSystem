@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apartment.models.dtos.residents.ResidentCreateRequest;
 import com.apartment.models.dtos.residents.ResidentGetsResponse;
+import com.apartment.models.dtos.residents.ResidentUpdateRequest;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.IResidentService;
 
@@ -48,8 +50,13 @@ public class ResidentController extends ApiBaseController {
     }
 
     @PutMapping("admin-resident/apartments/residents/{residentId}")
-    public ResponseEntity<ApiResult<String>> updateResident(@PathVariable UUID residentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
+    public ResponseEntity<ApiResult<String>> updateResident(@PathVariable UUID residentId, @Valid @RequestBody ResidentUpdateRequest apiRequest) {
         return executeApiResult(() -> residentService.updateResident(residentId, apiRequest));
+    }
+
+    @DeleteMapping("admin-resident/apartments/residents/{residentId}")
+    public ResponseEntity<ApiResult<String>> deleteResident(@PathVariable UUID residentId) {
+        return executeApiResult(() -> residentService.deleteResident(residentId));
     }
 }
  

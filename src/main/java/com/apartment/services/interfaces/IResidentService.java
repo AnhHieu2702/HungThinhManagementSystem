@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.apartment.models.dtos.residents.ResidentCreateRequest;
 import com.apartment.models.dtos.residents.ResidentGetsResponse;
+import com.apartment.models.dtos.residents.ResidentUpdateRequest;
 import com.apartment.models.global.ApiResult;
 
 public interface IResidentService {
@@ -15,5 +16,7 @@ public interface IResidentService {
 
     ApiResult<UUID> createResident(UUID apartmentId, ResidentCreateRequest apiRequest);
 
-    ApiResult<String> updateResident(UUID residentId, ResidentCreateRequest apiRequest);
+    ApiResult<String> updateResident(UUID residentId, ResidentUpdateRequest apiRequest);
+
+    ApiResult<String> deleteResident(UUID residentId);
 }
