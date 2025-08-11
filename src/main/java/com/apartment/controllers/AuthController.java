@@ -1,6 +1,9 @@
 package com.apartment.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,8 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import com.apartment.models.dtos.auth.GetResponse;
 import com.apartment.models.dtos.auth.LoginRequest;
 import com.apartment.models.dtos.auth.TokenResponse;
+import com.apartment.models.dtos.residents.ResidentGetsResponse;
 import com.apartment.models.global.ApiResult;
 import com.apartment.services.interfaces.ITokenService;
 
@@ -46,5 +51,15 @@ public class AuthController extends ApiBaseController {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResult.fail("Tên đăng nhập hoặc mật khẩu không chính xác"));
         }
+    }
+
+    @GetMapping("/user-info")
+    public ResponseEntity<ApiResult<GetResponse>> getUserInfo(Authentication authentication) {
+        return executeApiResult(() -> tokenService.getUserInfo(authentication));
+    }
+
+    @GetMapping("/residents")
+    public ResponseEntity<ApiResult<List<ResidentGetsResponse>>> getResidents(Authentication authentication) {
+        return executeApiResult(() -> tokenService.getResidents(authentication));  
     }
 } 
