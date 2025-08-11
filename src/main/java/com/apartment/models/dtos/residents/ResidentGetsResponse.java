@@ -26,5 +26,7 @@ public class ResidentGetsResponse {
 
     private String relation;
 
+    private LocalDateTime lastModifiedTime;
+    
     private LocalDateTime createTime;
 }
