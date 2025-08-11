@@ -25,12 +25,10 @@ public class ResidentService implements IResidentService {
     private final ApartmentRepository apartmentRepository;
     private final ResidentRepository residentRepository;
 
-
     public ResidentService(ApartmentRepository apartmentRepository, ResidentRepository residentRepository) {
         this.apartmentRepository = apartmentRepository;
         this.residentRepository = residentRepository;
     }
-
 
     @Override
     public ApiResult<List<ResidentGetsResponse>> getResidentsByOwner() {
@@ -108,14 +106,18 @@ public class ResidentService implements IResidentService {
         return ApiResult.success(null, "Cập nhật thông tin cư dân thành công");
     }
 
-
     @Override
     public ApiResult<String> deleteResident(UUID residentId) {
         Resident resident = residentRepository.findById(residentId)
                 .orElseThrow(() -> new IllegalArgumentException("Cư dân không tồn tại"));
 
+        // Kiểm tra nếu là Chủ hộ thì không được phép xóa
+        if (resident.getRelationship() == RelationshipType.OWNER) {
+            return ApiResult.fail("Không thể xóa Chủ hộ.");
+        }
+
         residentRepository.delete(resident);
 
-        return ApiResult.success(null, "Xoá cư dân thành công");
+        return ApiResult.success(null, "Xóa cư dân thành công");
     }
 }
