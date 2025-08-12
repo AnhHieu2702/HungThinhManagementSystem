@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{main}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo tài chính</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link th:href="@{/css/financial.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Summary Cards Section -->
+        <div class="row mb-4" id="summaryCards">
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="summary-card income-card">
+                    <div class="card-icon">
+                        <i class="bi bi-arrow-up"></i>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-title">Tổng thu</p>
+                        <h4 class="card-amount" id="totalIncome">25.500.000 ₫</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 mb-3">
+                <div class="summary-card expense-card">
+                    <div class="card-icon">
+                        <i class="bi bi-arrow-down"></i>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-title">Tổng chi</p>
+                        <h4 class="card-amount" id="totalExpense">42.200.000 ₫</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12 mb-3">
+                <div class="summary-card balance-card">
+                    <div class="card-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div class="card-content">
+                        <p class="card-title">Số dư</p>
+                        <h4 class="card-amount" id="totalBalance">-16.700.000 ₫</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section WITH title and Add Transaction Button -->
+        <div class="filter-section mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Tạo & xuất báo cáo tài chính</h5>
+                <button class="btn btn-primary" id="addTransactionBtn">
+                    <i class="bi bi-plus-lg me-1"></i> Thêm giao dịch
+                </button>
+            </div>
+
+            <!-- Hàng đầu tiên: 4 filter cùng một hàng -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Loại báo cáo</label>
+                    <select class="form-select" id="reportTypeFilter">
+                        <option value="INCOME_EXPENSE">Tổng hợp thu chi</option>
+                        <option value="INCOME">Thu nhập</option>
+                        <option value="EXPENSE">Chi phí</option>
+                        <option value="BALANCE">Số dư</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Kỳ báo cáo</label>
+                    <select class="form-select" id="periodFilter">
+                        <option value="MONTHLY">Tháng 8/2025</option>
+                        <option value="QUARTERLY">Quý 3/2025</option>
+                        <option value="YEARLY">Năm 2025</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" class="form-control" id="fromDate" value="2025-08-01">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" class="form-control" id="toDate" value="2025-08-07">
+                </div>
+            </div>
+
+            <!-- Hàng thứ hai: Phạm vi, Tìm kiếm và buttons -->
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Phạm vi</label>
+                    <select class="form-select" id="scopeFilter">
+                        <option value="ALL">Toàn bộ chung cư</option>
+                        <option value="BUILDING_A">Tòa A</option>
+                        <option value="BUILDING_B">Tòa B</option>
+                        <option value="BUILDING_C">Tòa C</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="searchInput" 
+                           placeholder="Tên giao dịch, Mã, Mô tả...">
+                </div>
+                <div class="col-md-3">
+                    <div class="filter-buttons d-flex justify-content-end gap-2" style="margin-top: 32px;">
+                        <button class="btn btn-outline-secondary" id="clearFiltersBtn">
+                            <i class="bi bi-x-lg me-1"></i> Xóa bộ lọc
+                        </button>
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="bi bi-search me-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Report Section -->
+        <div class="financial-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Giao dịch thu chi gần đây</h4>
+                <button class="btn btn-outline-primary btn-sm" id="printReportBtn">
+                    <i class="bi bi-printer me-1"></i> In báo cáo
+                </button>
+            </div>
+
+            <!-- Financial Table -->
+            <div class="table-responsive">
+                <table class="table financial-table">
+                    <thead>
+                        <tr>
+                            <th width="24%">Giao dịch</th>
+                            <th width="20%">Thông tin</th>
+                            <th width="12%">Số tiền</th>
+                            <th width="10%">Loại</th>
+                            <th width="10%">Trạng thái</th>
+                            <th width="24%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financialTableBody">
+                        <!-- Financial rows will be loaded here -->
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0">Đang tải dữ liệu...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <div layout:fragment="scripts">
+        <script th:src="@{/js/financial.js}"></script>
+    </div>
+</body>
+
+</html>

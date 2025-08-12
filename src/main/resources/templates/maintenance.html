@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{main}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo trì</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link th:href="@{/css/maintenance.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Header Section -->
+        <div class="maintenance-header d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">BẢO TRÌ</h2>
+            <button class="btn btn-primary" id="addMaintenanceBtn">
+                Thêm lịch
+            </button>
+        </div>
+
+        <!-- Top Row: Calendar + Quick Tasks -->
+        <div class="row mb-4">
+            <!-- Calendar Section -->
+            <div class="col-lg-6">
+                <div class="calendar-section">
+                    <div class="calendar-header d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Lịch bảo trì định kỳ - Tháng <span id="currentMonth">8</span>/<span id="currentYear">2025</span></h5>
+                        <div class="calendar-nav d-flex">
+                            <button class="btn btn-sm btn-outline-secondary me-1" id="prevMonth">‹</button>
+                            <button class="btn btn-sm btn-outline-secondary" id="nextMonth">›</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-container">
+                        <div class="calendar-table">
+                            <div class="calendar-weekdays">
+                                <div class="weekday">T2</div>
+                                <div class="weekday">T3</div>
+                                <div class="weekday">T4</div>
+                                <div class="weekday">T5</div>
+                                <div class="weekday">T6</div>
+                                <div class="weekday">T7</div>
+                                <div class="weekday">CN</div>
+                            </div>
+                            <div class="calendar-days" id="calendarDays">
+                                <!-- Calendar days will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tasks Section -->
+            <div class="col-lg-6">
+                <div class="quick-tasks-section">
+                    <div class="quick-tasks-header d-flex align-items-center mb-3">
+                        <h6 class="mb-0">Nhiệm vụ sắp tới</h6>
+                    </div>
+                    <div class="quick-tasks-list" id="quickTasksList">
+                        <!-- Quick tasks will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Device List Full Width -->
+        <div class="row">
+            <div class="col-12">
+                <div class="device-list-section">
+                    <div class="device-list-header d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Danh sách thiết bị</h5>
+                        <div class="filter-controls">
+                            <select class="form-select form-select-sm" id="statusFilter" style="width: 200px;">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="PENDING">Đang chờ</option>
+                                <option value="IN_PROGRESS">Đang thực hiện</option>
+                                <option value="COMPLETED">Hoàn thành</option>
+                                <option value="OVERDUE">Quá hạn</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table maintenance-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;">Nhiệm vụ</th>
+                                    <th style="width: 10%;">Ngày thực hiện</th>
+                                    <th style="width: 12%;">Thời gian</th>
+                                    <th style="width: 15%;">Người thực hiện</th>
+                                    <th style="width: 10%;">Ưu tiên</th>
+                                    <th style="width: 10%;">Trạng thái</th>
+                                    <th style="width: 23%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maintenanceTableBody">
+                                <!-- Table rows will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Scripts -->
+    <div layout:fragment="scripts">
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/maintenance.js}"></script>
+    </div>
+</body>
+
+</html>

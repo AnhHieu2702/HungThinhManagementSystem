@@ -29,18 +29,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ⭐ Thêm CORS
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/login", "/home", "/main", "/apartment", "/resident", "/feedback", "/invoice" , "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ⭐ Thêm CORS
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/login", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/login", "/home", "/main", "/apartment", "/resident", "/feedback", "/invoice",
+                                "/financial",
+                                "/device",
+                                "/maintenance", "/css/**", "/js/**", "/images/**", "/favicon.ico")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -48,35 +50,32 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Allowed origins
         configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:8081",
-            "http://127.0.0.1:8081"
-        ));
-        
+                "http://localhost:8081",
+                "http://127.0.0.1:8081"));
+
         // Allowed methods
         configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
-        ));
-        
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+
         // Allowed headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        
+
         // Exposed headers
         configuration.setExposedHeaders(Arrays.asList(
-            "Authorization", "Content-Type", "X-Requested-With"
-        ));
-        
+                "Authorization", "Content-Type", "X-Requested-With"));
+
         // Allow credentials (important for JWT)
         configuration.setAllowCredentials(true);
-        
+
         // Cache preflight response
         configuration.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration);
-        
+
         return source;
     }
 }
