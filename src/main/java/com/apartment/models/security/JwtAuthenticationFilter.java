@@ -24,26 +24,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // ✅ Danh sách các path không cần kiểm tra JWT
     private static final List<String> EXCLUDED_PATHS = List.of(
-        "/login",
-        "/home",
-        "/main",
-        "/apartment",
-        "/resident",
-        "/api/auth/login",
-        "/swagger-ui",
-        "/v3/api-docs",
-        "/css",
-        "/js",
-        "/images",
-        "/favicon.ico"
-    );
+            "/login",
+            "/home",
+            "/main",
+            "/apartment",
+            "/resident",
+            "/resident",
+            "/feedback",
+            "/api/auth/login",
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/css",
+            "/js",
+            "/images",
+            "/favicon.ico");
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getServletPath();
 
@@ -69,10 +69,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (tokenProvider.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-                );
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
