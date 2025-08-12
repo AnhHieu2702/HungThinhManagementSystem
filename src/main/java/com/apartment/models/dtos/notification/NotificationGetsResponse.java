@@ -1,16 +1,18 @@
 package com.apartment.models.dtos.notification;
 
+import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class NotificationGetResponse {
+public class NotificationGetsResponse {
+    private UUID id;
+
     private String title;
 
     private String content;
-
-    private String priority;
 
     private String senderName;
 
