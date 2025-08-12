@@ -2,6 +2,7 @@ package com.apartment.models.entities.enums;
 
 public enum UserRole {
     ADMIN("Quản trị viên"),
+    MANAGER("Quản lý"),
     RESIDENT("Cư dân"),
     ACCOUNTANT("Kế toán"),
     TECHNICIAN("Kỹ thuật viên");
