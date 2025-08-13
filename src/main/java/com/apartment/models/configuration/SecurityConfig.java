@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/home", "/main", "/apartment", "/resident", "/feedback", "/invoice",
                                 "/financial",
                                 "/device",
-                                "/maintenance", "/css/**", "/js/**", "/images/**", "/favicon.ico")
+                                "/maintenance","/admin", "/css/**", "/js/**", "/images/**", "/favicon.ico")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session

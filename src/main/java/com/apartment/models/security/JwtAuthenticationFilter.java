@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/financial",
             "/device",
             "/maintenance",
+            "/admin",
             "/api/auth/login",
             "/swagger-ui",
             "/v3/api-docs",
