@@ -23,15 +23,17 @@ public class UserService implements IUserService {
 
     // Constructor injection
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-            this.userRepository = userRepository;
-            this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public ApiResult<List<UserGetsResponse>> getsUser() {
         List<User> users = userRepository.findAll();
         List<UserGetsResponse> responseList = users.stream()
-                .map(user -> new UserGetsResponse(user.getUsername(), user.getRole().name()))
+                .filter(user -> !user.getRole().equals(UserRole.RESIDENT))
+                .map(user -> new UserGetsResponse(user.getId(), user.getUsername(), user.getRole().name(),
+                        user.getCreateTime(), user.getLastModifiedTime()))
                 .toList();
 
         return ApiResult.success(responseList, "Lấy danh sách người dùng thành công");
@@ -66,5 +68,15 @@ public class UserService implements IUserService {
         userRepository.save(user);
 
         return ApiResult.success(null, "Cập nhật người dùng thành công");
+    }
+
+    @Override
+    public ApiResult<String> deleteUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
+
+        userRepository.delete(user);
+
+        return ApiResult.success(null, "Xoá người dùng thành công");
     }
 }

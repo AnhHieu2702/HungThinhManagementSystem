@@ -14,4 +14,6 @@ public interface IUserService {
     ApiResult<UUID> createUser(UserCreateRequest apiRequest);
 
     ApiResult<String> updateUser(UUID userId, UserUpdateRequest apiRequest);
+
+    ApiResult<String> deleteUser(UUID userId);
 }
