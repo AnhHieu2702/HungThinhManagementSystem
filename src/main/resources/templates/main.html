@@ -61,7 +61,19 @@
                 <ul class="nav flex-column w-100 px-3">
                     <li class="nav-item"><a class="nav-link" href="/home"><i class="bi bi-house-door"></i> Trang chủ</a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+                            href="#manageMenu" role="button" aria-expanded="false" aria-controls="manageMenu">
+                            <span><i class="bi bi-folder"></i> Tài khoản</span>
+                            <i class="bi bi-chevron-down small"></i>
+                        </a>
+                        <div class="collapse ps-3" id="manageMenu">
+                            <ul class="nav flex-column">
+                                <li class="nav-item"><a class="nav-link" href="/admin"><i class="bi bi-house"></i>
+                                        Nhân viên</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <!-- Dropdown -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
