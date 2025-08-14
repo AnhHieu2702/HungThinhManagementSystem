@@ -47,4 +47,9 @@ public class ApartmentController extends ApiBaseController {
     public ResponseEntity<ApiResult<String>> updateApartment(@PathVariable UUID apartmentId, @Valid @RequestBody ApartmentUpdateRequest apiRequest) {
         return executeApiResult(() -> apartmentService.updateApartment(apartmentId, apiRequest));
     }
+
+    @GetMapping("/{apartmentId}")
+    public ResponseEntity<ApiResult<String>> getApartmentById(@PathVariable UUID apartmentId) {
+        return executeApiResult(() -> apartmentService.deleteApartment(apartmentId));
+    }
 }
