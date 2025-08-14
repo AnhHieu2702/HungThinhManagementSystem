@@ -145,18 +145,18 @@ function renderStaffTable() {
     tbody.innerHTML = filtered.map((staff, idx) => `
     <tr>
         <td class="align-middle text-center">${idx + 1}</td>
-        <td class="align-middle">
-            <div class="d-flex align-items-center">
+        <td class="align-middle text-center">
+            <div class="d-flex align-items-center justify-content-center">
                 <span class="avatar-circle" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#1b2d73;color:white;font-weight:bold;border-radius:50%;margin-right:8px;">
                     ${getAvatarLetter(staff.username)}
                 </span>
                 <span>${staff.username}</span>
             </div>
         </td>
-        <td class="align-middle">${getRoleLabel(staff.role)}</td>
-        <td class="align-middle">${formatDate(staff.createTime)}</td>
-        <td class="align-middle">${formatDate(staff.lastModifiedTime)}</td>
-        <td class="align-middle">
+        <td class="align-middle text-center">${getRoleLabel(staff.role)}</td>
+        <td class="align-middle text-center">${formatDate(staff.createTime)}</td>
+        <td class="align-middle text-center">${formatDate(staff.lastModifiedTime)}</td>
+        <td class="align-middle text-center">
             <button class="btn btn-sm editBtn" data-id="${staff.id}" title="Sửa"><i class="fas fa-edit"></i></button>
             <button class="btn btn-sm deleteBtn" data-id="${staff.id}" title="Xoá"><i class="fas fa-trash"></i></button>
         </td>

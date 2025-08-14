@@ -1,108 +1,20 @@
-// Apartment Management System - Simplified
+// Apartment Management for ADMIN - Table CRUD (full code, UI/UX giống admin.js)
+
 const API_BASE_URL = 'http://localhost:8080/api/admin/apartments';
 
-// Global variables
 let apartments = [];
-let filteredApartments = [];
-let currentApartment = null;
-let currentMode = 'add';
+let searchKeyword = '';
+let searchBlock = '';
+let searchFloor = '';
+let searchArea = '';
 
-// Improved alert function with animation
-function showAlert(message, type) {
-    // Remove existing alerts
-    const existingAlerts = document.querySelectorAll('.custom-alert');
-    existingAlerts.forEach(alert => {
-        alert.classList.add('hide');
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.parentNode.removeChild(alert);
-            }
-        }, 300);
-    });
+let currentPage = 1;
+const pageSize = 5;
 
-    // Create new alert
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible custom-alert`;
-    
-    // Icon mapping
-    const iconMap = {
-        'success': 'bi-check-circle-fill',
-        'danger': 'bi-exclamation-triangle-fill',
-        'warning': 'bi-exclamation-triangle-fill',
-        'info': 'bi-info-circle-fill'
-    };
-    
-    const icon = iconMap[type] || 'bi-info-circle-fill';
-    
-    alertDiv.innerHTML = `
-        <div class="d-flex align-items-center">
-            <i class="bi ${icon} me-2"></i>
-            <div class="flex-grow-1">${message}</div>
-            <button type="button" class="btn-close ms-2" aria-label="Close"></button>
-        </div>
-    `;
-    
-    document.body.appendChild(alertDiv);
-
-    // Show animation
-    setTimeout(() => {
-        alertDiv.classList.add('show');
-    }, 100);
-
-    // Auto hide after 5 seconds
-    const autoHideTimer = setTimeout(() => {
-        hideAlert(alertDiv);
-    }, 5000);
-
-    // Close button handler
-    const closeBtn = alertDiv.querySelector('.btn-close');
-    closeBtn.addEventListener('click', () => {
-        clearTimeout(autoHideTimer);
-        hideAlert(alertDiv);
-    });
-}
-
-function hideAlert(alertDiv) {
-    alertDiv.classList.remove('show');
-    alertDiv.classList.add('hide');
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.parentNode.removeChild(alertDiv);
-        }
-    }, 300);
-}
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    loadApartments();
-    setupEventListeners();
-    setupFormValidation();
-});
-
-// Event listeners setup
-function setupEventListeners() {
-    // Search and filter inputs
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
-    document.getElementById('blockFilter').addEventListener('change', applyFilters);
-    document.getElementById('floorFilter').addEventListener('change', applyFilters);
-    document.getElementById('areaFilter').addEventListener('change', applyFilters);
-}
-
-// Setup form validation
-function setupFormValidation() {
-    const form = document.getElementById('apartmentForm');
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveApartment();
-    });
-}
-
-// Get auth token from localStorage
+// ====== Utility Functions ======
 function getAuthToken() {
     return localStorage.getItem('accessToken');
 }
-
-// Get auth headers
 function getAuthHeaders() {
     const token = getAuthToken();
     return {
@@ -110,318 +22,408 @@ function getAuthHeaders() {
         'Authorization': token ? `Bearer ${token}` : ''
     };
 }
-
-// Load apartments from API
-async function loadApartments() {
-    showLoading(true);
-    try {
-        const response = await fetch(API_BASE_URL, {
-            headers: getAuthHeaders()
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.status && data.data) {
-                apartments = data.data;
-                filteredApartments = [...apartments];
-                displayApartments();
-            } else {
-                const errorMessage = data.userMessage || data.message || 'Có lỗi khi tải dữ liệu căn hộ';
-                showAlert(errorMessage, 'danger');
-            }
-        } else {
-            const errorData = await response.json().catch(() => ({}));
-            const errorMessage = errorData.userMessage || errorData.message || 'Không thể tải danh sách căn hộ';
-            showAlert(errorMessage, 'danger');
-        }
-    } catch (error) {
-        console.error('Error loading apartments:', error);
-        showAlert('Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau!', 'danger');
-    } finally {
-        showLoading(false);
-    }
-}
-
-// Display apartments
-function displayApartments() {
-    const container = document.getElementById('apartmentsContainer');
-    container.innerHTML = '';
-    
-    if (filteredApartments.length === 0) {
-        container.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Không tìm thấy căn hộ nào</h5>
-                <p class="text-muted">Thử thay đổi điều kiện tìm kiếm</p>
-            </div>
-        `;
-        return;
-    }
-    
-    filteredApartments.forEach(apartment => {
-        const apartmentCard = createApartmentCard(apartment);
-        container.appendChild(apartmentCard);
+function showAlert(message, type) {
+    const existingAlerts = document.querySelectorAll('.custom-alert');
+    existingAlerts.forEach(alert => {
+        alert.classList.add('hide');
+        setTimeout(() => {
+            if (alert.parentNode) alert.parentNode.removeChild(alert);
+        }, 300);
     });
-}
-
-// Create apartment card
-function createApartmentCard(apartment) {
-    const col = document.createElement('div');
-    col.className = 'col-lg-4 col-md-6 col-sm-12 mb-4';
-    
-    col.innerHTML = `
-    <div class="apartment-card bg-soft-success">
-            <div class="apartment-header">
-                <div>
-                    <div class="apartment-number">${apartment.apartmentNumber}</div>
-                    <div class="apartment-size">${apartment.area}m² • Tầng ${apartment.floor}</div>
-                </div>
-            </div>
-            
-            <div class="apartment-details">
-                <div class="detail-item">
-                    <span class="detail-label">Tòa nhà:</span>
-                    <span class="detail-value">Tòa ${apartment.block}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Tầng:</span>
-                    <span class="detail-value">Tầng ${apartment.floor}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Diện tích:</span>
-                    <span class="detail-value">${apartment.area} m²</span>
-                </div>
-            </div>
-            
-            <div class="apartment-actions">
-                <button class="action-btn btn-view" onclick="openModal('view', '${apartment.id}')">
-                    <i class="fas fa-eye me-1"></i>Xem chi tiết
-                </button>
-                <button class="action-btn btn-edit" onclick="openModal('edit', '${apartment.id}')">
-                    <i class="fas fa-edit me-1"></i>Chỉnh sửa
-                </button>
-            </div>
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible custom-alert`;
+    const iconMap = {
+        'success': 'bi-check-circle-fill',
+        'danger': 'bi-exclamation-triangle-fill',
+        'warning': 'bi-exclamation-triangle-fill',
+        'info': 'bi-info-circle-fill'
+    };
+    const icon = iconMap[type] || 'bi-info-circle-fill';
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="bi ${icon} me-2"></i>
+            <div class="flex-grow-1">${message}</div>
+            <button type="button" class="btn-close ms-2" aria-label="Close"></button>
         </div>
     `;
-    
-    return col;
-}
-
-// Apply filters
-function applyFilters() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const block = document.getElementById('blockFilter').value;
-    const floor = document.getElementById('floorFilter').value;
-    const area = document.getElementById('areaFilter').value;
-    
-    filteredApartments = apartments.filter(apartment => {
-        // Search filter
-        const searchMatch = !search || 
-            apartment.apartmentNumber.toLowerCase().includes(search);
-        
-        // Block filter
-        const blockMatch = !block || apartment.block === block;
-        
-        // Floor filter
-        const floorMatch = !floor || checkFloorRange(apartment.floor, floor);
-        
-        // Area filter
-        const areaMatch = !area || checkAreaRange(apartment.area, area);
-        
-        return searchMatch && blockMatch && floorMatch && areaMatch;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.classList.add('show'), 100);
+    const autoHideTimer = setTimeout(() => hideAlert(alertDiv), 5000);
+    const closeBtn = alertDiv.querySelector('.btn-close');
+    closeBtn.addEventListener('click', () => {
+        clearTimeout(autoHideTimer);
+        hideAlert(alertDiv);
     });
-    
-    displayApartments();
 }
-
-// Check floor range
-function checkFloorRange(floor, range) {
-    switch(range) {
-        case '1-5':
-            return floor >= 1 && floor <= 5;
-        case '6-10':
-            return floor >= 6 && floor <= 10;
-        case '11-15':
-            return floor >= 11 && floor <= 15;
-        case '16-20':
-            return floor >= 16 && floor <= 20;
-        default:
-            return true;
-    }
+function hideAlert(alertDiv) {
+    alertDiv.classList.remove('show');
+    alertDiv.classList.add('hide');
+    setTimeout(() => {
+        if (alertDiv.parentNode) alertDiv.parentNode.removeChild(alertDiv);
+    }, 300);
 }
-
-// Check area range
+function showLoading(show) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = show ? 'flex' : 'none';
+}
+function showConfirmDialog(message, onConfirm) {
+    const old = document.getElementById('customConfirmDialog');
+    if (old) old.remove();
+    const div = document.createElement('div');
+    div.id = 'customConfirmDialog';
+    div.innerHTML = `
+        <div style="
+            position:fixed;z-index:2000;top:0;left:0;width:100vw;height:100vh;
+            background:rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;">
+            <div style="
+                background:white;border-radius:10px;min-width:320px;max-width:90vw;padding:32px 24px 16px 24px;
+                box-shadow:0 0 8px 1px rgba(0,0,0,0.12);text-align:center;position:relative;">
+                <div style="font-size:1.5rem;margin-bottom:16px;">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:2rem"></i>
+                </div>
+                <div style="font-size:1.15rem;margin-bottom:24px;font-weight:500;">${message}</div>
+                <button id="confirmBtn" class="btn btn-danger me-2" style="min-width:80px;">Xóa</button>
+                <button id="cancelBtn" class="btn btn-secondary" style="min-width:80px;">Hủy</button>
+            </div>
+        </div>`;
+    document.body.appendChild(div);
+    document.getElementById('confirmBtn').onclick = () => { div.remove(); onConfirm(); };
+    document.getElementById('cancelBtn').onclick = () => { div.remove(); };
+}
 function checkAreaRange(area, range) {
-    switch(range) {
-        case '50-70':
-            return area >= 50 && area <= 70;
-        case '70-90':
-            return area >= 70 && area <= 90;
-        case '90-120':
-            return area >= 90 && area <= 120;
-        case '120+':
-            return area > 120;
-        default:
-            return true;
+    switch (range) {
+        case '50-70': return area >= 50 && area <= 70;
+        case '70-90': return area >= 70 && area <= 90;
+        case '90-120': return area >= 90 && area <= 120;
+        case '120+': return area > 120;
+        default: return true;
     }
 }
 
-// Clear filters
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('blockFilter').value = '';
-    document.getElementById('floorFilter').value = '';
-    document.getElementById('areaFilter').value = '';
-    
-    filteredApartments = [...apartments];
-    displayApartments();
+// ====== API ======
+async function fetchApartments() {
+    showLoading(true);
+    try {
+        const res = await fetch(API_BASE_URL, { headers: getAuthHeaders() });
+        if (!res.ok) throw new Error('Lỗi khi lấy danh sách căn hộ');
+        const data = await res.json();
+        apartments = Array.isArray(data.data) ? data.data : [];
+        currentPage = 1;
+        renderApartmentTable();
+    } catch (e) {
+        showAlert(e.message, 'danger');
+    }
+    showLoading(false);
+}
+async function addApartmentApi(apartment) {
+    showLoading(true);
+    try {
+        const res = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(apartment)
+        });
+        if (!res.ok) throw new Error('Lỗi khi thêm căn hộ');
+        showAlert('Thêm căn hộ thành công!', 'success');
+        await fetchApartments();
+    } catch (e) {
+        showAlert(e.message, 'danger');
+    }
+    showLoading(false);
+}
+async function updateApartmentApi(id, apartment) {
+    showLoading(true);
+    try {
+        const res = await fetch(`${API_BASE_URL}/${id}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(apartment)
+        });
+        if (!res.ok) throw new Error('Lỗi khi cập nhật căn hộ');
+        showAlert('Cập nhật căn hộ thành công!', 'success');
+        await fetchApartments();
+    } catch (e) {
+        showAlert(e.message, 'danger');
+    }
+    showLoading(false);
+}
+async function deleteApartmentApi(id) {
+    showConfirmDialog('Bạn có chắc chắn muốn xóa căn hộ này?', async () => {
+        showLoading(true);
+        try {
+            const res = await fetch(`${API_BASE_URL}/${id}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders()
+            });
+            if (!res.ok) throw new Error('Lỗi khi xóa căn hộ');
+            showAlert('Xóa căn hộ thành công!', 'success');
+            await fetchApartments();
+        } catch (e) {
+            showAlert(e.message, 'danger');
+        }
+        showLoading(false);
+    });
 }
 
-// Open modal
-function openModal(mode, apartmentId = null) {
-    currentMode = mode;
+// ====== Table Render & Pagination ======
+function filterApartments() {
+    return apartments.filter(apartment => {
+        const matchNumber = (apartment.apartmentNumber || '').toLowerCase().includes(searchKeyword.toLowerCase());
+        const matchBlock = !searchBlock || apartment.block === searchBlock;
+        const matchFloor = !searchFloor || String(apartment.floor) === searchFloor;
+        const matchArea = !searchArea || checkAreaRange(apartment.area, searchArea);
+        return matchNumber && matchBlock && matchFloor && matchArea;
+    });
+}
+function renderApartmentTable() {
+    const tbody = document.getElementById('apartmentTableBody');
+    let filtered = filterApartments();
+
+    // Pagination logic
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    const startIdx = (currentPage - 1) * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, total);
+
+    const showList = filtered.slice(startIdx, endIdx);
+
+    tbody.innerHTML = showList.map((apartment, idx) => `
+    <tr>
+        <td class="align-middle text-center">${startIdx + idx + 1}</td>
+        <td class="align-middle text-center">${apartment.apartmentNumber}</td>
+        <td class="align-middle text-center">${apartment.floor}</td>
+        <td class="align-middle text-center">${apartment.block}</td>
+        <td class="align-middle text-center">${apartment.area}</td>
+        <td class="align-middle text-center">
+            <button class="btn btn-sm editBtn" data-id="${apartment.id}" title="Sửa"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-sm deleteBtn" data-id="${apartment.id}" title="Xoá"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+`).join('') || `<tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>`;
+
+    // Record info
+    document.getElementById('apartmentRecordsInfo').textContent =
+        total === 0 ? 'Không có căn hộ nào'
+            : `Hiển thị ${total === 0 ? 0 : (startIdx + 1)}-${endIdx} trong tổng số ${total} căn hộ`;
+
+    // Pagination
+    renderApartmentPagination(totalPages);
+
+    // Event handler edit/delete
+    document.querySelectorAll('.editBtn').forEach(btn =>
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const apartment = apartments.find(a => a.id === id);
+            showEditApartmentModal(apartment);
+        })
+    );
+    document.querySelectorAll('.deleteBtn').forEach(btn =>
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            deleteApartmentApi(id);
+        })
+    );
+}
+function renderApartmentPagination(totalPages) {
+    const ul = document.getElementById('apartmentPaginationContainer');
+    ul.innerHTML = '';
+    if (totalPages <= 1) return;
+    // Prev
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item${currentPage === 1 ? ' disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="#">‹</a>`;
+    prevLi.onclick = e => { e.preventDefault(); if (currentPage > 1) { currentPage--; renderApartmentTable(); } };
+    ul.appendChild(prevLi);
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item${i === currentPage ? ' active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        li.onclick = e => { e.preventDefault(); currentPage = i; renderApartmentTable(); };
+        ul.appendChild(li);
+    }
+    // Next
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item${currentPage === totalPages ? ' disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="#">›</a>`;
+    nextLi.onclick = e => { e.preventDefault(); if (currentPage < totalPages) { currentPage++; renderApartmentTable(); } };
+    ul.appendChild(nextLi);
+}
+
+// ====== Modal ======
+function createApartmentModal() {
+    if (document.getElementById('apartmentModal')) return;
+    const modalHTML = `
+        <div class="modal fade" id="apartmentModal" tabindex="-1" aria-labelledby="apartmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-custom">
+                        <h5 class="modal-title" id="apartmentModalLabel">Thêm căn hộ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="apartmentForm">
+                            <input type="hidden" id="apartmentId">
+                            <div class="mb-3">
+                                <label class="form-label">Mã căn hộ *</label>
+                                <input type="text" class="form-control" id="apartmentNumber" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tầng *</label>
+                                <input type="number" class="form-control" id="floor" min="1" max="50" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tòa *</label>
+                                <select class="form-control" id="block" required>
+                                    <option value="">Chọn tòa</option>
+                                    <option value="A">Tòa A</option>
+                                    <option value="B">Tòa B</option>
+                                    <option value="C">Tòa C</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Diện tích (m²) *</label>
+                                <input type="number" class="form-control" id="area" min="30" max="300" required>
+                            </div>
+                            <div id="addFields" style="display: none;">
+                                <hr>
+                                <h6>Thông tin đăng nhập (chỉ khi thêm mới)</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Tên đăng nhập *</label>
+                                    <input type="text" class="form-control" id="username">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mật khẩu *</label>
+                                    <input type="password" class="form-control" id="password">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-custom" id="saveApartmentBtn">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .modal-header-custom { background: #1b2d73 !important; color: #fff !important; }
+            .modal-header-custom .modal-title { color: #fff !important; }
+            .btn-custom { background: #1b2d73; color: #fff; border: none;}
+            .btn-custom:hover, .btn-custom:focus { background: #1b2d73; color: #fff;}
+        </style>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+function showAddApartmentModal() {
+    createApartmentModal();
+    document.getElementById('apartmentModalLabel').textContent = 'Thêm căn hộ';
+    document.getElementById('apartmentForm').reset();
+    document.getElementById('apartmentId').value = '';
+    document.getElementById('addFields').style.display = '';
+    document.getElementById('username').required = true;
+    document.getElementById('password').required = true;
+    document.getElementById('saveApartmentBtn').onclick = saveApartment;
     const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
-    const modalTitle = document.getElementById('modalTitle');
-    const saveBtn = document.getElementById('saveBtn');
-    const form = document.getElementById('apartmentForm');
-    const addFields = document.getElementById('addFields');
-    
-    // Reset form
-    form.reset();
-    
-    if (apartmentId) {
-        currentApartment = apartments.find(apt => apt.id == apartmentId);
-    } else {
-        currentApartment = null;
-    }
-    
-    switch(mode) {
-        case 'add':
-            modalTitle.textContent = 'Thêm căn hộ mới';
-            saveBtn.textContent = 'Thêm mới';
-            saveBtn.style.display = 'block';
-            addFields.style.display = 'block';
-            enableFormInputs(true);
-            break;
-        case 'edit':
-            modalTitle.textContent = 'Chỉnh sửa căn hộ';
-            saveBtn.textContent = 'Cập nhật';
-            saveBtn.style.display = 'block';
-            addFields.style.display = 'none';
-            enableFormInputs(true);
-            populateForm(currentApartment);
-            break;
-        case 'view':
-            modalTitle.textContent = 'Thông tin căn hộ';
-            saveBtn.style.display = 'none';
-            addFields.style.display = 'none';
-            enableFormInputs(false);
-            populateForm(currentApartment);
-            break;
-    }
-    
     modal.show();
 }
-
-// Enable/disable form inputs
-function enableFormInputs(enabled) {
-    const inputs = document.querySelectorAll('#apartmentForm input, #apartmentForm select');
-    inputs.forEach(input => {
-        input.disabled = !enabled;
-    });
-}
-
-// Populate form with apartment data
-function populateForm(apartment) {
-    if (!apartment) return;
-    
+function showEditApartmentModal(apartment) {
+    createApartmentModal();
+    document.getElementById('apartmentModalLabel').textContent = 'Chỉnh sửa căn hộ';
+    document.getElementById('apartmentForm').reset();
+    document.getElementById('apartmentId').value = apartment.id || '';
     document.getElementById('apartmentNumber').value = apartment.apartmentNumber || '';
     document.getElementById('floor').value = apartment.floor || '';
     document.getElementById('block').value = apartment.block || '';
     document.getElementById('area').value = apartment.area || '';
+    document.getElementById('addFields').style.display = 'none';
+    document.getElementById('username').required = false;
+    document.getElementById('password').required = false;
+    document.getElementById('saveApartmentBtn').onclick = saveApartment;
+    const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+    modal.show();
 }
+function saveApartment() {
+    const apartmentId = document.getElementById('apartmentId').value;
+    const apartmentNumber = document.getElementById('apartmentNumber').value.trim();
+    const floor = parseInt(document.getElementById('floor').value);
+    const block = document.getElementById('block').value;
+    const area = parseInt(document.getElementById('area').value);
 
-// Save apartment
-async function saveApartment() {
-    const form = document.getElementById('apartmentForm');
-    
-    // Validate form
-    if (!form.checkValidity()) {
-        form.reportValidity();
+    if (!apartmentNumber || !floor || !block || !area) {
+        showAlert('Vui lòng nhập đủ thông tin!', 'danger');
         return;
     }
-    
-    // Collect form data
-    const formData = {
-        apartmentNumber: document.getElementById('apartmentNumber').value,
-        floor: parseInt(document.getElementById('floor').value),
-        block: document.getElementById('block').value,
-        area: parseInt(document.getElementById('area').value)
-    };
-    
-    // Add username and password for new apartments
-    if (currentMode === 'add') {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
+
+    if (!apartmentId) {
+        // Thêm mới
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
         if (!username || !password) {
-            showAlert('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!', 'danger');
+            showAlert('Vui lòng nhập tên đăng nhập và mật khẩu!', 'danger');
             return;
         }
-        
-        formData.username = username;
-        formData.password = password;
-    }
-    
-    showLoading(true);
-    
-    try {
-        let response;
-        let url = API_BASE_URL;
-        let method = 'POST';
-        
-        if (currentMode === 'edit' && currentApartment) {
-            url = `${API_BASE_URL}/${currentApartment.id}`;
-            method = 'PUT';
-        }
-        
-        response = await fetch(url, {
-            method: method,
-            headers: getAuthHeaders(),
-            body: JSON.stringify(formData)
+        addApartmentApi({
+            apartmentNumber, floor, block, area, username, password
         });
-
-        if (response.ok) {
-            const apiResult = await response.json();
-            if (apiResult.status) {
-                const successMessage = currentMode === 'add' ? 'Thêm căn hộ thành công!' : 'Cập nhật căn hộ thành công!';
-                showAlert(successMessage, 'success');
-                
-                // Close modal and refresh data
-                bootstrap.Modal.getInstance(document.getElementById('apartmentModal')).hide();
-                await loadApartments();
-            } else {
-                const errorMessage = apiResult.userMessage || apiResult.message || 'Có lỗi xảy ra khi lưu dữ liệu!';
-                showAlert(errorMessage, 'danger');
-            }
-        } else {
-            const errorData = await response.json().catch(() => ({}));
-            const errorMessage = errorData.userMessage || errorData.message || 'Có lỗi xảy ra khi lưu dữ liệu!';
-            showAlert(errorMessage, 'danger');
-        }
-        
-    } catch (error) {
-        console.error('Error saving apartment:', error);
-        showAlert('Có lỗi xảy ra. Vui lòng thử lại sau!', 'danger');
-    } finally {
-        showLoading(false);
+    } else {
+        // Sửa
+        updateApartmentApi(apartmentId, {
+            apartmentNumber, floor, block, area
+        });
     }
+    const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
+    modal.hide();
 }
 
-// Show loading overlay
-function showLoading(show) {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-        overlay.style.display = show ? 'flex' : 'none';
-    }
-}
+// ====== DOM Events ======
+document.addEventListener('DOMContentLoaded', function () {
+    // Tìm kiếm, filter
+    document.getElementById('searchInput').addEventListener('input', function () {
+        searchKeyword = this.value.trim();
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    document.getElementById('blockFilter').addEventListener('change', function () {
+        searchBlock = this.value;
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    document.getElementById('floorFilter').addEventListener('input', function () {
+        searchFloor = this.value.trim();
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    document.getElementById('areaFilter').addEventListener('change', function () {
+        searchArea = this.value;
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    // Clear filter
+    document.getElementById('clearApartmentFiltersBtn').addEventListener('click', function () {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('blockFilter').value = '';
+        document.getElementById('floorFilter').value = '';
+        document.getElementById('areaFilter').value = '';
+        searchKeyword = '';
+        searchBlock = '';
+        searchFloor = '';
+        searchArea = '';
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    // Tìm kiếm button
+    document.getElementById('searchApartmentBtn').addEventListener('click', function () {
+        searchKeyword = document.getElementById('searchInput').value.trim();
+        searchBlock = document.getElementById('blockFilter').value;
+        searchFloor = document.getElementById('floorFilter').value.trim();
+        searchArea = document.getElementById('areaFilter').value;
+        currentPage = 1;
+        renderApartmentTable();
+    });
+    // Thêm mới
+    document.getElementById('addApartmentBtn').addEventListener('click', showAddApartmentModal);
+
+    fetchApartments();
+});

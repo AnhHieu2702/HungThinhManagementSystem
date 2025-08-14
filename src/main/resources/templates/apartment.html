@@ -8,22 +8,21 @@
     <title>Quản lý căn hộ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link th:href="@{/css/style.css}" rel="stylesheet">
-    <link th:href="@{/css/apartment.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </head>
 
 <body>
     <div layout:fragment="content">
-        <!-- Search and Filter Section -->
+        <!-- Search/Filter Section -->
         <div class="search-section mb-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="mb-0">Tìm kiếm và lọc căn hộ</h3>
-                <button class="btn btn-custom" onclick="openModal('add')">
-                    <i class="fas fa-plus me-2"></i>Thêm căn hộ mới
+                <button class="btn btn-custom" id="addApartmentBtn">
+                    <i class="fas fa-plus"></i> Thêm mới
                 </button>
             </div>
-
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Tìm kiếm</label>
@@ -31,8 +30,8 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tòa nhà</label>
-                    <select class="form-select" id="blockFilter">
-                        <option value="">Tất cả tòa nhà</option>
+                    <select class="form-control" id="blockFilter">
+                        <option value="">Tòa nhà</option>
                         <option value="A">Tòa A</option>
                         <option value="B">Tòa B</option>
                         <option value="C">Tòa C</option>
@@ -40,18 +39,12 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Tầng</label>
-                    <select class="form-select" id="floorFilter">
-                        <option value="">Tất cả tầng</option>
-                        <option value="1-5">Tầng 1-5</option>
-                        <option value="6-10">Tầng 6-10</option>
-                        <option value="11-15">Tầng 11-15</option>
-                        <option value="16-20">Tầng 16-20</option>
-                    </select>
+                    <input type="number" class="form-control" id="floorFilter" min="1" max="50" placeholder="Tầng">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Diện tích</label>
-                    <select class="form-select" id="areaFilter">
-                        <option value="">Tất cả diện tích</option>
+                    <select class="form-control" id="areaFilter">
+                        <option value="">Diện tích</option>
                         <option value="50-70">50-70m²</option>
                         <option value="70-90">70-90m²</option>
                         <option value="90-120">90-120m²</option>
@@ -61,111 +54,63 @@
             </div>
             <div class="row g-1 mt-3 justify-content-end">
                 <div class="col-auto">
-                    <button class="btn btn-outline-secondary me-2" onclick="clearFilters()">
+                    <button class="btn btn-outline-secondary me-2" id="clearApartmentFiltersBtn">
                         <i class="fas fa-undo"></i> Xóa bộ lọc
                     </button>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-custom" onclick="applyFilters()">
+                    <button class="btn btn-custom" id="searchApartmentBtn">
                         <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                 </div>
-            </div>            
+            </div>
         </div>
 
-        <!-- Apartments Display Section -->
+        <!-- Table Section -->
         <div class="apartments-section">
-            <div class="d-flex gap-5 mb-4">
-                <h4 class="mb-3">Thông tin căn hộ</h4>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="status-legend d-flex gap-3">
-                        <span><i class="fas fa-circle text-success me-1"></i> Đã có người ở</span>
-                        <span><i class="fas fa-circle text-warning me-1"></i> Còn trống</span>
-                        <span><i class="fas fa-circle text-danger me-1"></i> Đang bảo trì</span>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Danh sách căn hộ</h3>
             </div>
-            <div class="row" id="apartmentsContainer">
-                <!-- Apartments will be loaded here -->
+            <div id="apartmentAlertContainer"></div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 60px;">STT</th>
+                            <th class="text-center">MÃ CĂN HỘ</th>
+                            <th class="text-center">TẦNG</th>
+                            <th class="text-center">TÒA</th>
+                            <th class="text-center">DIỆN TÍCH (m²)</th>
+                            <th class="text-center">THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </div>
-
-    
-
-    <!-- Modal for Add/Edit/View -->
-    <div class="modal fade" id="apartmentModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Thêm căn hộ mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div id="apartmentRecordsInfo">
+                    Hiển thị 1-5 trong tổng số 0 căn hộ
                 </div>
-                <div class="modal-body">
-                    <form id="apartmentForm">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Mã căn hộ *</label>
-                                <input type="text" class="form-control" id="apartmentNumber" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tầng *</label>
-                                <input type="number" class="form-control" id="floor" min="1" max="50" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Tòa *</label>
-                                <select class="form-select" id="block" required>
-                                    <option value="">Chọn tòa</option>
-                                    <option value="A">Tòa A</option>
-                                    <option value="B">Tòa B</option>
-                                    <option value="C">Tòa C</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Diện tích (m²) *</label>
-                                <input type="number" class="form-control" id="area" min="30" max="300" required>
-                            </div>
-
-                            <!-- Fields for adding new apartment only -->
-                            <div id="addFields" style="display: none;">
-                                <div class="col-md-12">
-                                    <hr>
-                                    <h6>Thông tin đăng nhập</h6>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Tên đăng nhập *</label>
-                                    <input type="text" class="form-control" id="username" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Mật khẩu *</label>
-                                    <input type="password" class="form-control" id="password" required>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveApartment()">Lưu</button>
-                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="apartmentPaginationContainer">
+                        <!-- Pagination will be populated by JavaScript -->
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 
-    <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JS -->
     <th:block layout:fragment="scripts">
         <script src="/js/apartment.js"></script>
     </th:block>
-    </body>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
