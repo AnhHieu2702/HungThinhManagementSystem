@@ -89,10 +89,15 @@ function renderTable() {
             <td class="text-center">
                 <div class="resident-info">
                         <span class="resident-avatar">${getAvatarLetter(resident.fullname)}</span>
-                        <div>${resident.fullname}<br><span>${resident.email}</span></div>
+                         <div class="resident-details">
+                            <div class="resident-name">${resident.fullname}</div>
+                            <div class="resident-email">${resident.email}</div>
+                        </div>
                 </div>
             </td>
-            <td class="text-center">${resident.apartmentNumber || ''}</td>
+            <td class="text-center">
+                    <span class="apartment-badge">${resident.apartmentNumber}</span>
+            </td>
             <td class="text-center">${resident.phone || ''}</td>
             <td class="text-center">${resident.createTime ? formatDate(resident.createTime) : ''}</td>
             <td class="text-center">
@@ -262,6 +267,7 @@ function showAddResidentToApartmentModal(apartmentId) {
     document.getElementById('residentId').value = '';
     document.getElementById('apartmentId').value = apartmentId;
     document.getElementById('residentModalLabel').textContent = 'Thêm cư dân vào hộ';
+    document.getElementById('avatarModal').textContent = '?';
     document.getElementById('saveResidentBtn').onclick = saveResidentToApartment;
     document.getElementById('fullname').oninput = function () {
         document.getElementById('avatarModal').textContent = getAvatarLetter(this.value);
@@ -269,7 +275,7 @@ function showAddResidentToApartmentModal(apartmentId) {
     const modal = new bootstrap.Modal(document.getElementById('residentModal'));
     modal.show();
 }
-async function saveResidentToApartment() {
+function saveResidentToApartment() {
     const apartmentId = document.getElementById('apartmentId').value;
     const data = {
         fullname: document.getElementById('fullname').value.trim(),
@@ -283,20 +289,19 @@ async function saveResidentToApartment() {
         return;
     }
     showLoading(true);
-    try {
-        const res = await fetch(API_ENDPOINTS.addResidentToApartment(apartmentId), {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(data)
-        });
+    fetch(API_ENDPOINTS.addResidentToApartment(apartmentId), {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(res => {
         if (!res.ok) throw new Error('Lỗi khi thêm cư dân vào hộ');
         showAlert('Thêm cư dân thành công!', 'success');
         bootstrap.Modal.getInstance(document.getElementById('residentModal')).hide();
-        await loadResidents();
-    } catch (e) {
-        showAlert(e.message, 'danger');
-    }
-    showLoading(false);
+        loadResidents();
+    })
+    .catch(e => showAlert(e.message, 'danger'))
+    .finally(() => showLoading(false));
 }
 
 // 2. Sửa cư dân (nút bút chì)
@@ -310,14 +315,14 @@ function showEditResidentModal(apartmentId, resident) {
     document.getElementById('phone').value = resident.phone;
     document.getElementById('relation').value = resident.relation || '';
     document.getElementById('avatarModal').textContent = getAvatarLetter(resident.fullname);
+    document.getElementById('saveResidentBtn').onclick = saveEditResident;
     document.getElementById('fullname').oninput = function () {
         document.getElementById('avatarModal').textContent = getAvatarLetter(this.value);
     };
-    document.getElementById('saveResidentBtn').onclick = saveEditResident;
     const modal = new bootstrap.Modal(document.getElementById('residentModal'));
     modal.show();
 }
-async function saveEditResident() {
+function saveEditResident() {
     const residentId = document.getElementById('residentId').value;
     const data = {
         fullname: document.getElementById('fullname').value.trim(),
@@ -331,39 +336,37 @@ async function saveEditResident() {
         return;
     }
     showLoading(true);
-    try {
-        const res = await fetch(API_ENDPOINTS.updateResident(residentId), {
-            method: 'PUT',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(data)
-        });
+    fetch(API_ENDPOINTS.updateResident(residentId), {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(res => {
         if (!res.ok) throw new Error('Lỗi khi cập nhật cư dân');
         showAlert('Cập nhật cư dân thành công!', 'success');
         bootstrap.Modal.getInstance(document.getElementById('residentModal')).hide();
-        await loadResidents();
-    } catch (e) {
-        showAlert(e.message, 'danger');
-    }
-    showLoading(false);
+        loadResidents();
+    })
+    .catch(e => showAlert(e.message, 'danger'))
+    .finally(() => showLoading(false));
 }
 
 // 3. Xem chi tiết cư dân của hộ (nút con mắt)
-async function showResidentsOfApartment(apartmentId) {
+function showResidentsOfApartment(apartmentId) {
     showLoading(true);
-    try {
-        const res = await fetch(API_ENDPOINTS.residentsByApartment(apartmentId), {
-            headers: getAuthHeaders()
-        });
-        const result = await res.json();
+    fetch(API_ENDPOINTS.residentsByApartment(apartmentId), {
+        headers: getAuthHeaders()
+    })
+    .then(res => res.json())
+    .then(result => {
         if (result.status && Array.isArray(result.data)) {
             renderResidentListModal(result.data);
         } else {
             showAlert(result.userMessage || 'Không có cư dân', 'warning');
         }
-    } catch (e) {
-        showAlert('Lỗi khi lấy danh sách cư dân', 'danger');
-    }
-    showLoading(false);
+    })
+    .catch(e => showAlert('Lỗi khi lấy danh sách cư dân', 'danger'))
+    .finally(() => showLoading(false));
 }
 function renderResidentListModal(list) {
     // Xóa modal cũ nếu có
@@ -406,13 +409,3 @@ function renderResidentListModal(list) {
     document.body.insertAdjacentHTML('beforeend', html);
     new bootstrap.Modal(document.getElementById('residentListModal')).show();
 }
-
-// ================== MODAL SỰ KIỆN ĐÓNG ==================
-document.addEventListener('DOMContentLoaded', function() {
-    const residentModal = document.getElementById('residentModal');
-    if (residentModal) {
-        residentModal.addEventListener('hidden.bs.modal', function() {
-            document.getElementById('apartmentNumber').readOnly = false;
-        });
-    }
-});
