@@ -14,4 +14,6 @@ public interface IApartmentService {
     ApiResult<UUID> createApartment(ApartmentCreateRequest apiRequest);
 
     ApiResult<String> updateApartment(UUID apartmentId, ApartmentUpdateRequest apiRequest);
+
+    ApiResult<String> deleteApartment(UUID apartmentId);
 }

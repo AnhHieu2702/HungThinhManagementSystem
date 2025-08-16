@@ -185,3 +185,90 @@
 </body>
 
 </html>
+
+
+<!-- Modal Thêm/Sửa Cư Dân (dùng chung cho thêm/sửa) -->
+<div class="modal fade" id="residentModal" tabindex="-1" aria-labelledby="residentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="residentModalLabel">Thêm cư dân vào hộ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <form id="residentForm">
+                    <input type="hidden" id="residentId">
+                    <input type="hidden" id="apartmentId">
+                    <div class="mb-3 text-center">
+                        <span id="avatarModal" class="avatar-circle"
+                            style="width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;background:#1b2d73;color:white;font-size:1.5rem;font-weight:bold;border-radius:50%;margin-bottom:8px;">
+                            ?
+                        </span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Họ và tên *</label>
+                        <input type="text" class="form-control" id="fullname" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateOfBirth" class="form-label">Ngày sinh *</label>
+                        <input type="date" class="form-control" id="dateOfBirth" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Số điện thoại *</label>
+                        <input type="tel" class="form-control" id="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="relation" class="form-label">Quan hệ *</label>
+                        <select class="form-control" id="relation" required>
+                            <option value="">Chọn quan hệ</option>
+                            <option value="Chủ hộ">Chủ hộ</option>
+                            <option value="Vợ/Chồng">Vợ/Chồng</option>
+                            <option value="Con">Con</option>
+                            <option value="Cha/Mẹ">Cha/Mẹ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-custom" id="saveResidentBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        .modal-header-custom {
+            background: #1b2d73 !important;
+            color: #fff !important;
+        }
+        .modal-header-custom .modal-title {
+            color: #fff !important;
+        }
+        .btn-custom {
+            background: #1b2d73;
+            color: #fff;
+            border: none;
+        }
+        .btn-custom:hover, .btn-custom:focus {
+            background: #1b2d73;
+            color: #fff;
+        }
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #1b2d73;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50%;
+            margin-bottom: 8px;
+        }
+    </style>
+</div>

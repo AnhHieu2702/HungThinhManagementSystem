@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafe Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <style>
         body {
             margin: 0;
@@ -37,6 +38,12 @@
         .sidebar img {
             max-width: 170px;
         }
+
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff !important;
+            font-weight: bold;
+}
     </style>
 </head>
 
@@ -58,74 +65,76 @@
                 </div>
 
                 <!-- Menu -->
-                <ul class="nav flex-column w-100 px-3">
-                    <li class="nav-item"><a class="nav-link" href="/home"><i class="bi bi-house-door"></i> Trang chủ</a>
-                    </li>
-
-                    <!-- Dropdown -->
+                <ul class="nav flex-column w-100 px-3" id="sidebarAccordion">
+                    <li class="nav-item"><a class="nav-link" href="/home">TRANG CHỦ</a></li>
+                    <!-- Tài khoản -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                            href="#manageMenu" role="button" aria-expanded="false" aria-controls="manageMenu">
-                            <span><i class="bi bi-folder"></i> Quản lý</span>
+                           href="#accountMenu" role="button" aria-expanded="false" aria-controls="accountMenu">
+                            <span> TÀI KHOẢN</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
-                        <div class="collapse ps-3" id="manageMenu">
+                        <div class="collapse ps-3" id="accountMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i>
-                                        Hộ gia đình</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/resident"><i class="bi bi-person"></i>
-                                        Dân cư</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/admin"><i class="bi bi-person-fill-add"></i> Nhân viên</a></li>
                             </ul>
                         </div>
                     </li>
+                    <!-- Quản lý -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                            href="#noticeandfeedbackMenu" role="button" aria-expanded="false" aria-controls="noticeandfeedbackMenu">
-                            <span><i class="bi bi-folder"></i> Thông báo & Phản ánh</span>
+                           href="#managementMenu" role="button" aria-expanded="false" aria-controls="managementMenu">
+                            <span>QUẢN LÝ</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
-                        <div class="collapse ps-3" id="noticeandfeedbackMenu">
+                        <div class="collapse ps-3" id="managementMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/feedback"><i class="bi bi-chat-left-text"></i>
-                                        Phản ánh</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i> Hộ gia đình</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/resident"><i class="bi bi-person"></i> Dân cư</a></li>
                             </ul>
                         </div>
                     </li>
+                    <!-- Thông báo & Phản ánh -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                            href="#financeMenu" role="button" aria-expanded="false" aria-controls="financeMenu">
-                            <span><i class="bi bi-folder"></i> Tài chính</span>
+                           href="#noticeMenu" role="button" aria-expanded="false" aria-controls="noticeMenu">
+                            <span>THÔNG BÁO & PHẢN ÁNH</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
-                        <div class="collapse ps-3" id="financeMenu">
+                        <div class="collapse ps-3" id="noticeMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/invoice"><i class="bi bi-cash-coin"></i>
-                                        Hóa đơn & Phí</a></li>
-                            </ul>
-                        </div>
-                        <div class="collapse ps-3" id="financeMenu">
-                            <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/financial"><i class="bi bi-bar-chart-line"></i>
-                                        Báo cáo tài chính</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/feedback"><i class="bi bi-chat-left-text"></i> Phản ánh</a></li>
                             </ul>
                         </div>
                     </li>
+                    <!-- Tài chính -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                            href="#operationMenu" role="button" aria-expanded="false" aria-controls="operationMenu">
-                            <span><i class="bi bi-folder"></i> Vận hành</span>
+                           href="#financeMenu" role="button" aria-expanded="false" aria-controls="financeMenu">
+                            <span>TÀI CHÍNH</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
-                        <div class="collapse ps-3" id="operationMenu">
+                        <div class="collapse ps-3" id="financeMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/device"><i class="bi bi-wrench"></i>
-                                        Thiết bị</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/maintenance"><i class="bi bi-tools"></i>
-                                        Bảo trì</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/invoice"><i class="bi bi-cash-coin"></i> Hóa đơn & Phí</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/financial"><i class="bi bi-bar-chart-line"></i> Báo cáo tài chính</a></li>
                             </ul>
                         </div>
                     </li>
-
+                    <!-- Vận hành -->
+                    <li class="nav-item">
+                        <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+                           href="#operationMenu" role="button" aria-expanded="false" aria-controls="operationMenu">
+                            <span>VẬN HÀNH</span>
+                            <i class="bi bi-chevron-down small"></i>
+                        </a>
+                        <div class="collapse ps-3" id="operationMenu" data-bs-parent="#sidebarAccordion">
+                            <ul class="nav flex-column">
+                                <li class="nav-item"><a class="nav-link" href="/device"><i class="bi bi-wrench"></i> Thiết bị</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/maintenance"><i class="bi bi-tools"></i> Bảo trì</a></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
 
@@ -172,19 +181,67 @@
 
     <!-- Logout & Display Username -->
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const path = window.location.pathname;
+            // Map từng path tới menu cha và id của item con
+            const menuMap = [
+                { parentId: "accountMenu", items: [{path: "/admin", link: "/admin"}] },
+                { parentId: "managementMenu", items: [{path: "/apartment", link: "/apartment"}, {path: "/resident", link: "/resident"}] },
+                { parentId: "noticeMenu", items: [{path: "/feedback", link: "/feedback"}] },
+                { parentId: "financeMenu", items: [{path: "/invoice", link: "/invoice"}, {path: "/financial", link: "/financial"}] },
+                { parentId: "operationMenu", items: [{path: "/device", link: "/device"}, {path: "/maintenance", link: "/maintenance"}] }
+            ];
+    
+            let parentToOpen = null;
+            let foundActive = false;
+    
+            menuMap.forEach(menu => {
+                menu.items.forEach(item => {
+                    if (path.startsWith(item.path)) {
+                        // Bôi xanh item con
+                        document.querySelectorAll(`a.nav-link[href='${item.link}']`).forEach(link => {
+                            link.classList.add('active');
+                        });
+                        // Đánh dấu menu cha cần mở
+                        parentToOpen = menu.parentId;
+                        foundActive = true;
+                    }
+                });
+            });
+    
+            // Mở menu cha nếu cần
+            if (parentToOpen) {
+                const collapse = document.getElementById(parentToOpen);
+                if (collapse && !collapse.classList.contains('show')) {
+                    new bootstrap.Collapse(collapse, {toggle: true});
+                }
+            }
+    
+            // Đảm bảo các menu cha khác đóng lại
+            menuMap.forEach(menu => {
+                if (menu.parentId !== parentToOpen) {
+                    const collapse = document.getElementById(menu.parentId);
+                    if (collapse && collapse.classList.contains('show')) {
+                        new bootstrap.Collapse(collapse, {toggle: false});
+                    }
+                }
+            });
+    
+            // Nếu là trang chủ thì bôi xanh TRANG CHỦ
+            if (!foundActive && path === "/home") {
+                document.querySelectorAll("a.nav-link[href='/home']").forEach(link => {
+                    link.classList.add('active');
+                });
+            }
+        });
+    
+        // Đăng xuất
         function handleLogout() {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('username');
             window.location.href = '/login';
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const username = localStorage.getItem('username');
-            if (username) {
-                document.getElementById('userDisplayName').textContent = username;
-            }
-        });
     </script>
 
     <th:block layout:fragment="scripts">
