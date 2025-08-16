@@ -38,7 +38,7 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         User resident = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
 
-        Apartment apartment = apartmentRepository.findByApartmentNumber(apiRequest.getApartmentNumber())
+        Apartment apartment = apartmentRepository.findByOwnerId(resident.getId())
                 .orElseThrow(() -> new UserMessageException("Căn hộ không tồn tại"));
         validateFeedbackRequest(apiRequest);
 
