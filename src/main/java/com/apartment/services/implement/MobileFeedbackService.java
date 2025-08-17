@@ -166,7 +166,7 @@ public class MobileFeedbackService implements IMobileFeedbackService {
 
     private String buildDetailedContent(MobileFeedbackCreateRequest request) {
         StringBuilder content = new StringBuilder();
-        content.append("Nội dung: ").append(request.getContent()).append("\n");
+        content.append(request.getContent()).append("\n");
 
         if ("Bảo trì".equals(request.getCategory())) {
             content.append("Loại vấn đề: ").append(request.getIssueType()).append("\n");
