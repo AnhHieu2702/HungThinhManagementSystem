@@ -110,17 +110,14 @@ function renderTable() {
             <td class="text-center">${feedback.handlerName || 'Chưa phân công'}</td>
             <td class="text-center">
                 <div class="action-buttons">
-                    <button class="btn action-btn btn-view" onclick="viewFeedback('${feedback.id}')" title="Xem chi tiết">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn action-btn btn-edit" onclick="editFeedback('${feedback.id}')" title="Chỉnh sửa">
-                        <i class="fas fa-edit"></i>
-                    </button>
                     ${feedback.status.toLowerCase() === 'pending' || feedback.status.toLowerCase() === 'chờ xử lý' ? `
                         <button class="btn action-btn btn-add-user" onclick="assignHandler('${feedback.id}')" title="Phân công">
                             <i class="fas fa-user-plus"></i>
                         </button>
                     ` : ''}
+                    <button class="btn action-btn btn-edit" onclick="editFeedback('${feedback.id}')" title="Chỉnh sửa">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </div>
             </td>
         </tr>
