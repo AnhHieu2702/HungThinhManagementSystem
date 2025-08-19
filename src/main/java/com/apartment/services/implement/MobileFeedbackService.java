@@ -38,7 +38,7 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         User resident = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new UserMessageException("Người dùng không tồn tại"));
 
-        Apartment apartment = apartmentRepository.findByApartmentNumber(apiRequest.getApartmentNumber())
+        Apartment apartment = apartmentRepository.findByOwnerId(resident.getId())
                 .orElseThrow(() -> new UserMessageException("Căn hộ không tồn tại"));
         validateFeedbackRequest(apiRequest);
 
@@ -166,7 +166,7 @@ public class MobileFeedbackService implements IMobileFeedbackService {
 
     private String buildDetailedContent(MobileFeedbackCreateRequest request) {
         StringBuilder content = new StringBuilder();
-        content.append("Nội dung: ").append(request.getContent()).append("\n");
+        content.append(request.getContent()).append("\n");
 
         if ("Bảo trì".equals(request.getCategory())) {
             content.append("Loại vấn đề: ").append(request.getIssueType()).append("\n");

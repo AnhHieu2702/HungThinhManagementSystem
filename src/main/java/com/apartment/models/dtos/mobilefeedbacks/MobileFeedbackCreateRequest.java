@@ -1,7 +1,6 @@
 package com.apartment.models.dtos.mobilefeedbacks;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,9 +12,6 @@ public class MobileFeedbackCreateRequest {
 
     @NotBlank(message = "Vui lòng nhập nội dung phản ánh")
     private String content;
-
-    @NotNull(message = "Vui lòng chọn căn hộ")
-    private String apartmentNumber;
 
     @NotBlank(message = "Vui lòng chọn loại phản ánh")
     private String category; // Bảo trì, Khiếu nại, Đề xuất, Khẩn cấp, Khác
