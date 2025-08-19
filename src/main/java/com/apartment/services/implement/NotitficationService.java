@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.apartment.models.dtos.notification.NotificationCreateRequest;
 import com.apartment.models.dtos.notification.NotificationGetResponse;
 import com.apartment.models.dtos.notification.NotificationGetsResponse;
+import com.apartment.models.dtos.notification.NotificationUpdateRequest;
 import com.apartment.models.entities.bases.Notification;
 import com.apartment.models.entities.bases.User;
 import com.apartment.models.entities.enums.TargetType;
@@ -45,6 +46,7 @@ public class NotitficationService implements INotificationSerice {
                             .content(shortContent)
                             .senderName(notification.getSender().getRole().getDisplayName())
                             .sendTime(timeAgo) // trả về dạng "X giờ Y phút trước"
+                            .priority(notification.getPriority().getDisplayName())
                             .build();
                 })
                 .toList();
@@ -89,6 +91,31 @@ public class NotitficationService implements INotificationSerice {
         return ApiResult.success(notification.getId(), "Tạo thông báo thành công");
     }
 
+    @Override
+    public ApiResult<String> updateNotification(UUID id, NotificationUpdateRequest apiRequest) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo với ID: " + id));
+
+        notification.setTitle(apiRequest.getTitle());
+        notification.setContent(apiRequest.getContent());
+        notification.setTargetType(apiRequest.getTargetType());
+        notification.setPriority(apiRequest.getPriority());
+
+        notificationRepository.save(notification);
+
+        return ApiResult.success(null, "Thông báo đã được cập nhật");
+    }
+
+    @Override
+    public ApiResult<String> deleteNotification(UUID id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo với ID: " + id));
+
+        notificationRepository.delete(notification);
+
+        return ApiResult.success(null , "Thông báo đã được xóa");
+    }
+
     private UUID getUserIdFromAuthentication(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) {
             throw new RuntimeException("Không xác định được người dùng");
@@ -131,7 +158,8 @@ public class NotitficationService implements INotificationSerice {
     }
 
     private String shortenContent(String content, int maxLength) {
-        if (content == null) return "";
+        if (content == null)
+            return "";
         if (content.length() <= maxLength) {
             return content;
         }

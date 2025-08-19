@@ -1,0 +1,42 @@
+/* Notification custom styles, copy từ <style> trong HTML sang đây */
+
+.modal-header-custom {
+    background: #1b2d73 !important;
+    color: #fff !important;
+}
+
+.modal-header-custom .modal-title {
+    color: #fff !important;
+}
+
+.btn-custom {
+    background: #1b2d73;
+    color: #fff;
+    border: none;
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+    background: #203883;
+    color: #fff;
+}
+
+.table thead th {
+    background: #1b2d73;
+    color: #fff;
+}
+
+.table-action-btns .btn {
+    margin: 0 2px;
+}
+
+.notification-detail-readonly input,
+.notification-detail-readonly textarea,
+.notification-detail-readonly select {
+    background: #f0f1f3;
+    pointer-events: none;
+}
+
+.modal .form-label {
+    font-weight: 500;
+}

@@ -17,4 +17,6 @@ public class NotificationGetsResponse {
     private String senderName;
 
     private String sendTime;
+
+    private String priority;
 }
