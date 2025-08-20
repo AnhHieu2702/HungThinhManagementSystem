@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/main",
             "/apartment",
             "/resident",
-            "/resident",
+            "/notification", 
             "/feedback",
             "/invoice",
             "/financial",

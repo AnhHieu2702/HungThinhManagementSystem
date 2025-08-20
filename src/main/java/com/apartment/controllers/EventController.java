@@ -1,9 +1,10 @@
 package com.apartment.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.apartment.models.dtos.events.EventCreateRequest;
+import com.apartment.models.dtos.events.EventGetResponse;
 import com.apartment.models.dtos.events.EventGetsResponse;
 import com.apartment.models.dtos.events.EventRegistrationRequest;
 import com.apartment.models.global.ApiResult;
@@ -35,11 +36,15 @@ public class EventController extends ApiBaseController {
         this.eventService = eventService;
     }
 
-    @GetMapping("resident/events/upcoming")
+    @PostMapping("admin/events")
+    public ResponseEntity<ApiResult<String>> createEvent(Authentication authentication, @Valid @RequestBody EventCreateRequest apiRequest) {
+        return executeApiResult(() -> eventService.createEvent(authentication, apiRequest));
+    }
+
+    @GetMapping("resident/events")
     @PreAuthorize("hasRole('RESIDENT')")
-    public ResponseEntity<ApiResult<List<EventGetsResponse>>> getUpcomingEvents(
-            @RequestParam(required = false) String eventType) {
-        return executeApiResult(() -> eventService.getUpcomingEvents(eventType));
+    public ResponseEntity<ApiResult<List<EventGetsResponse>>> getUpcomingEvent() {
+        return executeApiResult(() -> eventService.getUpcomingEvents());
     }
 
     @PostMapping("resident/events/register")
@@ -59,4 +64,10 @@ public class EventController extends ApiBaseController {
         
         return executeApiResult(() -> eventService.cancelEventRegistration(eventId, currentUsername));
     }
+
+    @GetMapping("resident/events/{eventId}")
+    @PreAuthorize("hasRole('RESIDENT')")
+    public ResponseEntity<ApiResult<EventGetResponse>> getEvent(@PathVariable UUID eventId) {
+        return executeApiResult(() -> eventService.getEventDetails(eventId));
+    }    
 }

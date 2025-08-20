@@ -43,7 +43,7 @@
             background-color: #0d6efd;
             color: #fff !important;
             font-weight: bold;
-}
+        }
     </style>
 </head>
 
@@ -70,68 +70,78 @@
                     <!-- Tài khoản -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                           href="#accountMenu" role="button" aria-expanded="false" aria-controls="accountMenu">
+                            href="#accountMenu" role="button" aria-expanded="false" aria-controls="accountMenu">
                             <span> TÀI KHOẢN</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="accountMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/admin"><i class="bi bi-person-fill-add"></i> Nhân viên</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/admin"><i
+                                            class="bi bi-person-fill-add"></i> Nhân viên</a></li>
                             </ul>
                         </div>
                     </li>
                     <!-- Quản lý -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                           href="#managementMenu" role="button" aria-expanded="false" aria-controls="managementMenu">
+                            href="#managementMenu" role="button" aria-expanded="false" aria-controls="managementMenu">
                             <span>QUẢN LÝ</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="managementMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i> Hộ gia đình</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/resident"><i class="bi bi-person"></i> Dân cư</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/apartment"><i class="bi bi-house"></i>
+                                        Hộ gia đình</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/resident"><i class="bi bi-person"></i>
+                                        Dân cư</a></li>
                             </ul>
                         </div>
                     </li>
                     <!-- Thông báo & Phản ánh -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                           href="#noticeMenu" role="button" aria-expanded="false" aria-controls="noticeMenu">
+                            href="#noticeMenu" role="button" aria-expanded="false" aria-controls="noticeMenu">
                             <span>THÔNG BÁO & PHẢN ÁNH</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="noticeMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/feedback"><i class="bi bi-chat-left-text"></i> Phản ánh</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/notification"><i
+                                            class="bi bi-megaphone"></i> Thông báo</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/feedback"><i
+                                            class="bi bi-chat-left-text"></i> Phản ánh</a></li>
                             </ul>
                         </div>
                     </li>
                     <!-- Tài chính -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                           href="#financeMenu" role="button" aria-expanded="false" aria-controls="financeMenu">
+                            href="#financeMenu" role="button" aria-expanded="false" aria-controls="financeMenu">
                             <span>TÀI CHÍNH</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="financeMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/invoice"><i class="bi bi-cash-coin"></i> Hóa đơn & Phí</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/financial"><i class="bi bi-bar-chart-line"></i> Báo cáo tài chính</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/invoice"><i class="bi bi-cash-coin"></i>
+                                        Hóa đơn & Phí</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/financial"><i
+                                            class="bi bi-bar-chart-line"></i> Báo cáo tài chính</a></li>
                             </ul>
                         </div>
                     </li>
                     <!-- Vận hành -->
                     <li class="nav-item">
                         <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
-                           href="#operationMenu" role="button" aria-expanded="false" aria-controls="operationMenu">
+                            href="#operationMenu" role="button" aria-expanded="false" aria-controls="operationMenu">
                             <span>VẬN HÀNH</span>
                             <i class="bi bi-chevron-down small"></i>
                         </a>
                         <div class="collapse ps-3" id="operationMenu" data-bs-parent="#sidebarAccordion">
                             <ul class="nav flex-column">
-                                <li class="nav-item"><a class="nav-link" href="/device"><i class="bi bi-wrench"></i> Thiết bị</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/maintenance"><i class="bi bi-tools"></i> Bảo trì</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/device"><i class="bi bi-wrench"></i>
+                                        Thiết bị</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/maintenance"><i class="bi bi-tools"></i>
+                                        Bảo trì</a></li>
                             </ul>
                         </div>
                     </li>
@@ -185,16 +195,16 @@
             const path = window.location.pathname;
             // Map từng path tới menu cha và id của item con
             const menuMap = [
-                { parentId: "accountMenu", items: [{path: "/admin", link: "/admin"}] },
-                { parentId: "managementMenu", items: [{path: "/apartment", link: "/apartment"}, {path: "/resident", link: "/resident"}] },
-                { parentId: "noticeMenu", items: [{path: "/feedback", link: "/feedback"}] },
-                { parentId: "financeMenu", items: [{path: "/invoice", link: "/invoice"}, {path: "/financial", link: "/financial"}] },
-                { parentId: "operationMenu", items: [{path: "/device", link: "/device"}, {path: "/maintenance", link: "/maintenance"}] }
+                { parentId: "accountMenu", items: [{ path: "/admin", link: "/admin" }] },
+                { parentId: "managementMenu", items: [{ path: "/apartment", link: "/apartment" }, { path: "/resident", link: "/resident" }] },
+                { parentId: "noticeMenu", items: [{ path: "/feedback", link: "/feedback" }, { path: "/notification", link: "/notification" }] },
+                { parentId: "financeMenu", items: [{ path: "/invoice", link: "/invoice" }, { path: "/financial", link: "/financial" }] },
+                { parentId: "operationMenu", items: [{ path: "/device", link: "/device" }, { path: "/maintenance", link: "/maintenance" }] }
             ];
-    
+
             let parentToOpen = null;
             let foundActive = false;
-    
+
             menuMap.forEach(menu => {
                 menu.items.forEach(item => {
                     if (path.startsWith(item.path)) {
@@ -208,33 +218,40 @@
                     }
                 });
             });
-    
+
             // Mở menu cha nếu cần
             if (parentToOpen) {
                 const collapse = document.getElementById(parentToOpen);
                 if (collapse && !collapse.classList.contains('show')) {
-                    new bootstrap.Collapse(collapse, {toggle: true});
+                    new bootstrap.Collapse(collapse, { toggle: true });
                 }
             }
-    
+
             // Đảm bảo các menu cha khác đóng lại
             menuMap.forEach(menu => {
                 if (menu.parentId !== parentToOpen) {
                     const collapse = document.getElementById(menu.parentId);
                     if (collapse && collapse.classList.contains('show')) {
-                        new bootstrap.Collapse(collapse, {toggle: false});
+                        new bootstrap.Collapse(collapse, { toggle: false });
                     }
                 }
             });
-    
+
             // Nếu là trang chủ thì bôi xanh TRANG CHỦ
             if (!foundActive && path === "/home") {
                 document.querySelectorAll("a.nav-link[href='/home']").forEach(link => {
                     link.classList.add('active');
                 });
             }
+
+            // Lấy username từ localStorage và hiển thị
+            const userDisplayName = document.getElementById("userDisplayName");
+            const username = localStorage.getItem("username");
+            if (username && userDisplayName) {
+                userDisplayName.textContent = username;
+            }
         });
-    
+
         // Đăng xuất
         function handleLogout() {
             localStorage.removeItem('accessToken');

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.apartment.exceptions.UserMessageException;
+import com.apartment.models.dtos.events.EventCreateRequest;
+import com.apartment.models.dtos.events.EventGetResponse;
 import com.apartment.models.dtos.events.EventGetsResponse;
 import com.apartment.models.dtos.events.EventRegistrationRequest;
 import com.apartment.models.entities.bases.Apartment;
@@ -13,12 +15,14 @@ import com.apartment.models.entities.bases.Resident;
 import com.apartment.models.entities.bases.User;
 import com.apartment.models.entities.enums.UserRole;
 import com.apartment.models.global.ApiResult;
+import com.apartment.models.security.UserPrincipal;
 import com.apartment.repositories.ApartmentRepository;
 import com.apartment.repositories.EventRepository;
 import com.apartment.repositories.ResidentRepository;
 import com.apartment.repositories.UserRepository;
 import com.apartment.services.interfaces.IEventService;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +33,9 @@ public class EventService implements IEventService {
     private final ApartmentRepository apartmentRepository;
 
     public EventService(EventRepository eventRepository,
-                       UserRepository userRepository,
-                       ResidentRepository residentRepository,
-                       ApartmentRepository apartmentRepository) {
+            UserRepository userRepository,
+            ResidentRepository residentRepository,
+            ApartmentRepository apartmentRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.residentRepository = residentRepository;
@@ -39,27 +43,33 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public ApiResult<List<EventGetsResponse>> getUpcomingEvents(String eventType) {
-        LocalDateTime now = LocalDateTime.now();
-        List<Event> events;
-        
-        if (eventType != null && !eventType.trim().isEmpty()) {
-            // Lấy sự kiện theo loại và sắp tới
-            events = eventRepository.findByIsPublicTrueAndStartTimeAfterAndEventTypeOrderByStartTimeAsc(now, eventType.trim());
-        } else {
-            // Lấy tất cả sự kiện sắp tới
-            events = eventRepository.findByIsPublicTrueAndStartTimeAfterOrderByStartTimeAsc(now);
-        }
-        
+    public ApiResult<String> createEvent(Authentication auth, EventCreateRequest apiRequest) {
+        UUID userId = getUserIdFromAuthentication(auth);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + userId));
+
+        Event event = Event.builder()
+                .title(apiRequest.getTitle())
+                .description(apiRequest.getDescription())
+                .startTime(apiRequest.getStartTime())
+                .endTime(apiRequest.getEndTime())
+                .location(apiRequest.getLocation())
+                .eventType(apiRequest.getEventType())
+                .isPublic(true) // Mặc định là công khai
+                .createdBy(user)
+                .build();
+
+        eventRepository.save(event);
+        return ApiResult.success(null, "Tạo sự kiện thành công");
+    }
+
+    @Override
+    public ApiResult<List<EventGetsResponse>> getUpcomingEvents() {
+        List<Event> events = eventRepository.findAll();
         List<EventGetsResponse> responseList = events.stream()
                 .map(this::mapToEventResponse)
                 .toList();
-
-        String message = eventType != null && !eventType.trim().isEmpty() 
-            ? String.format("Lấy danh sách sự kiện loại '%s' sắp tới thành công", eventType)
-            : "Lấy danh sách sự kiện sắp tới thành công";
-
-        return ApiResult.success(responseList, message);
+        return ApiResult.success(responseList, "Lấy danh sách sự kiện sắp tới thành công");
     }
 
     @Override
@@ -103,14 +113,13 @@ public class EventService implements IEventService {
 
         // Log thông tin đăng ký (vì không có bảng riêng để lưu)
         String registrationInfo = String.format(
-            "Cư dân %s (Căn hộ: %s) đã đăng ký sự kiện '%s' vào %s. Ghi chú: %s",
-            resident.getFullName(),
-            userApartment.getApartmentNumber(),
-            event.getTitle(),
-            LocalDateTime.now(),
-            apiRequest.getNotes() != null ? apiRequest.getNotes() : "Không có"
-        );
-        
+                "Cư dân %s (Căn hộ: %s) đã đăng ký sự kiện '%s' vào %s. Ghi chú: %s",
+                resident.getFullName(),
+                userApartment.getApartmentNumber(),
+                event.getTitle(),
+                LocalDateTime.now(),
+                apiRequest.getNotes() != null ? apiRequest.getNotes() : "Không có");
+
         // Có thể lưu vào log file hoặc database log table
         System.out.println(registrationInfo);
 
@@ -153,13 +162,12 @@ public class EventService implements IEventService {
 
         // Log thông tin hủy đăng ký
         String cancellationInfo = String.format(
-            "Cư dân %s (Căn hộ: %s) đã hủy đăng ký sự kiện '%s' vào %s",
-            resident.getFullName(),
-            userApartment.getApartmentNumber(),
-            event.getTitle(),
-            LocalDateTime.now()
-        );
-        
+                "Cư dân %s (Căn hộ: %s) đã hủy đăng ký sự kiện '%s' vào %s",
+                resident.getFullName(),
+                userApartment.getApartmentNumber(),
+                event.getTitle(),
+                LocalDateTime.now());
+
         System.out.println(cancellationInfo);
 
         return ApiResult.success(null, "Hủy đăng ký sự kiện thành công");
@@ -170,6 +178,32 @@ public class EventService implements IEventService {
                 event.getId(),
                 event.getTitle(),
                 event.getDescription(),
+                event.getLocation()
+        );
+    }
+
+    private UUID getUserIdFromAuthentication(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new RuntimeException("Không xác định được người dùng");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserPrincipal) {
+            return ((UserPrincipal) principal).getId();
+        }
+        throw new RuntimeException("Principal không chứa thông tin userId");
+    }
+
+    @Override
+    public ApiResult<EventGetResponse> getEventDetails(UUID eventId) {
+        // TODO Auto-generated method stub
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new UserMessageException("Sự kiện không tồn tại"));
+
+        EventGetResponse response = new EventGetResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
                 event.getStartTime(),
                 event.getEndTime(),
                 event.getLocation(),
@@ -177,5 +211,8 @@ public class EventService implements IEventService {
                 event.getCreatedBy().getUsername(),
                 event.getIsPublic()
         );
+
+        return ApiResult.success(response, "Lấy thông tin sự kiện thành công");
     }
+
 }

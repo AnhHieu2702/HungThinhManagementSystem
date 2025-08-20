@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import com.apartment.models.dtos.notification.NotificationCreateRequest;
 import com.apartment.models.dtos.notification.NotificationGetResponse;
 import com.apartment.models.dtos.notification.NotificationGetsResponse;
+import com.apartment.models.dtos.notification.NotificationUpdateRequest;
 import com.apartment.models.global.ApiResult;
 
 public interface INotificationSerice {
@@ -16,4 +17,8 @@ public interface INotificationSerice {
     ApiResult<NotificationGetResponse> getNotification(UUID id);
 
     ApiResult<UUID> createNotification(Authentication authentication, NotificationCreateRequest apiRequest);
+
+    ApiResult<String> updateNotification(UUID id, NotificationUpdateRequest apiRequest);
+
+    ApiResult<String> deleteNotification(UUID id);
 }

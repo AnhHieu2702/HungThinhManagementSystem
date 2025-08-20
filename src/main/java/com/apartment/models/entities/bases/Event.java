@@ -1,14 +1,21 @@
 package com.apartment.models.entities.bases;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "events")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Event extends BaseEntity {
     
     @Column(name = "title", nullable = false, length = 200)
