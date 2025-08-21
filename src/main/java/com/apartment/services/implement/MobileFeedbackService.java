@@ -85,7 +85,6 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         return ApiResult.success(response, "Lấy thông tin phản ánh thành công");
     }
 
-    // UPDATED: Bỏ urgent parameter và logic liên quan
     @Override
     public ApiResult<List<MobileFeedbackSummaryResponse>> getMyFeedbacksWithFilter(
             String currentUsername, String status, String category) {
@@ -114,7 +113,6 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         return ApiResult.success(responseList, successMessage);
     }
 
-    // UPDATED: Bỏ logic urgent, chỉ giữ status và category
     private List<Feedback> getFilteredFeedbacks(UUID residentId, FeedbackStatus status, String category) {
         // Both status and category provided
         if (status != null && category != null) {
@@ -138,7 +136,6 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         return mobileFeedbackRepository.findByResidentIdOrderByIdDesc(residentId);
     }
 
-    // UPDATED: Bỏ logic urgent trong success message
     private String buildFilterSuccessMessage(String status, String category) {
         if (status != null && category != null) {
             return "Lấy danh sách phản ánh theo trạng thái và loại thành công";
@@ -164,32 +161,17 @@ public class MobileFeedbackService implements IMobileFeedbackService {
         }
     }
 
+    // SỬA: Chỉ lấy đúng mô tả chi tiết người dùng nhập, không nối thêm thông tin gì!
     private String buildDetailedContent(MobileFeedbackCreateRequest request) {
-        StringBuilder content = new StringBuilder();
-        content.append(request.getContent()).append("\n");
-
-        if ("Bảo trì".equals(request.getCategory())) {
-            content.append("Loại vấn đề: ").append(request.getIssueType()).append("\n");
-            content.append("Mức độ ưu tiên: ").append(request.getPriority()).append("\n");
-
-            if (request.getDeviceCode() != null && !request.getDeviceCode().trim().isEmpty()) {
-                content.append("Mã thiết bị: ").append(request.getDeviceCode()).append("\n");
-            }
-
-            if (request.getDeviceLocation() != null && !request.getDeviceLocation().trim().isEmpty()) {
-                content.append("Vị trí thiết bị: ").append(request.getDeviceLocation()).append("\n");
-            }
-        }
-
-        return content.toString();
+        return request.getContent();
     }
 
     private String getSuccessMessage(String category) {
         return switch (category) {
-            case "Bảo trì" -> "Gửi yêu cầu sửa chữa thiết bị thành công";
-            case "Khiếu nại" -> "Gửi khiếu nại thành công";
-            case "Đề xuất" -> "Gửi đề xuất thành công";
-            case "Khẩn cấp" -> "Gửi báo cáo khẩn cấp thành công";
+            case "Bảo trì" -> "Gửi phản ánh bảo trì thành công";
+            case "Khiếu nại" -> "Gửi phản ánh khiếu nại thành công";
+            case "Đề xuất" -> "Gửi phản ánh đề xuất thành công";
+            case "Khẩn cấp" -> "Gửi phản ánh khẩn cấp thành công";
             default -> "Gửi phản ánh thành công";
         };
     }
