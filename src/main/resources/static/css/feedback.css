@@ -304,6 +304,30 @@
     padding: 15px 20px;
 }
 
+/* Phân công xử lý Modal Custom */
+#assignModal .modal-header {
+    background: #152259;
+    color: white;
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+    padding: 15px 20px;
+}
+#assignModal .modal-title {
+    font-weight: 600;
+}
+#assignModal .btn-close {
+    filter: invert(1);
+}
+#assignModal .modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+#assignModal .btn-custom {
+    background: #152259;
+    color: #fff;
+    border: none;
+}
+
 /* Form styling in modal */
 .modal .form-label {
     font-weight: 600;

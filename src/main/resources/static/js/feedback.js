@@ -11,7 +11,6 @@ const API_ENDPOINTS = {
 function getAuthToken() {
     return localStorage.getItem('accessToken');
 }
-
 function getAuthHeaders() {
     const token = getAuthToken();
     return {
@@ -26,31 +25,32 @@ let itemsPerPage = 5;
 let totalFeedbacks = 0;
 let allFeedbacks = [];
 let filteredFeedbacks = [];
+let assignFeedbackId = null;
+
+const HANDLERS = [
+    { username: "KYTHUATVIEN", display: "Kỹ thuật viên" },
+    { username: "KETOAN", display: "Kế toán" }
+];
 
 // ================== KHỞI TẠO ==================
 document.addEventListener('DOMContentLoaded', function() {
     loadFeedbacks();
     setupEventListeners();
+    setupAssignModalEvents();
+    renderHandlerSelectOptions();
 });
 
 // ================== SỰ KIỆN FILTER ==================
 function setupEventListeners() {
-    // Sự kiện tìm kiếm theo tiêu đề
     const searchTitle = document.getElementById('searchTitle');
     if (searchTitle) {
         searchTitle.addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') {
-                applyFilters();
-            }
+            if (e.key === 'Enter') applyFilters();
         });
     }
-
-    // Sự kiện lọc theo danh mục và trạng thái
     ['searchCategory', 'searchStatus', 'searchHandler'].forEach(id => {
         const element = document.getElementById(id);
-        if (element) {
-            element.addEventListener('change', applyFilters);
-        }
+        if (element) element.addEventListener('change', applyFilters);
     });
 }
 
@@ -61,11 +61,7 @@ async function loadFeedbacks() {
         const response = await fetch(API_ENDPOINTS.feedbacks, {
             headers: getAuthHeaders()
         });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
+        if (!response.ok) throw new Error('Network response was not ok');
         const result = await response.json();
         if (result.status && Array.isArray(result.data)) {
             allFeedbacks = result.data;
@@ -110,7 +106,7 @@ function renderTable() {
             <td class="text-center">${feedback.handlerName || 'Chưa phân công'}</td>
             <td class="text-center">
                 <div class="action-buttons">
-                    ${feedback.status.toLowerCase() === 'pending' || feedback.status.toLowerCase() === 'chờ xử lý' ? `
+                    ${(feedback.status.toLowerCase() === 'pending' || feedback.status.toLowerCase() === 'chờ xử lý') ? `
                         <button class="btn action-btn btn-add-user" onclick="assignHandler('${feedback.id}')" title="Phân công">
                             <i class="fas fa-user-plus"></i>
                         </button>
@@ -175,7 +171,6 @@ function renderPagination() {
 function changePage(page) {
     const totalPages = Math.ceil(filteredFeedbacks.length / itemsPerPage);
     if (page < 1 || page > totalPages) return;
-    
     currentPage = page;
     renderTable();
     renderPagination();
@@ -214,33 +209,66 @@ function clearFilters() {
     renderPagination();
 }
 
-// ================== XỬ LÝ PHẢN ÁNH ==================
-async function assignHandler(feedbackId) {
-    const handlerName = prompt('Nhập tên người xử lý:');
-    if (!handlerName) return;
+// ================== PHÂN CÔNG XỬ LÝ ==================
+function assignHandler(feedbackId) {
+    assignFeedbackId = feedbackId;
+    document.getElementById('handlerSelect').value = '';
+    const assignModal = new bootstrap.Modal(document.getElementById('assignModal'));
+    assignModal.show();
+}
 
-    showLoading(true);
-    try {
-        const response = await fetch(API_ENDPOINTS.assignFeedback(feedbackId), {
-            method: 'PUT',
-            headers: getAuthHeaders(),
-            body: JSON.stringify({ handlerName })
+// Gán lại options cho select trong modal
+function renderHandlerSelectOptions() {
+    const select = document.getElementById('handlerSelect');
+    if (!select) return;
+    select.innerHTML = `<option value="">Tất cả</option>` +
+        HANDLERS.map(h => `<option value="${h.username}">${h.display}</option>`).join('');
+}
+
+// Setup event modal phân công
+function setupAssignModalEvents() {
+    const assignBtn = document.getElementById('assignSubmitBtn');
+    if (assignBtn) {
+        assignBtn.addEventListener('click', async function() {
+            const handlerValue = document.getElementById('handlerSelect').value;
+            if (!handlerValue) {
+                showAlert('Vui lòng chọn người xử lý!', 'danger');
+                return;
+            }
+            showLoading(true);
+            try {
+                // Gửi đúng key cho backend (theo Swagger phải là assignedToUsername)
+                const bodyData = { assignedToUsername: handlerValue };
+                const response = await fetch(API_ENDPOINTS.assignFeedback(assignFeedbackId), {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(bodyData)
+                });
+                if (!response.ok) {
+                    let errorMsg = 'Network response was not ok';
+                    try {
+                        const errorData = await response.json();
+                        errorMsg = errorData.userMessage || errorMsg;
+                    } catch (e) {}
+                    throw new Error(errorMsg);
+                }
+                const result = await response.json();
+                if (result.status) {
+                    showAlert('Phân công xử lý thành công!', 'success');
+                    const modalEl = document.getElementById('assignModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+                    loadFeedbacks();
+                } else {
+                    showAlert(result.userMessage || 'Có lỗi khi phân công', 'danger');
+                }
+            } catch (error) {
+                showAlert('Không thể phân công người xử lý: ' + error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                showLoading(false);
+            }
         });
-
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const result = await response.json();
-        if (result.status) {
-            showAlert('Phân công xử lý thành công!', 'success');
-            loadFeedbacks();
-        } else {
-            showAlert(result.userMessage || 'Có lỗi khi phân công', 'danger');
-        }
-    } catch (error) {
-        showAlert('Không thể phân công người xử lý', 'danger');
-        console.error('Error:', error);
-    } finally {
-        showLoading(false);
     }
 }
 
@@ -304,4 +332,9 @@ function updateRecordsInfo(start, end, total) {
     if (recordsInfo) {
         recordsInfo.textContent = `Hiển thị ${start}-${end} trong tổng số ${total} phản ánh`;
     }
+}
+
+// Placeholder cho chức năng chỉnh sửa
+function editFeedback(feedbackId) {
+    showAlert('Chức năng chỉnh sửa chưa được phát triển.', 'info');
 }

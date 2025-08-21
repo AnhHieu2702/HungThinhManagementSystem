@@ -115,6 +115,36 @@
         </div>
     </div>
 
+    <!-- Modal: Phân công xử lý -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #152259; color: white;">
+                    <h5 class="modal-title" id="assignModalLabel">Phân công xử lý</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignForm">
+                        <div class="mb-3">
+                            <label for="handlerSelect" class="form-label fw-bold">Người xử lý <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="handlerSelect" required>
+                                <option value="">Tất cả</option>
+                                <option value="kythuat">Kỹ thuật viên</option>
+                                <option value="ketoan">Kế toán</option>
+                                <!-- Thêm các lựa chọn khác nếu cần -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-custom" id="assignSubmitBtn">Phân công</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-border text-primary" role="status">
@@ -132,3 +162,33 @@
 </body>
 
 </html>
+
+<!-- Modal: Phân công xử lý -->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #152259; color: white;">
+                <h5 class="modal-title" id="assignModalLabel">Phân công xử lý</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <form id="assignForm">
+                    <div class="mb-3">
+                        <label for="handlerSelect" class="form-label fw-bold">Người xử lý <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select" id="handlerSelect" required>
+                            <option value="">Tất cả</option>
+                            <option value="kythuat">Kỹ thuật viên</option>
+                            <option value="ketoan">Kế toán</option>
+                            <!-- Thêm các lựa chọn khác nếu cần -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-custom" id="assignSubmitBtn">Phân công</button>
+            </div>
+        </div>
+    </div>
+</div>
