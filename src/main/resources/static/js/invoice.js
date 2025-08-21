@@ -4,26 +4,26 @@ let itemsPerPage = 5;
 let allInvoices = [
     {
         id: "1",
-        code: "Hóa đơn 1",
-        apartment: "A - 1205",
-        amount: "1.850.000",
-        due: "2025-08-31",
+        code: "HD001",
+        apartment: "A2004",
+        amount: "300.000",
+        due: "2025-08-05",
         status: "Đã thanh toán"
     },
     {
         id: "2",
-        code: "Hóa đơn 2",
-        apartment: "B - 0823",
-        amount: "1.870.000",
-        due: "2025-08-31",
+        code: "HD002",
+        apartment: "A2004",
+        amount: "500.000",
+        due: "2025-08-03",
         status: "Chưa thanh toán"
     },
     {
         id: "3",
-        code: "Hóa đơn 3",
-        apartment: "C - 1402",
-        amount: "2.000.000",
-        due: "2025-07-31",
+        code: "HD003",
+        apartment: "A2004",
+        amount: "300.000",
+        due: "2025-08-03",
         status: "Quá hạn"
     }
 ];
@@ -31,32 +31,34 @@ let filteredInvoices = [...allInvoices];
 
 const serviceFees = [
     {
-        type: "Phí quản lý",
+        type: "Phí quản lý căn hộ",
         desc: "Phí duy trì hoạt động chung cư",
-        price: "15.000đ",
-        note: "+ VAT 10%",
-        unit: "m²/tháng"
+        price: "350.000đ",
+        unit: "tháng"
     },
     {
-        type: "Phí dịch vụ",
-        desc: "Vệ sinh, an ninh, tiện ích",
-        price: "8.500đ",
-        note: "+ VAT 10%",
-        unit: "m²/tháng"
+        type: "Phí internet",
+        desc: "Phí sử dụng internet",
+        price: "50.000đ",
+        unit: "tháng"
     },
     {
         type: "Phí đậu xe",
-        desc: "Ô tô, xe máy, xe đạp",
-        price: "500.000đ",
-        note: "Ô tô/Tháng",
+        desc: "Ô tô, xe máy",
+        price: "Ô tô: 500.000đ<br>Xe máy: 100.000đ",
         unit: "vị trí/tháng"
     },
     {
-        type: "Điện nước chung",
-        desc: "Khu vực chung, thang máy",
-        price: "3.500đ",
-        note: "Theo EVN",
+        type: "Điện",
+        desc: "Tiêu thụ điện năng",
+        price: "2.000đ",
         unit: "kWh"
+    },
+    {
+        type: "Nước",
+        desc: "Tiêu thụ nước",
+        price: "15.000đ",
+        unit: "m³"
     }
 ];
 
@@ -70,22 +72,95 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEditInvoiceModal();
     setupViewInvoiceModal();
     setupPrintInvoiceModal();
+    setupEditServiceFeeModal();
 });
 
 // ================== BẢNG PHÍ DỊCH VỤ ==================
 function renderServiceFees() {
     const tbody = document.getElementById('serviceFeeTableBody');
-    tbody.innerHTML = serviceFees.map(fee => `
+    tbody.innerHTML = serviceFees.map((fee, idx) => `
         <tr>
             <td>
                 <div class="fee-type">${fee.type}</div>
                 <div class="fee-desc">${fee.desc}</div>
             </td>
-            <td>${fee.price} <span class="fee-note">${fee.note}</span></td>
+            <td>${fee.price}</td>
             <td>${fee.unit}</td>
-            <td><button class="action-btn" title="Chỉnh sửa"><i class="fas fa-pen"></i></button></td>
+            <td>
+                <button class="action-btn" title="Chỉnh sửa" onclick="openEditServiceFeeModal('${idx}')">
+                    <i class="fas fa-pen"></i>
+                </button>
+            </td>
         </tr>
     `).join('');
+}
+
+// ================== SỬA BẢNG PHÍ DỊCH VỤ ==================
+function openEditServiceFeeModal(index) {
+    const fee = serviceFees[index];
+    if (!fee) return;
+
+    document.getElementById('editFeeIndex').value = index;
+    document.getElementById('editFeeType').value = fee.type;
+    document.getElementById('editFeeDesc').value = fee.desc;
+    // Nếu là phí đậu xe, cho nhập dạng text tự do (multi-line), còn lại lấy về số cho tiện
+    if (fee.type === "Phí đậu xe") {
+        document.getElementById('editFeePrice').value = fee.price.replace(/<br>/g, '\n');
+    } else {
+        document.getElementById('editFeePrice').value = fee.price.replace(/\D/g, "");
+    }
+    document.getElementById('editFeeUnit').value = fee.unit;
+
+    document.getElementById('editServiceFeeModal').style.display = 'flex';
+}
+
+function setupEditServiceFeeModal() {
+    document.getElementById('editServiceFeeModalClose').onclick = hideEditServiceFeeModal;
+    document.getElementById('editServiceFeeModalCancel').onclick = hideEditServiceFeeModal;
+    document.getElementById('saveEditServiceFeeBtn').onclick = saveEditServiceFee;
+}
+
+function hideEditServiceFeeModal() {
+    document.getElementById('editServiceFeeModal').style.display = 'none';
+}
+
+function saveEditServiceFee() {
+    const index = document.getElementById('editFeeIndex').value;
+    const type = document.getElementById('editFeeType').value.trim();
+    const desc = document.getElementById('editFeeDesc').value.trim();
+    let price = document.getElementById('editFeePrice').value.trim();
+    const unit = document.getElementById('editFeeUnit').value.trim();
+
+    if (!type || !desc || !price || !unit) {
+        showToastAlert('Vui lòng nhập đầy đủ thông tin!', 'warning');
+        return;
+    }
+
+    let formattedPrice = price;
+    // Nếu là phí đậu xe, format từng dòng sang dạng tiền Việt
+    if (type === "Phí đậu xe") {
+        // nhập dạng: Ô tô: 500000\nXe máy: 100000 hoặc các kiểu tương tự
+        // tự động format từng dòng
+        formattedPrice = price.split('\n').map(line => {
+            let parts = line.split(':');
+            if (parts.length === 2) {
+                let label = parts[0].trim();
+                let val = formatMoney(parts[1].trim());
+                return label + ": " + val + "/tháng";
+            } else {
+                // Nếu không đúng cú pháp thì giữ nguyên
+                return line;
+            }
+        }).join('<br>');
+    } else {
+        formattedPrice = formatMoney(price);
+    }
+
+    // Cập nhật lại dữ liệu
+    serviceFees[index] = { type, desc, price: formattedPrice, note: "", unit };
+    renderServiceFees();
+    showToastAlert('Cập nhật bảng phí thành công!', 'success');
+    hideEditServiceFeeModal();
 }
 
 // ================== BẢNG DANH SÁCH HÓA ĐƠN ==================
@@ -225,7 +300,9 @@ function doPrintInvoice() {
 
 // ================== FORMAT & UTILS ==================
 function formatMoney(money) {
-    if (typeof money === 'string' && money.endsWith('đ')) return money;
+    // Chỉ lấy số để format
+    money = money.replace(/\D/g, "");
+    if (!money) return "";
     return money.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ";
 }
 

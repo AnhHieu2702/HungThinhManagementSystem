@@ -279,6 +279,45 @@
         </div>
     </div>
 
+    <!-- Modal Sửa bảng phí dịch vụ -->
+    <div id="editServiceFeeModal" class="modal-overlay" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-header modal-header-custom">
+                <span class="modal-title" id="editServiceFeeModalLabel">Sửa bảng phí dịch vụ</span>
+                <button type="button" class="modal-close" id="editServiceFeeModalClose" aria-label="Đóng">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="editServiceFeeForm" autocomplete="off">
+                    <input type="hidden" id="editFeeIndex">
+                    <div class="mb-3">
+                        <label class="form-label">Loại phí *</label>
+                        <input type="text" class="form-control" id="editFeeType" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả *</label>
+                        <input type="text" class="form-control" id="editFeeDesc" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Đơn giá *</label>
+                        <input type="text" class="form-control" id="editFeePrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú *</label>
+                        <input type="text" class="form-control" id="editFeeNote" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Đơn vị *</label>
+                        <input type="text" class="form-control" id="editFeeUnit" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="editServiceFeeModalCancel">Huỷ</button>
+                <button type="button" class="btn btn-custom" id="saveEditServiceFeeBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -461,6 +500,41 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="printInvoiceModalCancel">Huỷ</button>
             <button type="button" class="btn btn-custom" id="doPrintInvoiceBtn">In</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa bảng phí dịch vụ -->
+<div id="editServiceFeeModal" class="modal-overlay" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-header modal-header-custom">
+            <span class="modal-title" id="editServiceFeeModalLabel">Sửa bảng phí dịch vụ</span>
+            <button type="button" class="modal-close" id="editServiceFeeModalClose" aria-label="Đóng">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="editServiceFeeForm" autocomplete="off">
+                <input type="hidden" id="editFeeIndex">
+                <div class="mb-3">
+                    <label class="form-label">Loại phí *</label>
+                    <input type="text" class="form-control" id="editFeeType" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mô tả *</label>
+                    <input type="text" class="form-control" id="editFeeDesc" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Đơn giá *</label>
+                    <input type="text" class="form-control" id="editFeePrice" required>
+                </div>  
+                <div class="mb-3">
+                    <label class="form-label">Đơn vị *</label>
+                    <input type="text" class="form-control" id="editFeeUnit" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="editServiceFeeModalCancel">Huỷ</button>
+            <button type="button" class="btn btn-custom" id="saveEditServiceFeeBtn">Lưu</button>
         </div>
     </div>
 </div>
