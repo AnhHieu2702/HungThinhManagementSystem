@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/admin/apartments")
 @Tag(name = "Apartment Management")
-// @PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class ApartmentController extends ApiBaseController {
     private final IApartmentService apartmentService;
 

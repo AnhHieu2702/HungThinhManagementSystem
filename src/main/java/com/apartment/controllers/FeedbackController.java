@@ -51,8 +51,8 @@ public class FeedbackController extends ApiBaseController {
         return executeApiResult(() -> feedbackService.createFeedback(apiRequest, currentUsername));
     }
 
-    @PutMapping("admin-technician/feedbacks/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
+    @PutMapping("admin-technician-accountant/feedbacks/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN') or hasRole('ACCOUNTANT')")
     public ResponseEntity<ApiResult<String>> updateFeedback(@PathVariable UUID id, 
                                                            @Valid @RequestBody FeedbackUpdateRequest apiRequest) {
         return executeApiResult(() -> feedbackService.updateFeedback(id, apiRequest));

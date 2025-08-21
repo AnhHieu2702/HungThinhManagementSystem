@@ -43,7 +43,7 @@ public class ResidentController extends ApiBaseController {
         return executeApiResult(() -> residentService.getResidentsByApartmentId(apartmentId));
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("admin/apartments/{apartmentId}/residents")
     public ResponseEntity<ApiResult<UUID>> createResident(@PathVariable UUID apartmentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
         return executeApiResult(() -> residentService.createResident(apartmentId, apiRequest));
