@@ -328,25 +328,52 @@
     border: none;
 }
 
-/* Form styling in modal */
-.modal .form-label {
+/* Sửa phản ánh Modal Custom */
+#editFeedbackModal .modal-header {
+    background: #152259;
+    color: white;
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+    padding: 15px 20px;
+}
+#editFeedbackModal .modal-title {
+    font-weight: 600;
+}
+#editFeedbackModal .btn-close {
+    filter: invert(1);
+}
+#editFeedbackModal .modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+#editFeedbackModal .btn-custom {
+    background: #152259;
+    color: #fff;
+    border: none;
+}
+#editFeedbackModal .form-label {
     font-weight: 600;
     color: #495057;
     margin-bottom: 8px;
 }
-
-.modal .form-control,
-.modal .form-select {
+#editFeedbackModal .form-control,
+#editFeedbackModal .form-select {
     border: 1px solid #ced4da;
     border-radius: 6px;
     padding: 10px 12px;
     transition: all 0.3s ease;
 }
-
-.modal .form-control:focus,
-.modal .form-select:focus {
+#editFeedbackModal .form-control:focus,
+#editFeedbackModal .form-select:focus {
     border-color: #152259;
     box-shadow: 0 0 0 0.2rem rgba(21, 34, 89, 0.25);
+}
+
+#editFeedbackModal input[readonly],
+#editFeedbackModal textarea[readonly] {
+    background: #e9ecef;
+    color: #495057;
+    cursor: not-allowed;
 }
 
 /* Custom Alert */
@@ -396,34 +423,46 @@
 }
 
 /* Responsive Design */
+@media (max-width: 992px) {
+    #editFeedbackModal .modal-dialog {
+        max-width: 95vw;
+        margin: 1.75rem auto;
+    }
+    #editFeedbackModal .modal-body .col-md-6, 
+    #editFeedbackModal .modal-body .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .search-section {
         padding: 15px;
     }
-    
     .search-section .row {
         margin-bottom: 10px;
     }
-    
     .action-btn {
         width: 30px;
         height: 30px;
     }
-    
     .status-badge,
     .category-badge {
         font-size: 11px;
         padding: 4px 8px;
     }
-    
     .table thead th,
     .table tbody td {
         font-size: 13px;
         padding: 10px 8px;
     }
-    
     #recordsInfo {
         font-size: 12px;
+    }
+    #editFeedbackModal .modal-body .col-md-6, 
+    #editFeedbackModal .modal-body .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
     }
 }
 
@@ -431,14 +470,22 @@
     .search-section {
         padding: 10px;
     }
-    
     .action-btn {
         width: 28px;
         height: 28px;
     }
-    
     .pagination .page-link {
         padding: 6px 10px;
         font-size: 12px;
+    }
+    #editFeedbackModal .modal-title {
+        font-size: 16px;
+    }
+    #editFeedbackModal .modal-header,
+    #editFeedbackModal .modal-footer {
+        padding: 10px;
+    }
+    #editFeedbackModal .modal-body {
+        padding: 10px;
     }
 }

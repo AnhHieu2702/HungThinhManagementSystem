@@ -145,6 +145,64 @@
         </div>
     </div>
 
+    <!-- Modal: Sửa phản ánh -->
+    <div class="modal fade" id="editFeedbackModal" tabindex="-1" aria-labelledby="editFeedbackModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #152259; color: white;">
+                    <h5 class="modal-title" id="editFeedbackModalLabel">Sửa phản ánh</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form id="editFeedbackForm">
+                    <div class="modal-body row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tiêu đề *</label>
+                            <input type="text" class="form-control" id="editTitle" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Danh mục phản ánh *</label>
+                            <input type="text" class="form-control" id="editCategory" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Người phản ánh *</label>
+                            <input type="text" class="form-control" id="editResidentName" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trạng thái *</label>
+                            <select class="form-select" id="editStatus" required>
+                                <option value="PENDING">Chờ xử lý</option>
+                                <option value="IN_PROGRESS">Đang xử lý</option>
+                                <option value="RESOLVED">Đã xử lý</option>
+                                <option value="CLOSED">Đã đóng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Người xử lý *</label>
+                            <select class="form-select" id="editHandler" required>
+                                <option value="">Chưa phân công</option>
+                                <option value="KYTHUATVIEN">Kỹ thuật viên</option>
+                                <option value="KETOAN">Kế toán</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Nội dung *</label>
+                            <textarea class="form-control" id="editContent" rows="3" readonly></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Phản hồi của người xử lý *</label>
+                            <input type="text" class="form-control" id="editResponse" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-custom">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-border text-primary" role="status">
@@ -189,6 +247,64 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-custom" id="assignSubmitBtn">Phân công</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Sửa phản ánh -->
+<div class="modal fade" id="editFeedbackModal" tabindex="-1" aria-labelledby="editFeedbackModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #152259; color: white;">
+                <h5 class="modal-title" id="editFeedbackModalLabel">Sửa phản ánh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <form id="editFeedbackForm">
+                <div class="modal-body row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Tiêu đề *</label>
+                        <input type="text" class="form-control" id="editTitle" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Danh mục phản ánh *</label>
+                        <input type="text" class="form-control" id="editCategory" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Người phản ánh *</label>
+                        <input type="text" class="form-control" id="editResidentName" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Trạng thái *</label>
+                        <select class="form-select" id="editStatus" required>
+                            <option value="PENDING">Chờ xử lý</option>
+                            <option value="IN_PROGRESS">Đang xử lý</option>
+                            <option value="RESOLVED">Đã xử lý</option>
+                            <option value="CLOSED">Đã đóng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Người xử lý *</label>
+                        <select class="form-select" id="editHandler" required>
+                            <option value="">Chưa phân công</option>
+                            <option value="KYTHUATVIEN">Kỹ thuật viên</option>
+                            <option value="KETOAN">Kế toán</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Nội dung *</label>
+                        <textarea class="form-control" id="editContent" rows="3" readonly></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Phản hồi của người xử lý *</label>
+                        <input type="text" class="form-control" id="editResponse" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-custom">Lưu</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
