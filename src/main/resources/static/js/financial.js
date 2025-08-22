@@ -1,10 +1,10 @@
 const PAGE_SIZE = 5;
 let currentPage = 1;
 let financialReports = [
-    { stt: 1, title: "Tiêu đề 1", type: "Loại 1", amount: "16500000", time: "16:40", date: "2025-06-02", desc: "Mô tả 1", note: "Ghi chú 1" },
-    { stt: 2, title: "Tiêu đề 2", type: "Loại 2", amount: "3700000", time: "09:00", date: "2025-06-02", desc: "Mô tả 2", note: "Ghi chú 2" },
-    { stt: 3, title: "Tiêu đề 3", type: "Loại 3", amount: "5650000", time: "11:30", date: "2025-06-03", desc: "Mô tả 3", note: "Ghi chú 3" },
-    { stt: 4, title: "Tiêu đề 4", type: "Loại 4", amount: "2100000", time: "18:00", date: "2025-06-04", desc: "Mô tả 4", note: "Ghi chú 4" }
+    { stt: 1, title: "Thu phí quản lý tháng 8/2025", type: "Thu nhập", amount: "16500000", time: "16:40", date: "2025-06-02", desc: "Thu phí quản lý tháng 8/2025", note: "Thu phí quản lý tháng 8/2025" },
+    { stt: 2, title: "Chi điện nước chung tòa A", type: "Chi phí", amount: "3700000", time: "09:00", date: "2025-06-02", desc: "Chi điện nước chung tòa A", note: "Chi điện nước chung tòa A" },
+    { stt: 3, title: "Chi bảo trì thang máy định kỳ", type: "Bảo trì", amount: "5650000", time: "11:30", date: "2025-06-03", desc: "Chi bảo trì thang máy định kỳ", note: "Chi bảo trì thang máy định kỳ" },
+    { stt: 4, title: "Chi lương nhân viên tháng 8", type: "Chi phí", amount: "2100000", time: "18:00", date: "2025-06-04", desc: "Chi lương nhân viên tháng 8", note: "Chi lương nhân viên tháng 8" }
 ];
 let filteredReports = financialReports.slice();
 let totalReports = filteredReports.length;
