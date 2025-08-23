@@ -32,20 +32,20 @@ function renderFinancialTable() {
     pageReports.forEach((report, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${(currentPage - 1) * PAGE_SIZE + index + 1}</td>
-            <td>${report.title || ''}</td>
-            <td>${report.type || ''}</td>
-            <td>${formatMoney(report.amount) || ''}</td>
-            <td>${report.time || ''}</td>
-            <td>${report.date ? formatDate(report.date) : ''}</td>
-            <td>
-                <div class="fin-actions">
-                    <button class="action-btn" title="Xem" onclick="openViewReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" title="Sửa" onclick="openEditReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-pencil-alt"></i></button>
-                    <button class="action-btn" title="Xuất" onclick="openExportReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-file-export"></i></button>
-                </div>
-            </td>
-        `;
+        <td>${(currentPage - 1) * PAGE_SIZE + index + 1}</td>
+        <td>${report.title || ''}</td>
+        <td>${report.type || ''}</td>
+        <td>${formatMoney(report.amount) || ''}</td>
+        <td>${report.time || ''}</td>
+        <td>${report.date ? formatDate(report.date) : ''}</td>
+        <td>
+            <div class="fin-actions">
+                <button class="action-btn" title="Xem" onclick="openViewReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-eye"></i></button>
+                <button class="action-btn" title="Sửa" onclick="openEditReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn" title="Xuất" onclick="openExportReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-file-export"></i></button>
+            </div>
+        </td>
+    `;
         tbody.appendChild(tr);
     });
 
