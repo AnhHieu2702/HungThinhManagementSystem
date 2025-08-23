@@ -6,124 +6,336 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý thiết bị</title>
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    
-    <!-- Custom CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
     <link th:href="@{/css/device.css}" rel="stylesheet">
 </head>
 
 <body>
     <div layout:fragment="content">
-        <!-- Filter Section -->
-        <div class="filter-section mb-4">
-            <div class="d-flex justify-content-end align-items-center mb-4">
-                <button class="btn btn-primary" id="addDeviceBtn">
-                    <i class="bi bi-plus-lg me-1"></i> Thêm thiết bị
+        <!-- Search and Filter Section -->
+        <div class="device-search-section mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">Tìm kiếm và lọc thiết bị</h3>
+                <button class="btn btn-device-add" id="btnAddDevice">
+                    <i class="fas fa-plus"></i> Thêm mới
                 </button>
             </div>
-
-            <!-- Hàng đầu tiên: 4 filter cùng một hàng -->
-            <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <label class="form-label">Loại thiết bị</label>
-                    <select class="form-select" id="deviceTypeFilter">
-                        <option value="">Tất cả</option>
-                        <option value="ELEVATOR">Thang máy</option>
-                        <option value="GENERATOR">Máy phát điện</option>
-                        <option value="PUMP">Máy bơm</option>
-                        <option value="AIR_CONDITIONER">Điều hòa</option>
-                        <option value="CAMERA">Camera</option>
-                        <option value="FIRE_ALARM">PCCC</option>
-                        <option value="OTHER">Khác</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Trạng thái</label>
-                    <select class="form-select" id="statusFilter">
-                        <option value="">Tất cả</option>
-                        <option value="WORKING">Hoạt động tốt</option>
-                        <option value="MAINTENANCE">Đang bảo trì</option>
-                        <option value="BROKEN">Hỏng hóc</option>
-                        <option value="INSPECTION">Chờ kiểm tra</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Vị trí tòa</label>
-                    <select class="form-select" id="buildingFilter">
-                        <option value="">Tất cả tòa</option>
-                        <option value="A">Tòa A</option>
-                        <option value="B">Tòa B</option>
-                        <option value="C">Tòa C</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
+            <div class="row g-3">
+                <div class="col-md-4">
                     <label class="form-label">Tìm kiếm</label>
-                    <input type="text" class="form-control" id="searchInput" 
-                           placeholder="Tên thiết bị, Mã...">
+                    <input type="text" class="form-control" id="searchDeviceCode" placeholder="Mã thiết bị">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Vị trí</label>
+                    <select class="form-select" id="searchLocation">
+                        <option value="">Tất cả vị trí</option>
+                        <!-- Option sẽ được render bởi JS -->
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-select" id="searchStatus">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="ACTIVE">Hoạt động</option>
+                        <option value="INACTIVE">Không hoạt động</option>
+                        <option value="UNDER_MAINTENANCE">Đang bảo trì</option>
+                        <option value="BROKEN">Hỏng</option>
+                    </select>
                 </div>
             </div>
-
-            <!-- Hàng thứ hai: 2 button -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="filter-buttons d-flex justify-content-end gap-2">
-                        <button class="btn btn-outline-secondary" id="clearFiltersBtn">
-                            <i class="bi bi-x-lg me-1"></i> Xóa bộ lọc
-                        </button>
-                        <button class="btn btn-primary" id="searchBtn">
-                            <i class="bi bi-search me-1"></i> Tìm kiếm
-                        </button>
-                    </div>
+            <div class="row g-1 mt-3 justify-content-end">
+                <div class="col-auto">
+                    <button class="btn btn-outline-secondary me-2" onclick="clearDeviceFilters()">
+                        <i class="fas fa-undo"></i> Xóa bộ lọc
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-device-search" onclick="applyDeviceFilters()">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Device List Section -->
-        <div class="device-section">
+        <div class="device-list-section">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0">Danh sách thiết bị</h4>
+                <h3 class="mb-0">Danh sách thiết bị</h3>
             </div>
-
-            <!-- Device Table -->
             <div class="table-responsive">
-                <table class="table device-table">
-                    <thead>
+                <table class="table device-table table-striped table-hover">
+                    <thead class="table-device-header">
                         <tr>
-                            <th width="20%">Thiết bị</th>
-                            <th width="15%">Vị trí</th>
-                            <th width="12%">Trạng thái</th>
-                            <th width="12%">Bảo trì cuối</th>
-                            <th width="12%">Bảo trì tiếp</th>
-                            <th width="10%">Ưu tiên</th>
-                            <th width="19%">Thao tác</th>
+                            <th class="text-center">STT</th>
+                            <th class="text-center">MÃ THIẾT BỊ</th>
+                            <th class="text-center">TÊN THIẾT BỊ</th>
+                            <th class="text-center">VỊ TRÍ</th>
+                            <th class="text-center">NGÀY LẮP ĐẶT</th>
+                            <th class="text-center">TRẠNG THÁI</th>
+                            <th class="text-center">THAO TÁC</th>
                         </tr>
                     </thead>
                     <tbody id="deviceTableBody">
-                        <!-- Device rows will be loaded here -->
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2 mb-0">Đang tải dữ liệu...</p>
-                            </td>
-                        </tr>
+                        <!-- Dữ liệu sẽ render bằng JS -->
                     </tbody>
                 </table>
             </div>
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div id="deviceRecordsInfo">
+                    Hiển thị 1-5 trong tổng số 0 thiết bị
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="devicePaginationContainer">
+                        <!-- Pagination render bằng JS -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Thêm thiết bị -->
+    <div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"
+                    style="background: #212345; color: white; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                    <h5 class="modal-title" id="addDeviceModalLabel" style="font-weight: 700;">Thêm thiết bị</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"
+                        style="color: white;"></button>
+                </div>
+                <form id="addDeviceForm">
+                    <div class="modal-body" style="padding-bottom: 0;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mã thiết bị *</label>
+                            <input type="text" class="form-control" id="addDeviceCode" required
+                                placeholder="Nhập mã thiết bị">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên thiết bị *</label>
+                            <input type="text" class="form-control" id="addDeviceName" required
+                                placeholder="Nhập tên thiết bị">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Vị trí *</label>
+                            <input type="text" class="form-control" id="addDeviceLocation" required
+                                placeholder="Nhập vị trí">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ngày lắp đặt *</label>
+                            <input type="date" class="form-control" id="addInstallationDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Trạng thái *</label>
+                            <select class="form-select" id="addDeviceStatus" required>
+                                <option value="ACTIVE">Hoạt động</option>
+                                <option value="INACTIVE">Không hoạt động</option>
+                                <option value="UNDER_MAINTENANCE">Đang bảo trì</option>
+                                <option value="BROKEN">Hỏng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="justify-content: flex-end; border-top: none;">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                            style="border-radius: 6px; min-width: 80px;">Hủy</button>
+                        <button type="submit" class="btn btn-device-add"
+                            style="border-radius: 6px; min-width: 80px;">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chỉnh sửa thiết bị (theo Figma) -->
+    <div class="modal fade" id="editDeviceModal" tabindex="-1" aria-labelledby="editDeviceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="editDeviceForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDeviceModalLabel">Chỉnh sửa thiết bị</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editDeviceCode" class="form-label">Mã thiết bị *</label>
+                        <input type="text" class="form-control" id="editDeviceCode" name="editDeviceCode" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDeviceName" class="form-label">Tên thiết bị *</label>
+                        <input type="text" class="form-control" id="editDeviceName" name="editDeviceName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDeviceLocation" class="form-label">Vị trí *</label>
+                        <input type="text" class="form-control" id="editDeviceLocation" name="editDeviceLocation"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editInstallationDate" class="form-label">Ngày lắp đặt *</label>
+                        <input type="date" class="form-control" id="editInstallationDate" name="editInstallationDate"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDeviceStatus" class="form-label">Trạng thái *</label>
+                        <select class="form-select" id="editDeviceStatus" name="editDeviceStatus" required>
+                            <option value="ACTIVE">Hoạt động</option>
+                            <option value="INACTIVE">Không hoạt động</option>
+                            <option value="UNDER_MAINTENANCE">Đang bảo trì</option>
+                            <option value="BROKEN">Hỏng</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-device-add">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa thiết bị -->
+    <div class="modal fade" id="deleteDeviceModal" tabindex="-1" aria-labelledby="deleteDeviceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="deleteDeviceModalContent">
+                <div class="modal-body text-center">
+                    <div class="delete-device-warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="delete-device-confirm-text">
+                        Bạn có chắc chắn muốn xóa thiết bị không?
+                    </div>
+                    <div class="mt-4 d-flex justify-content-center gap-3">
+                        <button type="button" id="btnConfirmDeleteDevice" class="btn btn-delete-device">Xóa</button>
+                        <button type="button" class="btn btn-cancel-delete-device" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="deviceLoadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom Scripts -->
-    <div layout:fragment="scripts">
-        <script th:src="@{/js/device.js}"></script>
-    </div>
+
+    <th:block layout:fragment="scripts">
+        <script src="/js/device.js"></script>
+    </th:block>
 </body>
 
 </html>
+
+<!-- Modal: Thêm thiết bị -->
+<div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"
+                style="background: #212345; color: white; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                <h5 class="modal-title" id="addDeviceModalLabel" style="font-weight: 700;">Thêm thiết bị</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"
+                    style="color: white;"></button>
+            </div>
+            <form id="addDeviceForm">
+                <div class="modal-body" style="padding-bottom: 0;">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mã thiết bị *</label>
+                        <input type="text" class="form-control" id="addDeviceCode" required
+                            placeholder="Nhập mã thiết bị">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên thiết bị *</label>
+                        <input type="text" class="form-control" id="addDeviceName" required
+                            placeholder="Nhập tên thiết bị">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Vị trí *</label>
+                        <input type="text" class="form-control" id="addDeviceLocation" required
+                            placeholder="Nhập vị trí">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ngày lắp đặt *</label>
+                        <input type="date" class="form-control" id="addInstallationDate" required>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-end; border-top: none;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                        style="border-radius: 6px; min-width: 80px;">Hủy</button>
+                    <button type="submit" class="btn btn-device-add"
+                        style="border-radius: 6px; min-width: 80px;">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chỉnh sửa thiết bị (theo Figma) -->
+<div class="modal fade" id="editDeviceModal" tabindex="-1" aria-labelledby="editDeviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="editDeviceForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDeviceModalLabel">Chỉnh sửa thiết bị</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="editDeviceCode" class="form-label">Mã thiết bị *</label>
+                    <input type="text" class="form-control" id="editDeviceCode" name="editDeviceCode" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="editDeviceName" class="form-label">Tên thiết bị *</label>
+                    <input type="text" class="form-control" id="editDeviceName" name="editDeviceName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editDeviceLocation" class="form-label">Vị trí *</label>
+                    <input type="text" class="form-control" id="editDeviceLocation" name="editDeviceLocation" required>
+                </div>
+                <div class="mb-3">
+                    <label for="editInstallationDate" class="form-label">Ngày lắp đặt *</label>
+                    <input type="date" class="form-control" id="editInstallationDate" name="editInstallationDate"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="editDeviceStatus" class="form-label">Trạng thái *</label>
+                    <select class="form-select" id="editDeviceStatus" name="editDeviceStatus" required>
+                        <option value="ACTIVE">Hoạt động</option>
+                        <option value="INACTIVE">Không hoạt động</option>
+                        <option value="UNDER_MAINTENANCE">Đang bảo trì</option>
+                        <option value="BROKEN">Hỏng</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-device-add">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal xác nhận xóa thiết bị -->
+<div class="modal fade" id="deleteDeviceModal" tabindex="-1" aria-labelledby="deleteDeviceModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="deleteDeviceModalContent">
+            <div class="modal-body text-center">
+                <div class="delete-device-warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="delete-device-confirm-text">
+                    Bạn có chắc chắn muốn xóa thiết bị không?
+                </div>
+                <div class="mt-4 d-flex justify-content-center gap-3">
+                    <button type="button" id="btnConfirmDeleteDevice" class="btn btn-delete-device">Xóa</button>
+                    <button type="button" class="btn btn-cancel-delete-device" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

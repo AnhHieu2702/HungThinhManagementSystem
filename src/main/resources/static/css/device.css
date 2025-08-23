@@ -1,741 +1,399 @@
-/* Device Management System - Professional Style - Complete Fixed Version */
-
-body {
-    background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Filter section */
-.filter-section {
-    background: white;
+/* Main Containers */
+.device-search-section,
+.device-list-section {
+    background: #dee2e6;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #dee2e6;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.filter-section h3 {
-    color: #495057;
-    margin-bottom: 20px;
-}
-
-.filter-section .form-label {
-    color: #495057;
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-
-.filter-section .form-control,
-.filter-section .form-select {
     border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    height: 38px;
 }
 
-.filter-section .form-control:focus,
-.filter-section .form-select:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+.device-search-section h3,
+.device-list-section h3 {
+    color: #152259;
+    font-weight: 600;
 }
 
-/* Filter buttons styling */
-.filter-buttons {
-    margin-top: 10px;
-}
-
-.filter-buttons .btn {
-    min-width: 120px;
+.device-search-section .form-label {
     font-weight: 500;
+    color: #152259;
+    margin-bottom: 8px;
+}
+
+.device-search-section .form-control,
+.device-search-section .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+/* --- ADD DROPDOWN ARROW FOR FILTER SELECTS --- */
+.device-search-section .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8l5 5 5-5' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px 18px;
+    padding-right: 38px;
+    cursor: pointer;
+}
+/* Khi focus thì border xanh như cũ */
+.device-search-section .form-control:focus,
+.device-search-section .form-select:focus {
+    border-color: #152259;
+    box-shadow: 0 0 0 0.2rem rgba(21, 34, 89, 0.25);
+}
+
+/* Button Styling */
+.btn-device-add {
+    background: #152259 !important;
+    color: #fff !important;
     padding: 8px 16px;
     border-radius: 4px;
-    font-size: 14px;
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.btn-device-add:hover {
+    background: #0d1a3b !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+.btn-device-search {
+    background: #152259;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.btn-device-search:hover {
+    background: #0d1a3b;
+    color: #fff;
+    transform: translateY(-1px);
 }
 
-.filter-buttons .btn i {
-    font-size: 13px;
-}
-
-/* Primary button */
-.btn-primary {
-    background-color: #2c3e50;
-    border-color: #2c3e50;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #1a252f;
-    border-color: #1a252f;
-    color: white;
-}
-
-.btn-primary:focus {
-    background-color: #1a252f;
-    border-color: #1a252f;
-    color: white;
-    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
-}
-
-/* Outline secondary button */
-.btn-outline-secondary {
-    color: #6c757d;
-    border-color: #6c757d;
-    background-color: transparent;
-}
-
-.btn-outline-secondary:hover {
-    color: white;
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
-
-.btn-outline-secondary:focus {
-    color: white;
-    background-color: #6c757d;
-    border-color: #6c757d;
-    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
-}
-
-/* Add device button */
-#addDeviceBtn i {
-    font-size: 13px;
-}
-
-/* Device section */
-.device-section {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.device-section h4 {
-    color: #495057;
-    margin-bottom: 20px;
-}
-
-/* Device table - Fixed version with horizontal borders only */
-.table-responsive {
+/* Table Styling */
+.device-table {
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #fff;
 }
-
-.device-table {
-    margin-bottom: 0;
-    border: none;
-    border-collapse: collapse;
-    width: 100%;
-    background-color: white;
-    table-layout: fixed;
+.table-device-header {
+    background: #152259 !important;
 }
-
-.device-table thead {
-    background-color: #f8f9fa;
-}
-
-.device-table thead th {
-    color: #495057;
+.table-device-header th {
+    background: #152259 !important;
     font-weight: 600;
     font-size: 14px;
+    letter-spacing: 0.5px;
     padding: 15px 12px;
-    border-bottom: 2px solid #dee2e6;
-    border-right: none;
-    border-left: none;
-    border-top: none;
     text-align: center;
+    border: none;
     vertical-align: middle;
-    background-color: #f8f9fa;
+    text-transform: uppercase;
+    color: white;
 }
-
-.device-table tbody {
-    background-color: white;
-}
-
-.device-table tbody tr {
-    transition: background-color 0.2s ease;
-}
-
-.device-table tbody tr:not(:last-child) {
-    border-bottom: 1px solid #e9ecef;
-}
-
-.device-table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
 .device-table tbody td {
     padding: 15px 12px;
     vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
     font-size: 14px;
     text-align: center;
-    border-right: none;
-    border-left: none;
-    border-top: none;
-    border-bottom: none;
 }
 
-/* Column widths */
-.device-table th:nth-child(1) { width: 20%; }
-.device-table th:nth-child(2) { width: 15%; }
-.device-table th:nth-child(3) { width: 12%; }
-.device-table th:nth-child(4) { width: 12%; }
-.device-table th:nth-child(5) { width: 12%; }
-.device-table th:nth-child(6) { width: 10%; }
-.device-table th:nth-child(7) { width: 19%; }
-
-/* Device info column */
-.device-info {
-    text-align: left !important;
+/* Table Column Widths */
+.device-table th, .device-table td {
+    white-space: normal;
 }
+.device-table th:nth-child(1),
+.device-table td:nth-child(1) { width: 5%; min-width: 50px; }
+.device-table th:nth-child(2),
+.device-table td:nth-child(2) { width: 13%; min-width: 120px; }
+.device-table th:nth-child(3),
+.device-table td:nth-child(3) { width: 20%; min-width: 140px; }
+.device-table th:nth-child(4),
+.device-table td:nth-child(4) { width: 15%; min-width: 120px; }
+.device-table th:nth-child(5),
+.device-table td:nth-child(5) { width: 15%; min-width: 120px; }
+.device-table th:nth-child(6),
+.device-table td:nth-child(6) { width: 15%; min-width: 120px; }
+.device-table th:nth-child(7),
+.device-table td:nth-child(7) { width: 12%; min-width: 110px; }
 
-.device-name {
-    font-weight: 600;
-    color: #212529;
-    margin-bottom: 4px;
-    font-size: 15px;
-}
-
-.device-code {
-    color: #6c757d;
-    font-size: 13px;
-    font-family: 'Courier New', monospace;
-}
-
-/* Location column */
-.device-location {
-    color: #495057;
-    font-weight: 500;
-}
-
-/* Status badges */
-.status-badge {
+/* Status Badges */
+.device-status {
     padding: 6px 12px;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    border: none;
-    display: inline-block;
-    min-width: 100px;
-    text-align: center;
-}
-
-.status-badge.working {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-badge.maintenance {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status-badge.broken {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.status-badge.inspection {
-    background-color: #cce5ff;
-    color: #004085;
-}
-
-/* Priority badges */
-.priority-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    border: none;
-    display: inline-block;
-    min-width: 80px;
-    text-align: center;
-}
-
-.priority-badge.low {
-    background-color: #d1ecf1;
-    color: #0c5460;
-}
-
-.priority-badge.medium {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.priority-badge.high {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.priority-badge.urgent {
-    background-color: #f8d7da;
-    color: #721c24;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-/* Date columns */
-.date-text {
-    color: #495057;
+    border-radius: 16px;
     font-size: 13px;
+    font-weight: 500;
+    display: inline-block;
 }
+.device-status-active { background-color: #28a745; color: #fff; }
+.device-status-inactive { background-color: #6c757d; color: #fff; }
+.device-status-maintaining { background-color: #ffd700; color: #000; }
+.device-status-broken { background-color: #dc3545; color: #fff; }
 
-.date-text.pending {
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Action buttons - UPDATED for icon buttons */
-.action-buttons {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    width: 32px;
-    height: 32px;
+/* Action buttons */
+.device-action-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    color: white;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: #495057;
+    background-color: transparent;
 }
-
-.action-btn:hover {
+.device-action-btn:hover {
+    background-color: rgba(21,34,89,0.08);
     transform: translateY(-1px);
-    color: white;
-    text-decoration: none;
-    opacity: 0.9;
+}
+.device-action-btn i {
+    color: #212529 !important;
 }
 
-.action-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+/* Pagination Styling */
+.pagination {
+    margin: 0;
 }
-
-.action-btn i {
-    font-size: 14px;
-}
-
-.btn-view {
-    background-color: #6c757d;
-}
-
-.btn-view:hover {
-    background-color: #5a6268;
-}
-
-.btn-edit {
-    background-color: #17a2b8;
-}
-
-.btn-edit:hover {
-    background-color: #138496;
-}
-
-.btn-maintenance {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-.btn-maintenance:hover {
-    background-color: #e0a800;
-    color: #212529;
-}
-
-.btn-delete {
-    background-color: #dc3545;
-}
-
-.btn-delete:hover {
-    background-color: #c82333;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: #6c757d;
-}
-
-.empty-state i {
-    font-size: 48px;
-    color: #dee2e6;
-    margin-bottom: 20px;
-}
-
-.empty-state h5 {
-    color: #495057;
-    margin-bottom: 10px;
-}
-
-/* Modal styles */
-.modal-content {
-    border-radius: 8px;
+.pagination .page-link {
     border: 1px solid #dee2e6;
-}
-
-.modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    border-radius: 8px 8px 0 0;
-}
-
-.modal-title {
-    font-weight: 600;
-    color: #495057;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.modal-footer {
-    padding: 15px 20px;
-    border-top: 1px solid #dee2e6;
-}
-
-.device-details .form-label {
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 5px;
-}
-
-.device-details .form-control,
-.device-details .form-select {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+    color: #152259;
     padding: 8px 12px;
+    margin: 0 2px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
-
-.device-details .form-control:focus,
-.device-details .form-select:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+.pagination .page-link:hover {
+    background: #152259;
+    color: white;
+    border-color: transparent;
 }
-
-.device-details .form-control:disabled,
-.device-details .form-select:disabled,
-.device-details .form-control[readonly],
-.device-details .form-select[readonly] {
+.pagination .page-item.active .page-link {
+    background: #152259;
+    border-color: #152259;
+    color: white;
+}
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
     background-color: #e9ecef;
-    opacity: 1;
+    border-color: #dee2e6;
+}
+#deviceRecordsInfo {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-/* Loading overlay */
+/* Loading Overlay */
 .loading-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.8);
+    display: none; align-items: center; justify-content: center;
     z-index: 9999;
 }
-
 .loading-overlay .spinner-border {
-    width: 3rem;
-    height: 3rem;
+    width: 3rem; height: 3rem; color: #152259;
 }
 
-/* Custom alert */
-.custom-alert {
+/* Modal Figma Style: ĐỒNG BỘ MÀU VỚI NÚT THÊM */
+#addDeviceModal .modal-header,
+#editDeviceModal .modal-header {
+    background: #152259 !important;
+    color: white !important;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+#addDeviceModal .modal-title,
+#editDeviceModal .modal-title {
+    font-weight: 700;
+}
+#addDeviceModal .btn-close,
+#editDeviceModal .btn-close {
+    color: white;
+    opacity: 1;
+}
+#addDeviceModal .form-control,
+#addDeviceModal .form-select,
+#editDeviceModal .form-control,
+#editDeviceModal .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 14px;
+    font-size: 15px;
+}
+#addDeviceModal .form-label,
+#editDeviceModal .form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #152259;
+}
+#addDeviceModal .modal-footer,
+#editDeviceModal .modal-footer {
+    border-top: none;
+    justify-content: flex-end;
+    padding-top: 0;
+}
+#addDeviceModal .btn-device-add,
+#editDeviceModal .btn-device-add {
+    background: #152259 !important;
+    color: #fff !important;
+    font-weight: 600;
     border-radius: 6px;
-    border: 1px solid;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-
-/* Secondary button in modal */
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: white;
+#addDeviceModal .btn-device-add:hover,
+#editDeviceModal .btn-device-add:hover {
+    background: #0d1a3b !important;
+    color: #fff !important;
 }
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-    color: white;
+#addDeviceModal .btn-outline-secondary,
+#editDeviceModal .btn-outline-secondary {
+    border-radius: 6px;
+    font-weight: 600;
+    background: #fff;
+    border: 1px solid #ced4da;
+    color: #152259;
 }
-
-/* Responsive design */
-@media (max-width: 1200px) {
-    .action-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-    }
-
-    .action-btn i {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 992px) {
-    .device-table {
-        font-size: 13px;
-    }
-    
-    .device-table thead th,
-    .device-table tbody td {
-        padding: 10px 8px;
-    }
-    
-    .action-buttons {
-        gap: 4px;
-    }
-    
-    .action-btn {
-        width: 26px;
-        height: 26px;
-        font-size: 11px;
-    }
-
-    .action-btn i {
-        font-size: 11px;
-    }
-    
-    .status-badge,
-    .priority-badge {
-        font-size: 11px;
-        padding: 4px 6px;
-        min-width: auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .filter-section .row > div {
-        margin-bottom: 15px;
-    }
-    
-    .filter-buttons {
-        justify-content: center !important;
-        margin-top: 15px;
-    }
-    
-    .filter-buttons .btn {
-        flex: 1;
-        max-width: 150px;
-    }
-    
-    .d-flex.gap-2 {
-        flex-direction: column;
-        gap: 10px !important;
-    }
-    
-    .btn-primary {
-        width: 100%;
-    }
-    
-    .table-responsive {
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-    }
-    
-    .device-table {
-        margin-bottom: 0;
-        min-width: 900px;
-    }
-    
-    .action-buttons {
-        flex-direction: row;
-        gap: 3px;
-    }
-    
-    .action-btn {
-        width: 24px;
-        height: 24px;
-        font-size: 10px;
-    }
-
-    .action-btn i {
-        font-size: 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    .device-section {
-        padding: 15px;
-    }
-    
-    .filter-section {
-        padding: 15px;
-    }
-    
-    .device-name {
-        font-size: 14px;
-    }
-    
-    .device-code {
-        font-size: 12px;
-    }
-    
-    .filter-buttons {
-        flex-direction: column !important;
-        gap: 10px !important;
-    }
-    
-    .filter-buttons .btn {
-        width: 100%;
-        max-width: none;
-    }
-    
-    .action-buttons {
-        gap: 2px;
-    }
-    
-    .action-btn {
-        width: 22px;
-        height: 22px;
-        font-size: 9px;
-    }
-
-    .action-btn i {
-        font-size: 9px;
-    }
-    
-    .status-badge,
-    .priority-badge {
-        font-size: 10px;
-        padding: 3px 5px;
-    }
-    
-    .device-table {
-        min-width: 800px;
-    }
-}
-
-/* Table animation */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.device-table tbody tr {
-    animation: fadeInUp 0.3s ease-out;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
+#addDeviceModal .btn-outline-secondary:hover,
+#editDeviceModal .btn-outline-secondary:hover {
     background: #f1f1f1;
-    border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
+/* Modal Xác nhận Xóa Thiết bị */
+#deleteDeviceModal .modal-content {
+    border-radius: 14px;
+    padding: 0;
+}
+#deleteDeviceModal .modal-body {
+    padding: 32px 24px 24px 24px;
+}
+#deleteDeviceModal .delete-device-warning-icon {
+    font-size: 40px;
+    color: #dc3545;
+    margin-bottom: 14px;
+}
+#deleteDeviceModal .delete-device-confirm-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 10px;
+}
+#deleteDeviceModal .btn-delete-device {
+    background: #dc3545;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 28px;
+    border: none;
+    transition: background 0.3s;
+}
+#deleteDeviceModal .btn-delete-device:hover {
+    background: #a71d2a;
+    color: #fff;
+}
+#deleteDeviceModal .btn-cancel-delete-device {
+    background: #f1f1f1;
+    color: #212529;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 28px;
+    border: none;
+    transition: background 0.3s;
+}
+#deleteDeviceModal .btn-cancel-delete-device:hover {
+    background: #e2e2e2;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+/* Thông báo Toast góc phải */
+.device-toast-alert {
+    position: fixed;
+    top: 18px;
+    right: 30px;
+    min-width: 320px;
+    max-width: 400px;
+    background: #eaf7ed;
+    color: #155724;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(21,34,89,0.10);
+    z-index: 99999;
+    padding: 14px 24px 14px 18px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #c3e6cb;
+    animation: slideDownFadeIn 0.3s;
+}
+.device-toast-alert.device-toast-danger {
+    background: #fff4f3;
+    color: #b1001c;
+    border: 1px solid #ffd1db;
+}
+.device-toast-alert .device-toast-icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+.device-toast-alert .device-toast-close {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 22px;
+    margin-left: 16px;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+}
+.device-toast-alert .device-toast-close:hover {
+    opacity: 1;
+}
+@keyframes slideDownFadeIn {
+    from { opacity: 0; transform: translateY(-20px);}
+    to   { opacity: 1; transform: translateY(0);}
 }
 
-/* Print styles */
-@media print {
-    .filter-section,
-    .action-buttons,
-    .btn-primary,
-    .filter-buttons {
-        display: none;
+/* Responsive Design */
+@media (max-width: 992px) {
+    .device-search-section, .device-list-section { padding: 15px; }
+    .device-table th, .device-table td { font-size: 13px; padding: 10px 8px; }
+    .device-action-btn { width: 30px; height: 30px; }
+    #addDeviceModal .modal-dialog,
+    #editDeviceModal .modal-dialog,
+    #deleteDeviceModal .modal-dialog {
+        max-width: 98vw;
+        margin: 0 auto;
     }
-    
-    .device-table {
-        border: 1px solid #000;
-    }
-    
-    .device-table thead th {
-        border-bottom: 2px solid #000;
-        border-right: none;
-    }
-    
-    .device-table tbody tr:not(:last-child) {
-        border-bottom: 1px solid #000;
-    }
-    
-    .device-table tbody td {
-        border-right: none;
-        padding: 8px;
-    }
+    .device-toast-alert { right: 10px; min-width: 200px; max-width: 90vw; }
 }
-
-/* Focus and accessibility improvements */
-.btn:focus,
-.form-control:focus,
-.form-select:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-}
-
-.action-btn:focus-visible {
-    outline: 2px solid #0066cc;
-    outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .device-table {
-        border: 2px solid #000;
+@media (max-width: 768px) {
+    .device-search-section, .device-list-section { padding: 10px; }
+    .device-action-btn { width: 28px; height: 28px; }
+    #deviceRecordsInfo { font-size: 12px; }
+    #addDeviceModal .form-control, #addDeviceModal .form-select,
+    #editDeviceModal .form-control, #editDeviceModal .form-select {
+        font-size: 14px;
+        padding: 8px 10px;
     }
-    
-    .device-table thead th {
-        border-bottom: 3px solid #000;
+    #deleteDeviceModal .modal-body {
+        padding: 20px 10px 18px 10px;
     }
-    
-    .device-table tbody tr:not(:last-child) {
-        border-bottom: 2px solid #000;
+    #deleteDeviceModal .delete-device-confirm-text {
+        font-size: 16px;
     }
-    
-    .status-badge,
-    .priority-badge {
-        border: 2px solid #000;
+    #deleteDeviceModal .btn-delete-device,
+    #deleteDeviceModal .btn-cancel-delete-device {
+        padding: 8px 18px;
+        font-size: 15px;
     }
-}
-
-/* Loading state for table */
-.device-table.loading tbody tr {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-/* Success/Error states for rows */
-.device-table tbody tr.success {
-    background-color: #d4edda !important;
-}
-
-.device-table tbody tr.error {
-    background-color: #f8d7da !important;
-}
-
-.device-table tbody tr.warning {
-    background-color: #fff3cd !important;
 }
