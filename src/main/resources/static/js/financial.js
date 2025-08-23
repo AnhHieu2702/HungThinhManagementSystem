@@ -4,7 +4,7 @@ let financialReports = [
     { stt: 1, title: "Thu phí quản lý tháng 8/2025", type: "Thu nhập", amount: "16500000", time: "16:40", date: "2025-06-02", desc: "Thu phí quản lý tháng 8/2025", note: "Thu phí quản lý tháng 8/2025" },
     { stt: 2, title: "Chi điện nước chung tòa A", type: "Chi phí", amount: "3700000", time: "09:00", date: "2025-06-02", desc: "Chi điện nước chung tòa A", note: "Chi điện nước chung tòa A" },
     { stt: 3, title: "Chi bảo trì thang máy định kỳ", type: "Bảo trì", amount: "5650000", time: "11:30", date: "2025-06-03", desc: "Chi bảo trì thang máy định kỳ", note: "Chi bảo trì thang máy định kỳ" },
-    { stt: 4, title: "Chi lương nhân viên tháng 8", type: "Chi phí", amount: "2100000", time: "18:00", date: "2025-06-04", desc: "Chi lương nhân viên tháng 8", note: "Chi lương nhân viên tháng 8" }
+    { stt: 4, title: "Thu phí dịch vụ tháng 8/2025", type: "Thu nhập", amount: "2100000", time: "18:00", date: "2025-06-04", desc: "Thu phí dịch vụ tháng 8/2025", note: "Thu phí dịch vụ tháng 8/2025" }
 ];
 let filteredReports = financialReports.slice();
 let totalReports = filteredReports.length;
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupAddReportModal();
     setupViewModal();
     setupEditModal();
-    setupExportReportModal();
+    setupExportReportModal(); // GỌI LẠI ĐỂ XỬ LÝ FORM XUẤT BÁO CÁO TỪNG DÒNG
 });
 
 // ========== BẢNG DANH SÁCH ==========
@@ -39,8 +39,11 @@ function renderFinancialTable() {
             <td>${report.time || ''}</td>
             <td>${report.date ? formatDate(report.date) : ''}</td>
             <td>
-                <button class="action-btn" title="Xem" onclick="openViewReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-eye"></i></button>
-                <button class="action-btn" title="Sửa" onclick="openEditReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-pencil-alt"></i></button>
+                <div class="fin-actions">
+                    <button class="action-btn" title="Xem" onclick="openViewReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn" title="Sửa" onclick="openEditReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="action-btn" title="Xuất" onclick="openExportReportModal(${(currentPage - 1) * PAGE_SIZE + index})"><i class="fas fa-file-export"></i></button>
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -259,7 +262,7 @@ function setupEditModal() {
 function openEditReportModal(index) {
     let report = filteredReports[index];
     if (!report) return;
-    currentEditIndex = findOriginalIndex(report); // Tìm vị trí gốc trong mảng tài chính
+    currentEditIndex = findOriginalIndex(report);
     document.getElementById('editTitle').value = report.title || "";
     document.getElementById('editType').value = report.type ? report.type.replace("Loại ", "") : "";
     document.getElementById('editDate').value = report.date || "";
@@ -304,11 +307,9 @@ function handleEditReport() {
     renderFinancialTable();
     hideEditReportModal();
 
-    // Thông báo cập nhật thành công
     showToast('Cập nhật báo cáo tài chính thành công!');
 }
 
-// Tìm vị trí báo cáo trong mảng gốc
 function findOriginalIndex(report) {
     return financialReports.findIndex(r =>
         r.title === report.title &&
@@ -323,14 +324,9 @@ function findOriginalIndex(report) {
 
 // ========== MODAL XUẤT BÁO CÁO ==========
 function setupExportReportModal() {
-    document.getElementById('exportBtn').addEventListener('click', function () {
-        // Mặc định xuất báo cáo đầu tiên, có thể sửa logic để xuất theo báo cáo đang chọn
-        currentExportReportIndex = 0;
-        showExportReportModal(financialReports[currentExportReportIndex]);
-    });
-
-    document.getElementById('closeExportReportModal').addEventListener('click', hideExportReportModal);
+    // Modal chỉ dùng cho xuất từng báo cáo, KHÔNG còn nút xuất báo cáo tổng
     document.getElementById('cancelExportReportBtn').addEventListener('click', hideExportReportModal);
+    document.getElementById('closeExportReportModal').addEventListener('click', hideExportReportModal);
     document.getElementById('exportReportModal').addEventListener('mousedown', function(e){
         if (e.target === this) hideExportReportModal();
     });
@@ -341,7 +337,6 @@ function setupExportReportModal() {
     });
 }
 
-// Mở modal xuất từ danh sách (bấm vào icon xuất từng báo cáo)
 function openExportReportModal(index) {
     currentExportReportIndex = index;
     showExportReportModal(filteredReports[index]);
@@ -364,7 +359,6 @@ function hideExportReportModal() {
 }
 
 function printCurrentReport() {
-    // Chuẩn bị nội dung in từ báo cáo đang xuất
     const report = filteredReports[currentExportReportIndex];
     if (!report) return;
     const html = `
