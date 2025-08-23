@@ -88,7 +88,7 @@ function renderServiceFees() {
             <td>${fee.unit}</td>
             <td>
                 <button class="action-btn" title="Chỉnh sửa" onclick="openEditServiceFeeModal('${idx}')">
-                    <i class="fas fa-pen"></i>
+                    <i class="fas fa-edit"></i>
                 </button>
             </td>
         </tr>
@@ -176,7 +176,7 @@ function renderInvoiceTable() {
                 <i class="fas fa-eye"></i>
             </button>
             <button class="action-btn" title="Chỉnh sửa" onclick="openEditInvoiceModal('${inv.id}')">
-                <i class="fas fa-pen"></i>
+                <i class="fas fa-edit"></i>
             </button>
             <button class="action-btn" title="In hóa đơn" onclick="openPrintInvoiceModal('${inv.id}')">
                 <i class="fas fa-print"></i>
