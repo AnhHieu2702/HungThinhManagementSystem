@@ -25,7 +25,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/admin/apartments")
 @Tag(name = "Apartment Management")
-@PreAuthorize("hasRole('ADMIN')")
 public class ApartmentController extends ApiBaseController {
     private final IApartmentService apartmentService;
 
@@ -33,21 +32,24 @@ public class ApartmentController extends ApiBaseController {
         this.apartmentService = apartmentService;
     }
 
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResult<List<ApartmentGetsResponse>>> getApartments() {
         return executeApiResult(() -> apartmentService.getApartments());
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ApiResult<UUID>> createApartment(@Valid @RequestBody ApartmentCreateRequest apiRequest) {
         return executeApiResult(() -> apartmentService.createApartment(apiRequest));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{apartmentId}")
     public ResponseEntity<ApiResult<String>> updateApartment(@PathVariable UUID apartmentId, @Valid @RequestBody ApartmentUpdateRequest apiRequest) {
         return executeApiResult(() -> apartmentService.updateApartment(apartmentId, apiRequest));
     }
-
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/{apartmentId}")
     public ResponseEntity<ApiResult<String>> getApartmentById(@PathVariable UUID apartmentId) {
         return executeApiResult(() -> apartmentService.deleteApartment(apartmentId));

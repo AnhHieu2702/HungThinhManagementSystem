@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
 import com.apartment.models.dtos.notification.NotificationCreateRequest;
@@ -39,6 +39,7 @@ public class NotificationController extends ApiBaseController{
      * Lấy danh sách thông báo
      * @return ApiResult chứa danh sách thông báo
      */
+    @PreAuthorize("hasRole('MANAGER') or hasRole('RESIDENT')")
     @GetMapping
     public ResponseEntity<ApiResult<List<NotificationGetsResponse>>> getNotifications() {
         return executeApiResult(() -> notificationService.getsNotification());
@@ -49,6 +50,7 @@ public class NotificationController extends ApiBaseController{
      * @param id ID của thông báo cần lấy
      * @return ApiResult chứa thông tin chi tiết của thông báo
      */
+    @PreAuthorize("hasRole('MANAGER') or hasRole('RESIDENT')")
     @GetMapping("/{notificationId}")
     public ResponseEntity<ApiResult<NotificationGetResponse>> getNotification(@PathVariable UUID notificationId) {
         return executeApiResult(() -> notificationService.getNotification(notificationId));
@@ -60,6 +62,7 @@ public class NotificationController extends ApiBaseController{
      * @param apiRequest Thông tin tạo thông báo
      * @return ApiResult chứa ID của thông báo mới tạo
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ApiResult<UUID>> createNotification(Authentication authentication, @Valid @RequestBody NotificationCreateRequest apiRequest) {
         return executeApiResult(() -> notificationService.createNotification(authentication, apiRequest));
@@ -71,6 +74,7 @@ public class NotificationController extends ApiBaseController{
      * @param apiRequest Thông tin cập nhật thông báo
      * @return ApiResult chứa thông tin cập nhật thành công
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{notificationId}")
     public ResponseEntity<ApiResult<String>> updateNotification(@PathVariable UUID notificationId, @Valid @RequestBody NotificationUpdateRequest apiRequest) {
         return executeApiResult(() -> notificationService.updateNotification(notificationId, apiRequest));
@@ -81,6 +85,7 @@ public class NotificationController extends ApiBaseController{
      * @param id ID của thông báo cần xóa
      * @return ApiResult chứa thông tin xóa thành công
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{notificationId}")
     public ResponseEntity<ApiResult<String>> deleteNotification(@PathVariable UUID notificationId) {
         return executeApiResult(() -> notificationService.deleteNotification(notificationId));

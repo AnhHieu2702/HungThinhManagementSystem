@@ -33,27 +33,31 @@ public class ResidentController extends ApiBaseController {
         this.residentService = residentService;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("residents")
     public ResponseEntity<ApiResult<List<ResidentGetsResponse>>> getResidentsByOwner() {
         return executeApiResult(() -> residentService.getResidentsByOwner());
     }
 
+    @PreAuthorize("hasRole('MANAGER') or hasRole('RESIDENT')")
     @GetMapping("admin-resident/apartments/{apartmentId}/residents")
     public ResponseEntity<ApiResult<List<ResidentGetsResponse>>> getResidentsByApartmentId(@PathVariable UUID apartmentId) {
         return executeApiResult(() -> residentService.getResidentsByApartmentId(apartmentId));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("admin/apartments/{apartmentId}/residents")
     public ResponseEntity<ApiResult<UUID>> createResident(@PathVariable UUID apartmentId, @Valid @RequestBody ResidentCreateRequest apiRequest) {
         return executeApiResult(() -> residentService.createResident(apartmentId, apiRequest));
     }
 
+    @PreAuthorize("hasRole('MANAGER') or hasRole('RESIDENT')")
     @PutMapping("admin-resident/apartments/residents/{residentId}")
     public ResponseEntity<ApiResult<String>> updateResident(@PathVariable UUID residentId, @Valid @RequestBody ResidentUpdateRequest apiRequest) {
         return executeApiResult(() -> residentService.updateResident(residentId, apiRequest));
     }
 
+    @PreAuthorize("hasRole('MANAGER') or hasRole('RESIDENT')")
     @DeleteMapping("admin-resident/apartments/residents/{residentId}")
     public ResponseEntity<ApiResult<String>> deleteResident(@PathVariable UUID residentId) {
         return executeApiResult(() -> residentService.deleteResident(residentId));
