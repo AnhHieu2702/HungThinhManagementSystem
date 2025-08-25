@@ -59,7 +59,7 @@ public class FeedbackController extends ApiBaseController {
     }
 
     @PutMapping("admin/feedbacks/{id}/assign")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResult<String>> assignFeedback(@PathVariable UUID id, 
                                                            @Valid @RequestBody FeedbackAssignRequest apiRequest) {
         return executeApiResult(() -> feedbackService.assignFeedback(id, apiRequest));
