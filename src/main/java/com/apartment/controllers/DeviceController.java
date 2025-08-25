@@ -35,26 +35,26 @@ public class DeviceController extends ApiBaseController {
     }
 
     @GetMapping("admin-technician/devices")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('TECHNICIAN')")
     public ResponseEntity<ApiResult<List<DeviceGetsResponse>>> getsDevice() {
         return executeApiResult(() -> deviceService.getsDevice());
     }
 
     @PostMapping("admin/devices")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResult<UUID>> createDevice(@Valid @RequestBody DeviceCreateRequest apiRequest) {
         return executeApiResult(() -> deviceService.createDevice(apiRequest));
     }
 
     @PutMapping("admin/devices/{deviceCode}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResult<String>> updateDevice(@PathVariable String deviceCode,
             @Valid @RequestBody DeviceUpdateRequest apiRequest) {
         return executeApiResult(() -> deviceService.updateDeviceByCode(deviceCode, apiRequest));
     }
 
     @DeleteMapping("admin/devices/{deviceCode}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResult<String>> deleteDevice(@PathVariable String deviceCode) {
         return executeApiResult(() -> deviceService.deleteDeviceByCode(deviceCode));
     }
