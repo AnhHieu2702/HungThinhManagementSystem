@@ -1,9 +1,9 @@
 // ================== DỮ LIỆU GIẢ ==================
 const MAINTENANCE_DATA = [
-    { id: "1", deviceName: "Thang máy Mitsubishi", maintenanceDate: "31/01/2025", technician: "Kỹ thuật viên", status: "scheduled" },
-    { id: "2", deviceName: "Camera giám sát hành lang", maintenanceDate: "28/02/2025", technician: "Kỹ thuật viên", status: "inprogress" },
-    { id: "3", deviceName: "Máy bơm nước công suất lớn", maintenanceDate: "31/03/2025", technician: "Kỹ thuật viên", status: "done" },
-    { id: "4", deviceName: "Hệ thống barrier kiểm soát xe ra vào", maintenanceDate: "30/04/2025", technician: "Kỹ thuật viên", status: "cancelled" }
+    { id: "1", deviceName: "Thang máy", maintenanceDate: "26/08/2025", technician: "Kỹ thuật viên", status: "scheduled" },
+    { id: "2", deviceName: "Camera", maintenanceDate: "26/08/2025", technician: "Kỹ thuật viên", status: "inprogress" },
+    { id: "3", deviceName: "Máy bơm nước", maintenanceDate: "26/08/2025", technician: "Kỹ thuật viên", status: "done" },
+    { id: "4", deviceName: "Hệ thống barrier", maintenanceDate: "26/08/2025", technician: "Kỹ thuật viên", status: "cancelled" }
 ];
 
 // ================== CONSTANT CHO DROPDOWN ==================
